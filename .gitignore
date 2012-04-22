@@ -1,4 +1,5 @@
 build/
 *.swp
+CMakeLists.txt.user
 doc/html
 doc/latex
