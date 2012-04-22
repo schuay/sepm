@@ -13,7 +13,7 @@ find_package(ZeroCIceExecutables REQUIRED)
 find_package(Threads REQUIRED)
 
 IF(ZeroCIce_slice2cpp_FOUND)
-  message(STATUS "slice2cpp found")
+    message(STATUS "slice2cpp found")
 ENDIF(ZeroCIce_slice2cpp_FOUND)
 
 if (CMAKE_COMPILER_IS_GNUCXX)
