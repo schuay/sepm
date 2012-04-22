@@ -23,3 +23,4 @@ if (CMAKE_COMPILER_IS_GNUCXX)
 endif(CMAKE_COMPILER_IS_GNUCXX)
 
 add_subdirectory( src )
+add_subdirectory( doc )
