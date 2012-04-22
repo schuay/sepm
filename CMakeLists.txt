@@ -1,4 +1,4 @@
-project ( sdc_groupX )
+project ( sdc_group22 )
 
 cmake_minimum_required( VERSION 2.6 )
 
