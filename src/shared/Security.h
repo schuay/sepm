@@ -185,7 +185,7 @@ public:
      * Read a private key from a file.
      *
      * @param privkeyfile The file to read the key from.
-     * @passphrase The optional passphrase for the key file.
+     * @param passphrase The optional passphrase for the key file.
      */
     ByteSeq readPrivKey( const QString& privkeyfile, const QString& passphrase = QString() ) throw( SecurityException );
 
