@@ -1,5 +1,7 @@
 include_directories(
     ${CMAKE_BINARY_DIR}/src/shared/
+    ${CMAKE_SOURCE_DIR}/src/shared/
+    ${QCA2_INCLUDE_DIR}
 )
 
 set(client_backend_SRCS
