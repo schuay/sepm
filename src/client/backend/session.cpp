@@ -1,5 +1,6 @@
 #include "session.h"
 
-namespace sdcc {
+namespace sdcc
+{
 
 }

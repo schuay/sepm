@@ -1,5 +1,6 @@
 #include "user.h"
 
-namespace sdcc {
+namespace sdcc
+{
 
 }

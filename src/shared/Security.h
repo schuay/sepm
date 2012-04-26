@@ -17,7 +17,9 @@ public:
     SecurityException() { };
     SecurityException(const std::string& msg): m_msg(msg) { };
     ~SecurityException() throw() { };
-    const char* what() const throw() { return m_msg.c_str(); };
+    const char* what() const throw() {
+        return m_msg.c_str();
+    };
 private:
     std::string m_msg;
 };
@@ -31,13 +33,17 @@ public:
     /**
      * True if RSA is supported.
      */
-    bool supportsRSA() const { return m_rsa; };
+    bool supportsRSA() const {
+        return m_rsa;
+    };
 
     /**
      * True if AES is supported.
      */
-    bool supportsAES() const { return m_aes; };
-    
+    bool supportsAES() const {
+        return m_aes;
+    };
+
     /**
      * Encrypt a ByteSeq with RSA.
      *
@@ -117,7 +123,7 @@ public:
 
     /**
      * Verify the RSA signature of a ByteSeq.
-     * 
+     *
      * @param pubkeyfile The file with the public RSA key.
      * @param data The data for which to verify the signature.
      * @param signature The signature.
@@ -127,7 +133,7 @@ public:
 
     /**
      * Verify the RSA signature of a ByteSeq.
-     * 
+     *
      * @param pubkey The public RSA key.
      * @param data The data for which to verify the signature.
      * @param signature The signature.

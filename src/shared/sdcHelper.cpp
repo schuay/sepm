@@ -5,8 +5,7 @@ using namespace sdc;
 ByteSeq sdcHelper::bStringToByteSeq( const char* arr, long len )
 {
     std::vector<Ice::Byte> vec;
-    for( int i = 0; i < len; i++ )
-    {
+    for( int i = 0; i < len; i++ ) {
         vec.push_back( arr[i] );
     }
     return vec;
@@ -25,8 +24,7 @@ std::string sdcHelper::getBinaryString( const sdc::ByteSeq& bytes )
 {
     std::string ret;
     std::vector<Ice::Byte>::const_iterator it;
-    for( it = bytes.begin(); it < bytes.end(); it++ )
-    {
+    for( it = bytes.begin(); it < bytes.end(); it++ ) {
         ret.append( 1, *it );
     }
     return ret;
@@ -40,8 +38,7 @@ ByteSeq sdcHelper::byteArraytoByteSeq( const QByteArray& arr )
 std::string sdcHelper::getServerFromID( const std::string& id )
 {
     size_t seperator = id.find( "@" );
-    if( seperator != std::string::npos )
-    {
+    if( seperator != std::string::npos ) {
         return id.substr( seperator + 1 );
     }
     return "";
@@ -50,8 +47,7 @@ std::string sdcHelper::getServerFromID( const std::string& id )
 std::string sdcHelper::getNameFromID( const std::string& id )
 {
     size_t seperator = id.find( "@" );
-    if( seperator != std::string::npos )
-    {
+    if( seperator != std::string::npos ) {
         return id.substr( 0, seperator );
     }
     return "";

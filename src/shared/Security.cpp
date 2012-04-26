@@ -14,8 +14,7 @@ Security::Security()
     if ( QCA::isSupported( "pkey" ) &&
             QCA::PKey::supportedIOTypes().contains( QCA::PKey::RSA ) )
         m_rsa = true;
-    if ( QCA::isSupported( "aes256-ofb" ) )
-    {
+    if ( QCA::isSupported( "aes256-ofb" ) ) {
         m_aes = true;
         cipher = new QCA::Cipher( "aes256", QCA::Cipher::OFB );
     }
@@ -71,7 +70,7 @@ ByteSeq Security::decryptRSA( QCA::PrivateKey& key, const ByteSeq& data ) throw(
         throw SecurityException( "decryption failed" );
 
     outdata = decryptAES( sdcHelper::byteArraytoByteSeq( symkey.toByteArray() ),
-            sdcHelper::byteArraytoByteSeq( encdata.mid( key.bitSize() / 8 ) ) );
+                          sdcHelper::byteArraytoByteSeq( encdata.mid( key.bitSize() / 8 ) ) );
 
     return outdata;
 }
@@ -200,8 +199,7 @@ ByteSeq Security::readPrivKey( const QString& privkeyfile, const QString& passph
 
     QCA::ConvertResult r;
     QCA::PrivateKey key = QCA::PrivateKey::fromPEMFile( privkeyfile, passphrase.toStdString().c_str(), &r );
-    if( QCA::ConvertGood != r )
-    {
+    if( QCA::ConvertGood != r ) {
         if( r == QCA::ErrorFile )
             throw SecurityException( "failed to read private key from file" );
         else if( r == QCA::ErrorPassphrase )
@@ -220,8 +218,7 @@ ByteSeq Security::readPubKey( const QString& pubkeyfile ) throw( SecurityExcepti
 
     QCA::ConvertResult r;
     QCA::PublicKey key = QCA::PublicKey::fromPEMFile( pubkeyfile, &r );
-    if( QCA::ConvertGood != r )
-    {
+    if( QCA::ConvertGood != r ) {
         if( r == QCA::ErrorFile )
             throw SecurityException( "failed to read public key from file" );
         else
@@ -243,16 +240,13 @@ ByteSeq Security::processAES( const ByteSeq& key, const ByteSeq& data, QCA::Dire
     if( symkey.size() == 0 )
         throw SecurityException( "empty key supplied" );
 
-    if ( dir == QCA::Encode )
-    {
+    if ( dir == QCA::Encode ) {
         QCA::SecureArray secdata = sdcHelper::byteSeqToByteArray( data );
         QCA::InitializationVector iv( symkey.size() );
         cipher->setup( dir, symkey, iv );
         outdata = cipher->process( secdata ).toByteArray();
         outdata = outdata.prepend( iv.toByteArray() );
-    }
-    else
-    {
+    } else {
         QByteArray data_ = sdcHelper::byteSeqToByteArray( data );
         QCA::SecureArray secdata = data_.mid( symkey.size() );
         QCA::InitializationVector iv( data_.left( symkey.size() ) );

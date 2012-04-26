@@ -1,5 +1,6 @@
 #include "chat.h"
 
-namespace sdcc {
+namespace sdcc
+{
 
 }
