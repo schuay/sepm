@@ -19,7 +19,7 @@ ENDIF(ZeroCIce_slice2cpp_FOUND)
 if (CMAKE_COMPILER_IS_GNUCXX)
     ADD_DEFINITIONS( -Wall -Wundef -Wcast-align -Wchar-subscripts -Wpointer-arith
        -Wwrite-strings -Wpacked -Wformat-security -Wmissing-format-attribute
-       -Wold-style-cast -Woverloaded-virtual -Wnon-virtual-dtor )
+       -Wold-style-cast -Woverloaded-virtual -Wnon-virtual-dtor -Wextra -Werror)
 endif(CMAKE_COMPILER_IS_GNUCXX)
 
 add_subdirectory( src )
