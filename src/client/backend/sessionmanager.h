@@ -31,6 +31,7 @@
  */
 
 #include <QSharedPointer>
+#include <Ice/Ice.h>
 
 namespace sdcc
 {
@@ -71,8 +72,16 @@ public:
                              const QString &serverCertPath, const User &usr,
                              const QString &pwd);
 
+    /**
+     * Returns the singleton instance of SessionManager.
+     */
+    static SessionManager *getInstance();
+
 signals:
 
+    /**
+     * ConnectionTest has completed.
+     */
     void testConnectionCompleted(bool success, const QString &msg);
 
     /**
@@ -83,6 +92,28 @@ signals:
                         const QString &msg);
 
     void registerCompleted(bool success, const QString &msg);
+
+
+private:
+
+    SessionManager() {}
+
+    static SessionManager instance;
+
+    /**
+     * Internal helper for creating Ice communicators, as we will need them for
+     * each connection test or login
+     *
+     * throws Ice::Exception
+     */
+    static Ice::CommunicatorPtr makeCommunicator(const QString &serverCertPath);
+
+    /**
+     * Internal method for testConnection to hand over to QtConcurrent
+     */
+    void runTestConnection(const QString &serverName,
+                           const QString &serverCertPath);
+
 };
 
 }

@@ -24,8 +24,14 @@ qt4_wrap_cpp(client_backend_QTHEADERS_MOC
 
 add_library(client_backend STATIC
     ${client_backend_SRCS}
+    ${client_backend_QTHEADERS_MOC}
 )
 
 target_link_libraries(client_backend
     ${QT_LIBRARIES}
+    ${ZeroCIce_LIBRARIES}
+)
+
+add_dependencies(client_backend
+    Shared
 )
