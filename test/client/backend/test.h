@@ -1,18 +1,14 @@
-#include <QtGui>
+#include <QObject>
 
 /**
  * Just a little tester for anything in the backend. Feel free to modify and
  * destroy it however you like to...
  **/
 
-class test : public QObject
+class ClientBackendTests : public QObject
 {
     Q_OBJECT
 
-public slots:
-
-    void report(bool success, const QString &msg) {
-        printf("got %d %s\n", success, msg.toStdString().c_str());
-        exit(0);
-    }
+private slots:
+    void testTestConnection();
 };

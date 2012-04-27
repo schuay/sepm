@@ -18,6 +18,8 @@ if (CMAKE_COMPILER_IS_GNUCXX)
        -Wold-style-cast -Woverloaded-virtual -Wnon-virtual-dtor -Wextra -Werror)
 endif(CMAKE_COMPILER_IS_GNUCXX)
 
+enable_testing()
+
 add_subdirectory( src )
 add_subdirectory( doc )
 add_subdirectory( test )

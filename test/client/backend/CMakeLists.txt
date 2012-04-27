@@ -25,10 +25,16 @@ target_link_libraries(backendTest
     client_backend
     Shared
     ${QT_LIBRARIES}
+    ${QT_QTTEST_LIBRARY}
     ${CMAKE_THREAD_LIBS_INIT}
     ${ZeroCIce_LIBRARIES}
 )
 
 add_dependencies(backendTest
     client_backend
+)
+
+add_test(NAME backendTest
+    COMMAND backendTest
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/test/client/backend
 )
