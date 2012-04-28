@@ -29,15 +29,17 @@
  * If success is false, then msg will always carry an error message. If success
  * is true then the content of msg is undefined.
  */
+#ifndef _SESSIONMANAGER_H
+#define _SESSIONMANAGER_H
 
 #include <QSharedPointer>
 #include <Ice/Ice.h>
 
+#include "session.h"
+#include "user.h"
+
 namespace sdcc
 {
-
-class User;
-class Session;
 
 /**
  * Top level object for the client.
@@ -117,3 +119,5 @@ private:
 };
 
 }
+
+#endif /* _SESSIONMANAGER_H */

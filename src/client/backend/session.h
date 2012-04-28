@@ -1,12 +1,15 @@
+#ifndef _SESSION_H
+#define _SESSION_H
+
 #include <QSharedPointer>
 
 #include "SecureDistributedChat.h"
 
+#include "chat.h"
+#include "user.h"
+
 namespace sdcc
 {
-
-class Chat;
-class User;
 
 using IceProxy::sdc::ChatClientCallbackI;
 using IceProxy::sdc::SessionI;
@@ -77,3 +80,5 @@ private:
 };
 
 }
+
+#endif /* _SESSION_H */

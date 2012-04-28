@@ -1,3 +1,6 @@
+#ifndef _USER_H
+#define _USER_H
+
 #include <QString>
 
 #include "SecureDistributedChat.h"
@@ -25,3 +28,5 @@ private:
 };
 
 }
+
+#endif /* _USER_H */

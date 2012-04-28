@@ -1,9 +1,13 @@
+#ifndef _CHAT_H
+#define _CHAT_H
+
 #include <QSharedPointer>
+
+#include "user.h"
 
 namespace sdcc
 {
 
-class User;
 class Session;
 
 /**
@@ -89,3 +93,5 @@ private:
 };
 
 }
+
+#endif /* _CHAT_H */
