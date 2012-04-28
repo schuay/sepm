@@ -23,9 +23,9 @@ public:
     throw (sdc::SecurityException);
     User(const sdc::User &user);
 
-    const QString &getName();
+    const QString &getName() const;
 
-    QSharedPointer<sdc::User> getIceUser();
+    QSharedPointer<sdc::User> getIceUser() const;
 
 private:
     QString      name;

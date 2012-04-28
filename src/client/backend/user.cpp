@@ -3,14 +3,14 @@
 namespace sdcc
 {
 
-const QString &User::getName()
+const QString &User::getName() const
 {
-    QString &ref = this->name;
+    const QString &ref = this->name;
     return ref;
 }
 
 User::User(const QString &name, const QString &certificatePath)
-					throw (sdc::SecurityException)
+throw (sdc::SecurityException)
 {
     this->name = name;
     sdc::Security s;
@@ -23,7 +23,7 @@ User::User(const sdc::User &user)
     this->certificate = user.publicKey;
 }
 
-QSharedPointer<sdc::User> User::getIceUser()
+QSharedPointer<sdc::User> User::getIceUser() const
 {
     sdc::User *u = new sdc::User();
     u->ID = name.toStdString();

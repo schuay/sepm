@@ -116,6 +116,9 @@ private:
     void runTestConnection(const QString &serverName,
                            const QString &serverCertPath);
 
+    void runRegisterUser(const QString &serverName,
+                         const QString &serverCertPath,
+                         const User &usr, const QString &pwd);
 };
 
 }

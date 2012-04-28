@@ -15,6 +15,52 @@ SessionManager *SessionManager::getInstance ()
     return &instance;
 }
 
+
+void SessionManager::registerUser(const QString &serverName,
+                                  const QString &serverCertPath,
+                                  const User &usr, const QString &pwd)
+{
+    QtConcurrent::run(&instance, &SessionManager::runRegisterUser,
+                      serverName, serverCertPath, usr, pwd);
+}
+
+void SessionManager::runRegisterUser(const QString &serverName,
+                                     const QString &serverCertPath,
+                                     const User &usr, const QString &pwd)
+{
+    bool success = false;
+    QString msg = "";
+
+    try {
+        // We only use ssl!
+        QString conn = QString("Authentication:ssl -h %1 -p %2")
+                       .arg(serverName).arg(sdc::port);
+
+        // This communicator is only temporary, we will destroy it at the end.
+        Ice::CommunicatorPtr ic = makeCommunicator(serverCertPath);
+        Ice::ObjectPrx base = ic->stringToProxy(conn.toStdString());
+        sdc::AuthenticationIPrx auth = sdc::AuthenticationIPrx::checkedCast(base);
+
+        if (!auth) {
+            msg = "Invalid proxy";
+            success = false;
+        } else {
+            QSharedPointer<sdc::User> usrPtr = usr.getIceUser();
+            auth->registerUser(*(usrPtr.data()), pwd.toStdString());
+        }
+
+        ic->destroy();
+
+    } catch (const sdc::SDCException &e) {
+        msg = e.what.c_str();
+    } catch (const Ice::Exception &e) {
+        // The message returned is not very meaningful, unfortunately.
+        msg = e.what();
+    }
+
+    emit registerCompleted(success, msg);
+}
+
 void SessionManager::testConnection (const QString &serverName,
                                      const QString &serverCertPath)
 {

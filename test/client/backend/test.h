@@ -14,4 +14,6 @@ private slots:
     void testUserCtorNamePath();
     void testUserCtorSdcUser();
     void testUserGetIceUser();
+    void testRegisterUserNew();
+    void testRegisterUserAgain();
 };
