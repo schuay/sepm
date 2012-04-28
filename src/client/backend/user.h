@@ -2,8 +2,10 @@
 #define _USER_H
 
 #include <QString>
+#include <QSharedPointer>
 
 #include "SecureDistributedChat.h"
+#include <Security.h>
 
 namespace sdcc
 {
@@ -17,10 +19,13 @@ class User
 {
 public:
 
-    User(const QString &name, const QString &certificatePath);
+    User(const QString &name, const QString &certificatePath)
+    throw (sdc::SecurityException);
     User(const sdc::User &user);
 
     const QString &getName();
+
+    QSharedPointer<sdc::User> getIceUser();
 
 private:
     QString      name;

@@ -4,6 +4,8 @@
 #include <QtTest/QSignalSpy>
 
 #include "sessionmanager.h"
+#include "user.h"
+#include <Security.h>
 
 using namespace sdcc;
 
@@ -30,4 +32,37 @@ void ClientBackendTests::testTestConnection()
     QCOMPARE(spy.count(), 1);
     QList<QVariant> arguments = spy.takeFirst();
     QVERIFY(arguments.at(0) == true);
+}
+
+void ClientBackendTests::testUserCtorNamePath()
+{
+    try {
+        User u("user@example.com", "public.pem");
+	QCOMPARE(u.getName(), QString("user@example.com"));
+    } catch (sdc::SecurityException s) {
+        QFAIL(s.what());
+    }
+}
+
+void ClientBackendTests::testUserCtorSdcUser()
+{
+    sdc::Security s;
+    sdc::ByteSeq pubkey = s.readPubKey("public.pem");
+    sdc::User su = { "user@example.com", pubkey };
+    User u(su);
+
+    QCOMPARE(u.getName(), QString("user@example.com"));
+}
+
+void ClientBackendTests::testUserGetIceUser()
+{
+    sdc::Security s;
+    sdc::ByteSeq pubkey = s.readPubKey("public.pem");
+    sdc::User su1 = { "user@example.com", pubkey };
+
+    User u(su1);
+    QSharedPointer<sdc::User> ptr = u.getIceUser();
+    sdc::User *su2 = ptr.data();
+
+    QCOMPARE(su1, *su2);
 }

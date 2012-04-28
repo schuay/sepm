@@ -11,4 +11,7 @@ class ClientBackendTests : public QObject
 
 private slots:
     void testTestConnection();
+    void testUserCtorNamePath();
+    void testUserCtorSdcUser();
+    void testUserGetIceUser();
 };

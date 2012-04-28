@@ -2,6 +2,7 @@ include_directories(
     ${CMAKE_BINARY_DIR}/src/shared/
     ${CMAKE_SOURCE_DIR}/src/shared/
     ${CMAKE_SOURCE_DIR}/src/client/backend
+    ${QCA2_INCLUDE_DIR}
 )
 
 set(backendTest_QTHEADERS
@@ -28,6 +29,7 @@ target_link_libraries(backendTest
     ${QT_QTTEST_LIBRARY}
     ${CMAKE_THREAD_LIBS_INIT}
     ${ZeroCIce_LIBRARIES}
+    ${QCA2_LIBRARIES}
 )
 
 add_dependencies(backendTest
