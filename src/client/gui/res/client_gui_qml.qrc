@@ -1,0 +1,14 @@
+<RCC>
+    <qresource prefix="/qml">
+        <file>Login.qml</file>
+        <file>ErrorBubble.qml</file>
+        <file>LabeledFileField.qml</file>
+        <file>ServerBox.qml</file>
+        <file>UserBox.qml</file>
+        <file>TestBox.qml</file>
+        <file>FieldSet.qml</file>
+        <file>ColumnFieldSet.qml</file>
+        <file>FileField.qml</file>
+        <file>ButtonBox.qml</file>
+    </qresource>
+</RCC>
