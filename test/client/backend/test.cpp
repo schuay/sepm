@@ -69,8 +69,6 @@ void ClientBackendTests::testUserGetIceUser()
     QCOMPARE(su1, *su2);
 }
 
-/* TODO: this test should succeed, determine wether implementation or reference
- * server is broken. */
 void ClientBackendTests::testRegisterUserNew()
 {
     SessionManager *sessionManager = SessionManager::getInstance();
