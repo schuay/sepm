@@ -15,7 +15,6 @@ set(client_backend_QTHEADERS
     chat.h
     session.h
     sessionmanager.h
-    user.h
 )
 
 qt4_wrap_cpp(client_backend_QTHEADERS_MOC
