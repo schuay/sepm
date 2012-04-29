@@ -33,7 +33,7 @@ void ClientBackendTests::testTestConnection()
 
     QCOMPARE(spy.count(), 1);
     QList<QVariant> arguments = spy.takeFirst();
-    QVERIFY(arguments.at(0) == true);
+    QVERIFY2(arguments.at(0) == true, arguments.at(1).toString().toStdString().c_str());
 }
 
 void ClientBackendTests::testUserCtorNamePath()
@@ -92,8 +92,7 @@ void ClientBackendTests::testRegisterUserNew()
 
     QCOMPARE(spy.count(), 1);
     QList<QVariant> arguments = spy.takeFirst();
-    qDebug("%s\n", arguments.at(1).toString().toStdString().c_str());
-    QVERIFY(arguments.at(0) == true);
+    QVERIFY2(arguments.at(0) == true, arguments.at(1).toString().toStdString().c_str());
 }
 
 void ClientBackendTests::testRegisterUserAgain()
