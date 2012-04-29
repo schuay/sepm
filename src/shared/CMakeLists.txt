@@ -29,6 +29,9 @@ set( SHARED_SRC
      sdcHelper.cpp
      Security.cpp
      ${out_file}
+     QsDebugOutput.cpp
+     QsLog.cpp
+     QsLogDest.cpp
 )
 
 add_library(Shared ${SHARED_SRC})
