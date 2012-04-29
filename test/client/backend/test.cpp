@@ -88,12 +88,6 @@ void ClientBackendTests::testRegisterUserNew()
     sessionManager->registerUser("selinux.inso.tuwien.ac.at", "ca.crt", u,
                                  "password");
 
-    /* We need to actually wait for the signal to be emitted.
-       Googling turns up Q_TRY_VERIFY, but it seems that this is only
-       included in Qt5. Alternatively, just wait for some random amount (250ms).
-     */
-
-    /* Wait for result. */
     QTest::qWait(1000);
 
     QCOMPARE(spy.count(), 1);
@@ -114,12 +108,6 @@ void ClientBackendTests::testRegisterUserAgain()
     sessionManager->registerUser("selinux.inso.tuwien.ac.at", "ca.crt", u,
                                  "password");
 
-    /* We need to actually wait for the signal to be emitted.
-       Googling turns up Q_TRY_VERIFY, but it seems that this is only
-       included in Qt5. Alternatively, just wait for some random amount (250ms).
-     */
-
-    /* Wait for result. */
     QTest::qWait(1000);
 
     QCOMPARE(spy.count(), 1);
