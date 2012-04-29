@@ -103,14 +103,6 @@ private:
     static SessionManager instance;
 
     /**
-     * Internal helper for creating Ice communicators, as we will need them for
-     * each connection test or login
-     *
-     * throws Ice::Exception
-     */
-    static Ice::CommunicatorPtr makeCommunicator(const QString &serverCertPath);
-
-    /**
      * Internal method for testConnection to hand over to QtConcurrent
      */
     void runTestConnection(const QString &serverName,

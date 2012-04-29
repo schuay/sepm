@@ -7,6 +7,49 @@ namespace sdcc
 {
 
 /**
+ * Private wrapper around Ice::CommunicatorPtr which handles common connection
+ * setup and ensures that destroy() is called when the wrapper goes out of scope.
+ */
+class CommunicatorPtrWrapper
+{
+public:
+    CommunicatorPtrWrapper(const QString &serverName,
+                           const QString &serverCertPath,
+                           bool &success, QString &msg) {
+        msg = "";
+        success = true;
+
+        QString conn = QString("Authentication:ssl -h %1 -p %2")
+                       .arg(serverName).arg(sdc::port);
+
+        /* Set up ice to initialize ssl plugin and set used cert file. */
+        Ice::PropertiesPtr props = Ice::createProperties();
+        props->setProperty("Ice.Plugin.IceSSL", "IceSSL:createIceSSL");
+        props->setProperty("IceSSL.CertAuthFile", serverCertPath.toStdString());
+        props->setProperty("Ice.Override.Timeout", "5000");
+
+        Ice::InitializationData id;
+        id.properties = props;
+
+        communicator = Ice::initialize(id);
+        auth = sdc::AuthenticationIPrx::checkedCast(
+                   communicator->stringToProxy(conn.toStdString()));
+
+        if (!auth) {
+            msg = "Invalid proxy";
+            success = false;
+        }
+    }
+
+    ~CommunicatorPtrWrapper() {
+        communicator->destroy();
+    }
+
+    Ice::CommunicatorPtr communicator;
+    sdc::AuthenticationIPrx auth;
+};
+
+/**
  * Needed to make this public unfortunately, save someone tells me
  * how to connect a signal from an instance you don't have access to...
  */
@@ -28,36 +71,25 @@ void SessionManager::runRegisterUser(const QString &serverName,
                                      const QString &serverCertPath,
                                      const User &usr, const QString &pwd)
 {
-    bool success = false;
-    QString msg = "";
+    bool success;
+    QString msg;
 
     try {
-        // We only use ssl!
-        QString conn = QString("Authentication:ssl -h %1 -p %2")
-                       .arg(serverName).arg(sdc::port);
+        CommunicatorPtrWrapper commWrapper(serverName, serverCertPath, success, msg);
+        if (!success)
+            goto out;
 
-        // This communicator is only temporary, we will destroy it at the end.
-        Ice::CommunicatorPtr ic = makeCommunicator(serverCertPath);
-        Ice::ObjectPrx base = ic->stringToProxy(conn.toStdString());
-        sdc::AuthenticationIPrx auth = sdc::AuthenticationIPrx::checkedCast(base);
-
-        if (!auth) {
-            msg = "Invalid proxy";
-            success = false;
-        } else {
-            QSharedPointer<sdc::User> usrPtr = usr.getIceUser();
-            auth->registerUser(*(usrPtr.data()), pwd.toStdString());
-        }
-
-        ic->destroy();
-
+        QSharedPointer<sdc::User> usrPtr = usr.getIceUser();
+        commWrapper.auth->registerUser(*(usrPtr.data()), pwd.toStdString());
     } catch (const sdc::SDCException &e) {
         msg = e.what.c_str();
+        success = false;
     } catch (const Ice::Exception &e) {
-        // The message returned is not very meaningful, unfortunately.
         msg = e.what();
+        success = false;
     }
 
+out:
     emit registerCompleted(success, msg);
 }
 
@@ -76,53 +108,24 @@ void SessionManager::runTestConnection(const QString &serverName,
     QString msg = "";
 
     try {
-        // We only use ssl!
-        QString conn = QString("Authentication:ssl -h %1 -p %2")
-                       .arg(serverName).arg(sdc::port);
+        CommunicatorPtrWrapper commWrapper(serverName, serverCertPath, success, msg);
+        if (!success)
+            goto out;
 
-        // This communicator is only temporary, we will destroy it at the end.
-        Ice::CommunicatorPtr ic = makeCommunicator(serverCertPath);
-        Ice::ObjectPrx base = ic->stringToProxy(conn.toStdString());
-        sdc::AuthenticationIPrx auth = sdc::AuthenticationIPrx::checkedCast(base);
-
-        if (!auth) {
-            msg = "Invalid proxy";
+        if (commWrapper.auth->echo("istenszerete") != "istenszerete") {
             success = false;
-        } else {
-            success = (auth->echo("istenszerete") == "istenszerete");
-            if (!success) {
-                msg = "Server gave wrong answer";
-            }
+            msg = "Server gave wrong answer";
         }
-
-        ic->destroy();
-
     } catch (const sdc::SDCException &e) {
         msg = e.what.c_str();
+        success = false;
     } catch (const Ice::Exception &e) {
-        // The message returned is not very meaningful, unfortunately.
         msg = e.what();
+        success = false;
     }
 
+out:
     emit testConnectionCompleted (success, msg);
-}
-
-Ice::CommunicatorPtr SessionManager::makeCommunicator(const QString &serverCertPath)
-{
-    Ice::CommunicatorPtr ic;
-
-    /* Set up ice to initialize ssl plugin and set used cert file. */
-    Ice::PropertiesPtr props = Ice::createProperties();
-    props->setProperty("Ice.Plugin.IceSSL", "IceSSL:createIceSSL");
-    props->setProperty("IceSSL.CertAuthFile", serverCertPath.toStdString());
-    props->setProperty("Ice.Override.Timeout", "5000");
-
-    Ice::InitializationData id;
-    id.properties = props;
-
-    ic = Ice::initialize(id);
-
-    return ic;
 }
 
 /** the instance must be defined somewhere */
