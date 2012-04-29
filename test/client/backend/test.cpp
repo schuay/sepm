@@ -13,6 +13,19 @@ using namespace sdcc;
 
 QTEST_MAIN(ClientBackendTests)
 
+/**
+ * Checks every 50 ms if spy has received a result, and returns if it did.
+ * Otherwise, it aborts after 10 seconds.
+ */
+static void waitForResult(const QSignalSpy &spy)
+{
+    for (int i = 0; i < 200; i++) {
+        QTest::qWait(50);
+        if (spy.count() > 0)
+            break;
+    }
+}
+
 void ClientBackendTests::testTestConnection()
 {
     SessionManager *sessionManager = SessionManager::getInstance();
@@ -23,13 +36,7 @@ void ClientBackendTests::testTestConnection()
 
     sessionManager->testConnection("selinux.inso.tuwien.ac.at", "ca.crt");
 
-    /* We need to actually wait for the signal to be emitted.
-       Googling turns up Q_TRY_VERIFY, but it seems that this is only
-       included in Qt5. Alternatively, just wait for some random amount (250ms).
-     */
-
-    /* Wait for result. */
-    QTest::qWait(250);
+    waitForResult(spy);
 
     QCOMPARE(spy.count(), 1);
     QList<QVariant> arguments = spy.takeFirst();
@@ -86,7 +93,7 @@ void ClientBackendTests::testRegisterUserNew()
     sessionManager->registerUser("selinux.inso.tuwien.ac.at", "ca.crt", u,
                                  "password");
 
-    QTest::qWait(1000);
+    waitForResult(spy);
 
     QCOMPARE(spy.count(), 1);
     QList<QVariant> arguments = spy.takeFirst();
@@ -105,7 +112,7 @@ void ClientBackendTests::testRegisterUserAgain()
     sessionManager->registerUser("selinux.inso.tuwien.ac.at", "ca.crt", u,
                                  "password");
 
-    QTest::qWait(1000);
+    waitForResult(spy);
 
     QCOMPARE(spy.count(), 1);
     QList<QVariant> arguments = spy.takeFirst();
