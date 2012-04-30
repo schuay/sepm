@@ -13,11 +13,19 @@ namespace sdcc
 class CommunicatorPtrWrapper
 {
 public:
+    enum Option {
+        NoOptions = 0x00,
+        DontVerifyPeer = 1 << 1,
+        DontDestroyComm = 1 << 2
+    };
+    Q_DECLARE_FLAGS(Options, Option)
+
     CommunicatorPtrWrapper(const QString &serverName,
                            const QString &serverCertPath,
-                           bool &success, QString &msg) {
+                           Options options, bool &success, QString &msg) {
         msg = "";
         success = true;
+        opts = options;
 
         QString conn = QString("Authentication:ssl -h %1 -p %2")
                        .arg(serverName).arg(sdc::port);
@@ -25,8 +33,12 @@ public:
         /* Set up ice to initialize ssl plugin and set used cert file. */
         Ice::PropertiesPtr props = Ice::createProperties();
         props->setProperty("Ice.Plugin.IceSSL", "IceSSL:createIceSSL");
-        props->setProperty("IceSSL.CertAuthFile", serverCertPath.toStdString());
         props->setProperty("Ice.Override.Timeout", "5000");
+
+        if (opts & DontVerifyPeer)
+            props->setProperty("IceSSL.VerifyPeer", "0");
+        else
+            props->setProperty("IceSSL.CertAuthFile", serverCertPath.toStdString());
 
         Ice::InitializationData id;
         id.properties = props;
@@ -42,12 +54,18 @@ public:
     }
 
     ~CommunicatorPtrWrapper() {
-        communicator->destroy();
+        if (!(opts & DontDestroyComm))
+            communicator->destroy();
     }
 
     Ice::CommunicatorPtr communicator;
     sdc::AuthenticationIPrx auth;
+
+private:
+    Options opts;
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS(CommunicatorPtrWrapper::Options)
 
 /**
  * Needed to make this public unfortunately, save someone tells me
@@ -75,7 +93,9 @@ void SessionManager::runRegisterUser(const QString &serverName,
     QString msg;
 
     try {
-        CommunicatorPtrWrapper commWrapper(serverName, serverCertPath, success, msg);
+        CommunicatorPtrWrapper commWrapper(serverName, serverCertPath,
+                                           CommunicatorPtrWrapper::NoOptions,
+                                           success, msg);
         if (!success)
             goto out;
 
@@ -93,22 +113,21 @@ out:
     emit registerCompleted(success, msg);
 }
 
-void SessionManager::testConnection (const QString &serverName,
-                                     const QString &serverCertPath)
+void SessionManager::testConnection (const QString &serverName)
 {
-
     QtConcurrent::run(&instance, &SessionManager::runTestConnection,
-                      serverName, serverCertPath);
+                      serverName);
 }
 
-void SessionManager::runTestConnection(const QString &serverName,
-                                       const QString &serverCertPath)
+void SessionManager::runTestConnection(const QString &serverName)
 {
     bool success = false;
     QString msg = "";
 
     try {
-        CommunicatorPtrWrapper commWrapper(serverName, serverCertPath, success, msg);
+        CommunicatorPtrWrapper commWrapper(serverName, QString(),
+                                           CommunicatorPtrWrapper::DontVerifyPeer,
+                                           success, msg);
         if (!success)
             goto out;
 

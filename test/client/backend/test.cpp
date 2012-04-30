@@ -34,7 +34,7 @@ void ClientBackendTests::testTestConnection()
     QVERIFY(spy.isValid());
     QVERIFY(spy.isEmpty());
 
-    sessionManager->testConnection("selinux.inso.tuwien.ac.at", "ca.crt");
+    sessionManager->testConnection("selinux.inso.tuwien.ac.at");
 
     waitForResult(spy);
 

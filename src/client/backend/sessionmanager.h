@@ -54,10 +54,8 @@ public:
 
     /**
      * Calls echo on the server to check its availability.
-     * serverCertPath is the local path to the server's public key.
      */
-    static void testConnection(const QString &serverName,
-                               const QString &serverCertPath);
+    static void testConnection(const QString &serverName);
 
     /**
      * Login a user.
@@ -105,8 +103,7 @@ private:
     /**
      * Internal method for testConnection to hand over to QtConcurrent
      */
-    void runTestConnection(const QString &serverName,
-                           const QString &serverCertPath);
+    void runTestConnection(const QString &serverName);
 
     void runRegisterUser(const QString &serverName,
                          const QString &serverCertPath,
