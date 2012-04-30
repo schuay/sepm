@@ -18,7 +18,8 @@ public slots:
     Q_INVOKABLE QString fileDialog(const QString &name = QString(),
                                    const QString &dir = QString(),
                                    const QString &types = QString(CRT_FILTER));
-    void testServer(const QString &serverUri);
+    void serverTest(const QString& uri);
+    void serverTestCallback(bool success, const QString& message);
 };
 }
 

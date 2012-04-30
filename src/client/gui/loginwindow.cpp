@@ -1,10 +1,6 @@
 #include "loginwindow.h"
 #include "sessionmanager.h"
-#include <QFileDialog>
-#include <QDeclarativeContext>
-#include <QGraphicsItem>
-#include <QMetaObject>
-
+#include <QtDeclarative>
 namespace sdcc
 {
 LoginWindow::LoginWindow(QWidget *parent) :
@@ -14,17 +10,23 @@ LoginWindow::LoginWindow(QWidget *parent) :
     setResizeMode(QDeclarativeView::SizeRootObjectToView);
     rootContext()->setContextProperty("context", this);
     QObject * root = dynamic_cast<QObject*>(rootObject());
-    connect(root, SIGNAL(testServer(const QString&, const QString&)), SLOT(testServer(const QString&, const QString&)));
-    root->connect(SessionManager::getInstance(), SIGNAL(testConnectionCompleted(bool, const QString&)), SLOT(serverTestCallback(bool, QString&)));
+    connect(root, SIGNAL(serverTest(QString)), SLOT(serverTest(QString)));
+    connect(SessionManager::getInstance(), SIGNAL(testConnectionCompleted(bool,QString)), SLOT(serverTestCallback(bool,QString)));
 }
 
 QString LoginWindow::fileDialog(const QString &name, const QString &dir, const QString &types)
 {
     return QFileDialog::getOpenFileName(this, name, dir, types);
 }
-
-void LoginWindow::testServer(const QString &serverUri)
+void LoginWindow::serverTest(const QString & uri)
 {
-    SessionManager::testConnection(serverUri);
+    SessionManager::getInstance()->testConnection(uri);
+}
+void LoginWindow::serverTestCallback(bool success, const QString &message)
+{
+    QMetaObject::invokeMethod(rootObject(),
+                              "serverTestCallback",
+                              Q_ARG(QVariant, QVariant(success)),
+                              Q_ARG(QVariant, QVariant(message)));
 }
 }
