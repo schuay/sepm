@@ -2,6 +2,8 @@
 #define LOGINWINDOW_H
 
 #include <QDeclarativeView>
+
+#define CRT_FILTER tr("Certificate Files (*.pem *.crt);;Key Files(*.key);;All Files (*)")
 namespace sdcc
 {
 class LoginWindow : public QDeclarativeView
@@ -14,8 +16,9 @@ signals:
 
 public slots:
     Q_INVOKABLE QString fileDialog(const QString &name = QString(),
-                                   const QString &dir = QString());
-
+                                   const QString &dir = QString(),
+                                   const QString &types = QString(CRT_FILTER));
+    void testServer(const QString &serverUri, const QString &caFile);
 };
 }
 
