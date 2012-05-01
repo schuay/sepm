@@ -72,14 +72,15 @@ void LoginDialog::onRegisterUserClicked()
     if (ui->leServer->text().isEmpty()
             || ui->leUsername->text().isEmpty()
             || ui->lePublicKey->text().isEmpty()
-            || ui->leServerCert->text().isEmpty()) {
+            || ui->leServerCert->text().isEmpty()
+            || ui->lePassword->text().isEmpty()) {
         return;
     }
     User u(ui->leUsername->text(), ui->lePublicKey->text());
 
     ui->pbRegister->setEnabled(false);
     sdcc::SessionManager::registerUser(ui->leServer->text(), ui->leServerCert->text(),
-                                       u, "password");
+                                       u, ui->lePassword->text());
 }
 
 void LoginDialog::onRegisterUserCompleted(bool success, const QString &msg)
