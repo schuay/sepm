@@ -4,7 +4,6 @@
 #include <QSharedPointer>
 
 #include "SecureDistributedChat.h"
-
 #include "chat.h"
 #include "user.h"
 

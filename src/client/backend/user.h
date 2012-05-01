@@ -5,7 +5,7 @@
 #include <QSharedPointer>
 
 #include "SecureDistributedChat.h"
-#include <Security.h>
+#include "Security.h"
 
 namespace sdcc
 {

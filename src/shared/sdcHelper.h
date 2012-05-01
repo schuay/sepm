@@ -3,7 +3,7 @@
 
 #include <cstddef>
 
-#include "shared/SecureDistributedChat.h"
+#include "SecureDistributedChat.h"
 
 #include <QByteArray>
 

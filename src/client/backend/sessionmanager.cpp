@@ -1,7 +1,8 @@
 #include "sessionmanager.h"
 
 #include <QtConcurrentRun>
-#include <SecureDistributedChat.h>
+
+#include "SecureDistributedChat.h"
 #include "QsLog.h"
 
 namespace sdcc
