@@ -11,7 +11,7 @@ ByteSeq sdcHelper::bStringToByteSeq( const char* arr, long len )
     return vec;
 }
 
-QByteArray sdcHelper::byteSeqToByteArray( const sdc::ByteSeq& bytes )
+QByteArray sdcHelper::byteSeqToByteArray( const ByteSeq& bytes )
 {
     QByteArray arr;
     arr.resize( bytes.size() );
@@ -20,7 +20,7 @@ QByteArray sdcHelper::byteSeqToByteArray( const sdc::ByteSeq& bytes )
     return arr;
 }
 
-std::string sdcHelper::getBinaryString( const sdc::ByteSeq& bytes )
+std::string sdcHelper::getBinaryString( const ByteSeq& bytes )
 {
     std::string ret;
     std::vector<Ice::Byte>::const_iterator it;
