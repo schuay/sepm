@@ -61,11 +61,19 @@ void LoginDialog::onChoosePublicKeyClicked()
 
 void LoginDialog::onTestConnectionClicked()
 {
+    if (ui->leServer->text().isEmpty())
+        return;
     sdcc::SessionManager::testConnection(ui->leServer->text());
 }
 
 void LoginDialog::onRegisterUserClicked()
 {
+    if (ui->leServer->text().isEmpty()
+            || ui->leUsername->text().isEmpty()
+            || ui->lePublicKey->text().isEmpty()
+            || ui->leServerCert->text().isEmpty()) {
+        return;
+    }
     User u(ui->leUsername->text(), ui->lePublicKey->text());
     sdcc::SessionManager::registerUser(ui->leServer->text(), ui->leServerCert->text(),
                                        u, "password");
