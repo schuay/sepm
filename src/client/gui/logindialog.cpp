@@ -46,7 +46,7 @@ LoginDialog::LoginDialog(QWidget *parent) :
 
     progressBar = new QProgressBar(this);
     progressBar->setTextVisible(false);
-    statusBar()->addPermanentWidget(progressBar, 1);
+    statusBar()->addPermanentWidget(progressBar, 0);
 }
 
 void LoginDialog::onChooseServerCertClicked()
@@ -112,10 +112,13 @@ void LoginDialog::onRegisterUserCompleted(bool success, const QString &msg)
 {
     removeWorker();
     ui->pbRegister->setEnabled(true);
-    QMessageBox::information(this, "User registration completed",
-                             QString("User registration %1 %2")
-                             .arg(success ? "completed successfully." : "failed: ")
-                             .arg(msg));
+    if (success) {
+        statusBar()->showMessage("Success!", 5000);
+    } else {
+        QMessageBox::information(this, "User registration failed",
+                                 QString("User registration failed: %1")
+                                 .arg(msg));
+    }
 
 }
 
@@ -123,10 +126,13 @@ void LoginDialog::onTestConnectionCompleted(bool success, const QString &msg)
 {
     removeWorker();
     ui->pbTestConnection->setEnabled(true);
-    QMessageBox::information(this, "Connection test completed",
-                             QString("Connection test %1 %2")
-                             .arg(success ? "completed successfully." : "failed: ")
-                             .arg(msg));
+    if (success) {
+        statusBar()->showMessage("Success!", 5000);
+    } else {
+        QMessageBox::information(this, "Connection test failed",
+                                 QString("Connection test failed: %1")
+                                 .arg(msg));
+    }
 }
 
 LoginDialog::~LoginDialog()
