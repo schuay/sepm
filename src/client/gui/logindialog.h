@@ -46,7 +46,12 @@ private slots:
     void onChoosePublicKeyClicked();
 
 private:
+    void addWorker();
+    void removeWorker();
+
     Ui::LoginDialog *ui;
+
+    unsigned int busyWorkers;
 };
 
 #endif // LOGINDIALOG_H

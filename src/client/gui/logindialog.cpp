@@ -29,7 +29,7 @@ using namespace sdcc;
 
 LoginDialog::LoginDialog(QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::LoginDialog)
+    ui(new Ui::LoginDialog), busyWorkers(0)
 {
     ui->setupUi(this);
 
@@ -63,6 +63,8 @@ void LoginDialog::onTestConnectionClicked()
 {
     if (ui->leServer->text().isEmpty())
         return;
+
+    addWorker();
     ui->pbTestConnection->setEnabled(false);
     sdcc::SessionManager::testConnection(ui->leServer->text());
 }
@@ -76,15 +78,34 @@ void LoginDialog::onRegisterUserClicked()
             || ui->lePassword->text().isEmpty()) {
         return;
     }
+
     User u(ui->leUsername->text(), ui->lePublicKey->text());
 
+    addWorker();
     ui->pbRegister->setEnabled(false);
     sdcc::SessionManager::registerUser(ui->leServer->text(), ui->leServerCert->text(),
                                        u, ui->lePassword->text());
 }
 
+void LoginDialog::addWorker()
+{
+    if (busyWorkers == 0) {
+        /* Setting maximum to 0 switches bar to 'busy' mode. */
+        ui->progressBar->setMaximum(0);
+    }
+    busyWorkers++;
+}
+
+void LoginDialog::removeWorker()
+{
+    if (--busyWorkers == 0) {
+        ui->progressBar->setMaximum(100);
+    }
+}
+
 void LoginDialog::onRegisterUserCompleted(bool success, const QString &msg)
 {
+    removeWorker();
     ui->pbRegister->setEnabled(true);
     QMessageBox::information(this, "User registration completed",
                              QString("User registration %1 %2")
@@ -95,6 +116,7 @@ void LoginDialog::onRegisterUserCompleted(bool success, const QString &msg)
 
 void LoginDialog::onTestConnectionCompleted(bool success, const QString &msg)
 {
+    removeWorker();
     ui->pbTestConnection->setEnabled(true);
     QMessageBox::information(this, "Connection test completed",
                              QString("Connection test %1 %2")
