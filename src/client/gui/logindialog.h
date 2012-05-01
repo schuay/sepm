@@ -27,6 +27,8 @@ namespace Ui
 class LoginDialog;
 }
 
+class QProgressBar;
+
 class LoginDialog : public QMainWindow
 {
     Q_OBJECT
@@ -50,6 +52,7 @@ private:
     void removeWorker();
 
     Ui::LoginDialog *ui;
+    QProgressBar *progressBar;
 
     unsigned int busyWorkers;
 };

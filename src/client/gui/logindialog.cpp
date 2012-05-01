@@ -22,6 +22,7 @@
 
 #include <QMessageBox>
 #include <QFileDialog>
+#include <QProgressBar>
 
 #include "sessionmanager.h"
 
@@ -42,6 +43,10 @@ LoginDialog::LoginDialog(QWidget *parent) :
     connect(ui->pbServerCert, SIGNAL(clicked()), this, SLOT(onChooseServerCertClicked()));
     connect(ui->pbPublicKey, SIGNAL(clicked()), this, SLOT(onChoosePublicKeyClicked()));
     connect(ui->pbPrivateKey, SIGNAL(clicked()), this, SLOT(onChoosePrivateKeyClicked()));
+
+    progressBar = new QProgressBar(this);
+    progressBar->setTextVisible(false);
+    statusBar()->addPermanentWidget(progressBar, 1);
 }
 
 void LoginDialog::onChooseServerCertClicked()
@@ -91,7 +96,7 @@ void LoginDialog::addWorker()
 {
     if (busyWorkers == 0) {
         /* Setting maximum to 0 switches bar to 'busy' mode. */
-        ui->progressBar->setMaximum(0);
+        progressBar->setMaximum(0);
     }
     busyWorkers++;
 }
@@ -99,7 +104,7 @@ void LoginDialog::addWorker()
 void LoginDialog::removeWorker()
 {
     if (--busyWorkers == 0) {
-        ui->progressBar->setMaximum(100);
+        progressBar->setMaximum(100);
     }
 }
 
