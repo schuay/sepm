@@ -28,7 +28,7 @@
 using namespace sdcc;
 
 LoginDialog::LoginDialog(QWidget *parent) :
-    QDialog(parent),
+    QMainWindow(parent),
     ui(new Ui::LoginDialog), busyWorkers(0)
 {
     ui->setupUi(this);

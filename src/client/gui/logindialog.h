@@ -20,14 +20,14 @@
 #ifndef LOGINDIALOG_H
 #define LOGINDIALOG_H
 
-#include <QDialog>
+#include <QMainWindow>
 
 namespace Ui
 {
 class LoginDialog;
 }
 
-class LoginDialog : public QDialog
+class LoginDialog : public QMainWindow
 {
     Q_OBJECT
 
