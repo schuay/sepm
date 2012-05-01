@@ -63,6 +63,7 @@ void LoginDialog::onTestConnectionClicked()
 {
     if (ui->leServer->text().isEmpty())
         return;
+    ui->pbTestConnection->setEnabled(false);
     sdcc::SessionManager::testConnection(ui->leServer->text());
 }
 
@@ -75,12 +76,15 @@ void LoginDialog::onRegisterUserClicked()
         return;
     }
     User u(ui->leUsername->text(), ui->lePublicKey->text());
+
+    ui->pbRegister->setEnabled(false);
     sdcc::SessionManager::registerUser(ui->leServer->text(), ui->leServerCert->text(),
                                        u, "password");
 }
 
 void LoginDialog::onRegisterUserCompleted(bool success, const QString &msg)
 {
+    ui->pbRegister->setEnabled(true);
     QMessageBox::information(this, "User registration completed",
                              QString("User registration %1 %2")
                              .arg(success ? "completed successfully." : "failed: ")
@@ -90,6 +94,7 @@ void LoginDialog::onRegisterUserCompleted(bool success, const QString &msg)
 
 void LoginDialog::onTestConnectionCompleted(bool success, const QString &msg)
 {
+    ui->pbTestConnection->setEnabled(true);
     QMessageBox::information(this, "Connection test completed",
                              QString("Connection test %1 %2")
                              .arg(success ? "completed successfully." : "failed: ")
