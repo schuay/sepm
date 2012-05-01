@@ -33,7 +33,11 @@
             </widget>
            </item>
            <item>
-            <widget class="QLineEdit" name="leServer"/>
+            <widget class="QLineEdit" name="leServer">
+             <property name="text">
+              <string>selinux.inso.tuwien.ac.at</string>
+             </property>
+            </widget>
            </item>
            <item>
             <widget class="QLabel" name="label_2">
