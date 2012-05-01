@@ -2,6 +2,7 @@
 
 #include <QtConcurrentRun>
 #include <SecureDistributedChat.h>
+#include "QsLog.h"
 
 namespace sdcc
 {
@@ -81,6 +82,7 @@ void SessionManager::registerUser(const QString &serverName,
                                   const QString &serverCertPath,
                                   const User &usr, const QString &pwd)
 {
+    QLOG_TRACE() << "registerUser()";
     QtConcurrent::run(&instance, &SessionManager::runRegisterUser,
                       serverName, serverCertPath, usr, pwd);
 }
@@ -115,6 +117,7 @@ out:
 
 void SessionManager::testConnection (const QString &serverName)
 {
+    QLOG_TRACE() << "testConnection()";
     QtConcurrent::run(&instance, &SessionManager::runTestConnection,
                       serverName);
 }
