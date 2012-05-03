@@ -66,8 +66,11 @@ void LoginDialog::onChoosePublicKeyClicked()
 
 void LoginDialog::onTestConnectionClicked()
 {
-    if (ui->leServer->text().isEmpty())
+    if (ui->leServer->text().isEmpty()) {
+        QMessageBox::warning(this, "Missing arguments",
+                             "Please make sure the server field is filled in.");
         return;
+    }
 
     addWorker();
     ui->pbTestConnection->setEnabled(false);
@@ -81,9 +84,11 @@ void LoginDialog::onRegisterUserClicked()
             || ui->lePublicKey->text().isEmpty()
             || ui->leServerCert->text().isEmpty()
             || ui->lePassword->text().isEmpty()) {
+        QMessageBox::warning(this, "Missing arguments",
+                             QString("Please make sure the username, password, public key, "
+                                     "server and server certificate fields are filled in."));
         return;
     }
-
     User u(ui->leUsername->text(), ui->lePublicKey->text());
 
     addWorker();
