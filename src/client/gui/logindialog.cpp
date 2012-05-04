@@ -110,6 +110,7 @@ void LoginDialog::removeWorker()
 {
     if (--busyWorkers == 0) {
         progressBar->setMaximum(100);
+        progressBar->reset();
     }
 }
 
