@@ -28,6 +28,8 @@ class Session : public QObject
 
 public:
 
+    virtual ~Session();
+
     /**
      * Initialize a new chat with no other participants but the user the
      * session belongs to. New users can then be added using Chat.invite()

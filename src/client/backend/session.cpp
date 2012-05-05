@@ -39,8 +39,8 @@ public:
 };
 
 struct SessionPrivate {
-    SessionPrivate(Session *q, sdc::AuthenticationIPrx auth)
-        : clientCallback(new ChatClientCallback), authenticationProxy(auth), q_ptr(q) { }
+    SessionPrivate(Session *q, Ice::CommunicatorPtr c)
+        : clientCallback(new ChatClientCallback), communicator(c), q_ptr(q) { }
 
     void runLogout() {
         Q_Q(Session);
@@ -57,34 +57,45 @@ struct SessionPrivate {
         emit q->logoutCompleted(success, message);
     }
 
+    ~SessionPrivate() {
+        if (communicator) {
+            communicator->destroy();
+        }
+    }
+
     QList<QSharedPointer<User> > users;
-    QSharedPointer<ChatClientCallback> clientCallback;
-    sdc::AuthenticationIPrx authenticationProxy;
-    sdc::SessionIPrx session;
     QList<QSharedPointer<Chat> > chats;
 
+    /* Note that all Ice objects are destroyed automatically
+     * when communicator->destroy() is called. This includes
+     * the clientCallback, which is why we're not wrapping it in
+     * a smart pointer. */
+    ChatClientCallback *clientCallback;
+    Ice::CommunicatorPtr communicator;
+    sdc::SessionIPrx session;
+
+private:
     Session *q_ptr;
     Q_DECLARE_PUBLIC(Session)
 };
 
 Session::Session(const User &user, const QString &pwd, sdc::AuthenticationIPrx auth)
-    : d_ptr(new SessionPrivate(this, auth))
+    : d_ptr(new SessionPrivate(this, auth->ice_getCommunicator()))
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
     Q_D(Session);
 
     sdc::User sdcUser = *user.getIceUser().data();
 
-    Ice::CommunicatorPtr communicator = auth->ice_getCommunicator();
     Ice::ConnectionPtr connection = auth->ice_getConnection();
     Ice::ObjectAdapterPtr adapter = connection->getAdapter();
     Ice::Identity identity = { IceUtil::generateUUID(), "" };
 
     if (!adapter) {
-        adapter = communicator->createObjectAdapterWithEndpoints("ChatClientCallback", "default");
+        adapter = d->communicator->createObjectAdapterWithEndpoints("ChatClientCallback", "default");
     }
 
-    sdc::ChatClientCallbackIPtr callback(d->clientCallback.data());
+    sdc::ChatClientCallbackIPtr callback(d->clientCallback);
     adapter->add(callback, identity);
     adapter->activate();
     auth->ice_getConnection()->setAdapter(adapter);
@@ -100,6 +111,12 @@ void Session::logout()
     QLOG_TRACE() << __PRETTY_FUNCTION__;
     Q_D(Session);
     QtConcurrent::run(d, &SessionPrivate::runLogout);
+}
+
+Session::~Session()
+{
+    Q_D(Session);
+    delete d;
 }
 
 }
