@@ -1,4 +1,4 @@
-#include "test.h"
+#include "sessionmanagertest.h"
 
 #include <QtTest/QTest>
 #include <QtTest/QSignalSpy>
@@ -7,32 +7,20 @@
 
 #include "sessionmanager.h"
 #include "user.h"
-#include <Security.h>
+#include "Security.h"
+#include "common.h"
 
 using namespace sdcc;
 
-QTEST_MAIN(ClientBackendTests)
-
-/**
- * Checks every 50 ms if spy has received a result, and returns if it did.
- * Otherwise, it aborts after 10 seconds.
- */
-static void waitForResult(const QSignalSpy &spy, int count = 1)
-{
-    for (int i = 0; i < 200; i++) {
-        QTest::qWait(50);
-        if (spy.count() >= count)
-            break;
-    }
-}
+QTEST_MAIN(SessionManagerTests)
 
 Q_DECLARE_METATYPE(QSharedPointer<Session>)
-void ClientBackendTests::initTestCase()
+void SessionManagerTests::initTestCase()
 {
     qRegisterMetaType<QSharedPointer<Session> >("QSharedPointer<Session>");
 }
 
-void ClientBackendTests::testTestConnection()
+void SessionManagerTests::testTestConnection()
 {
     SessionManager *sessionManager = SessionManager::getInstance();
     QSignalSpy spy(sessionManager,
@@ -49,7 +37,7 @@ void ClientBackendTests::testTestConnection()
     QVERIFY2(arguments.at(0) == true, arguments.at(1).toString().toStdString().c_str());
 }
 
-void ClientBackendTests::testUserCtorNamePath()
+void SessionManagerTests::testUserCtorNamePath()
 {
     try {
         User u("user@example.com", "public.pem");
@@ -59,7 +47,7 @@ void ClientBackendTests::testUserCtorNamePath()
     }
 }
 
-void ClientBackendTests::testUserCtorSdcUser()
+void SessionManagerTests::testUserCtorSdcUser()
 {
     sdc::Security s;
     sdc::ByteSeq pubkey = s.readPubKey("public.pem");
@@ -69,7 +57,7 @@ void ClientBackendTests::testUserCtorSdcUser()
     QCOMPARE(u.getName(), QString("user@example.com"));
 }
 
-void ClientBackendTests::testUserGetIceUser()
+void SessionManagerTests::testUserGetIceUser()
 {
     sdc::Security s;
     sdc::ByteSeq pubkey = s.readPubKey("public.pem");
@@ -82,7 +70,7 @@ void ClientBackendTests::testUserGetIceUser()
     QCOMPARE(su1, *su2);
 }
 
-void ClientBackendTests::testRegisterUserNew()
+void SessionManagerTests::testRegisterUserNew()
 {
     SessionManager *sessionManager = SessionManager::getInstance();
     QSignalSpy spy(sessionManager,
@@ -106,7 +94,7 @@ void ClientBackendTests::testRegisterUserNew()
     QVERIFY2(arguments.at(0) == true, arguments.at(1).toString().toStdString().c_str());
 }
 
-void ClientBackendTests::testRegisterUserAgain()
+void SessionManagerTests::testRegisterUserAgain()
 {
     SessionManager *sessionManager = SessionManager::getInstance();
     QSignalSpy spy(sessionManager,
@@ -125,7 +113,7 @@ void ClientBackendTests::testRegisterUserAgain()
     QVERIFY(arguments.at(0) == false);
 }
 
-void ClientBackendTests::testLoginNonexistentUser()
+void SessionManagerTests::testLoginNonexistentUser()
 {
     SessionManager *sessionManager = SessionManager::getInstance();
     QSignalSpy spy(sessionManager,
@@ -144,7 +132,7 @@ void ClientBackendTests::testLoginNonexistentUser()
     QVERIFY(arguments.at(1) == false);
 }
 
-void ClientBackendTests::testLoginIncorrectCredentials()
+void SessionManagerTests::testLoginIncorrectCredentials()
 {
     SessionManager *sessionManager = SessionManager::getInstance();
     QSignalSpy spy(sessionManager,
@@ -163,7 +151,7 @@ void ClientBackendTests::testLoginIncorrectCredentials()
     QVERIFY(arguments.at(1) == false);
 }
 
-void ClientBackendTests::testLoginCorrectCredentials()
+void SessionManagerTests::testLoginCorrectCredentials()
 {
     SessionManager *sessionManager = SessionManager::getInstance();
     QSignalSpy spy(sessionManager,
@@ -182,7 +170,7 @@ void ClientBackendTests::testLoginCorrectCredentials()
     QVERIFY2(arguments.at(1) == true, arguments.at(2).toString().toStdString().c_str());
 }
 
-void ClientBackendTests::testLoginRepeated()
+void SessionManagerTests::testLoginRepeated()
 {
     SessionManager *sessionManager = SessionManager::getInstance();
     QSignalSpy spy(sessionManager,
@@ -203,38 +191,4 @@ void ClientBackendTests::testLoginRepeated()
     QVERIFY2(arguments.at(1) == true, arguments.at(2).toString().toStdString().c_str());
     arguments = spy.takeFirst();
     QVERIFY2(arguments.at(1) == true, arguments.at(2).toString().toStdString().c_str());
-}
-
-/* TODO: refactor into separate class with init() doing the session setup. */
-void ClientBackendTests::testLogout()
-{
-    SessionManager *sessionManager = SessionManager::getInstance();
-    QSignalSpy spy(sessionManager,
-                   SIGNAL(loginCompleted(QSharedPointer<Session>,bool,QString)));
-    QVERIFY(spy.isValid());
-    QVERIFY(spy.isEmpty());
-
-    User u("fefeb10c@selinux.inso.tuwien.ac.at", "public.pem");
-    sessionManager->login("selinux.inso.tuwien.ac.at", "ca.crt", u,
-                          "password");
-
-    waitForResult(spy);
-
-    QCOMPARE(spy.count(), 1);
-    QList<QVariant> arguments = spy.takeFirst();
-    QVERIFY2(arguments.at(1) == true, arguments.at(2).toString().toStdString().c_str());
-
-    QSharedPointer<Session> session = arguments.at(0).value<QSharedPointer<Session> >();
-    QSignalSpy sessionSpy(session.data(),
-                          SIGNAL(logoutCompleted(bool, QString)));
-
-    QVERIFY(sessionSpy.isValid());
-    QVERIFY(sessionSpy.isEmpty());
-
-    session->logout();
-    waitForResult(sessionSpy);
-
-    QCOMPARE(sessionSpy.count(), 1);
-    arguments = sessionSpy.takeFirst();
-    QVERIFY2(arguments.at(0) == true, arguments.at(1).toString().toStdString().c_str());
 }
