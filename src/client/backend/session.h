@@ -71,6 +71,9 @@ signals:
                                const QString &msg);
 
 private:
+    /* Prevent unintended construction of instances by user. */
+    Session();
+    Session(const Session &);
 
     QList<QSharedPointer<User> > users;
     QSharedPointer<ChatClientCallbackI> clientCallback;

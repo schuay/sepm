@@ -95,8 +95,9 @@ signals:
 
 
 private:
-
-    SessionManager() {}
+    /* Prevent unintended construction of instances by user. */
+    SessionManager() { }
+    SessionManager(const SessionManager &);
 
     static SessionManager instance;
 

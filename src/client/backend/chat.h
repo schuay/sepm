@@ -24,7 +24,6 @@ class Chat : public QObject
     Q_OBJECT
 
 public:
-    Chat(const Session &session, const QString &chatID);
 
     /**
      * Leave the chat. After leaveChatCompleted(), the object is invalid
@@ -75,6 +74,9 @@ signals:
     void sendCompleted(bool success, const QString &msg);
 
 private:
+    /* Prevent unintended construction of instances by user. */
+    Chat(const Session &session, const QString &chatID);
+    Chat(const Chat &);
 
     /**
      * All users in the chat.
