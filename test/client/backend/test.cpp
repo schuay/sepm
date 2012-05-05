@@ -204,3 +204,37 @@ void ClientBackendTests::testLoginRepeated()
     arguments = spy.takeFirst();
     QVERIFY2(arguments.at(1) == true, arguments.at(2).toString().toStdString().c_str());
 }
+
+/* TODO: refactor into separate class with init() doing the session setup. */
+void ClientBackendTests::testLogout()
+{
+    SessionManager *sessionManager = SessionManager::getInstance();
+    QSignalSpy spy(sessionManager,
+                   SIGNAL(loginCompleted(QSharedPointer<Session>,bool,QString)));
+    QVERIFY(spy.isValid());
+    QVERIFY(spy.isEmpty());
+
+    User u("fefeb10c@selinux.inso.tuwien.ac.at", "public.pem");
+    sessionManager->login("selinux.inso.tuwien.ac.at", "ca.crt", u,
+                          "password");
+
+    waitForResult(spy);
+
+    QCOMPARE(spy.count(), 1);
+    QList<QVariant> arguments = spy.takeFirst();
+    QVERIFY2(arguments.at(1) == true, arguments.at(2).toString().toStdString().c_str());
+
+    QSharedPointer<Session> session = arguments.at(0).value<QSharedPointer<Session> >();
+    QSignalSpy sessionSpy(session.data(),
+                          SIGNAL(logoutCompleted(bool, QString)));
+
+    QVERIFY(sessionSpy.isValid());
+    QVERIFY(sessionSpy.isEmpty());
+
+    session->logout();
+    waitForResult(sessionSpy);
+
+    QCOMPARE(sessionSpy.count(), 1);
+    arguments = sessionSpy.takeFirst();
+    QVERIFY2(arguments.at(0) == true, arguments.at(1).toString().toStdString().c_str());
+}

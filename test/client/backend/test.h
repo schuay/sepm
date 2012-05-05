@@ -21,4 +21,12 @@ private slots:
     void testLoginIncorrectCredentials();
     void testLoginCorrectCredentials();
     void testLoginRepeated();
+    void testLogout();
+
+    /* This test is commented intentionally to show that this
+     * behavior should actually be implemented. Currently, a repeated
+     * logout just leaves the caller hanging without a reply.
+     *
+     * void testLogoutRepeated();
+     */
 };
