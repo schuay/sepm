@@ -79,3 +79,17 @@ void SessionTests::testDeleteUser()
     QList<QVariant> arguments = spy.takeFirst();
     QVERIFY2(arguments.at(0) == true, arguments.at(1).toString().toStdString().c_str());
 }
+
+void SessionTests::testDeleteUserUnauthorized()
+{
+    QSignalSpy spy(session.data(), SIGNAL(deleteUserCompleted(bool, QString)));
+    QVERIFY(spy.isValid());
+    QVERIFY(spy.isEmpty());
+
+    session->deleteUser(User("fefeb10c@selinux.inso.tuwien.ac.at", WORKING_DIR "public.pem"));
+    waitForResult(spy);
+
+    QCOMPARE(spy.count(), 1);
+    QList<QVariant> arguments = spy.takeFirst();
+    QVERIFY(arguments.at(0) == false);
+}
