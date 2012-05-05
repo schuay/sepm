@@ -91,7 +91,7 @@ void SessionManager::runLogin(const QString &serverName, const QString &serverCe
 {
     bool success;
     QString msg;
-    Session *session;
+    Session *session = NULL;
 
     try {
         CommunicatorPtrWrapper commWrapper(serverName, serverCertPath,
@@ -104,9 +104,17 @@ void SessionManager::runLogin(const QString &serverName, const QString &serverCe
     } catch (const sdc::SDCException &e) {
         msg = e.what.c_str();
         success = false;
+        if (session) {
+            delete session;
+            session = NULL;
+        }
     } catch (const Ice::Exception &e) {
         msg = e.what();
         success = false;
+        if (session) {
+            delete session;
+            session = NULL;
+        }
     }
 
 out:
