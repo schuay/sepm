@@ -18,9 +18,7 @@ namespace sdcc
 class User
 {
 public:
-
-    User(const QString &name, const QString &certificatePath)
-    throw (sdc::SecurityException);
+    User(const QString &name, const QString &certificatePath) throw (sdc::SecurityException);
     User(const sdc::User &user);
 
     const QString &getName() const;
