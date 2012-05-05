@@ -70,12 +70,17 @@ void LoginDialog::onRegisterUserClicked()
                                      "server and server certificate fields are filled in."));
         return;
     }
-    User u(ui->leUsername->text(), ui->lePublicKey->text());
 
-    addWorker();
-    ui->pbRegister->setEnabled(false);
-    sdcc::SessionManager::registerUser(ui->leServer->text(), ui->leServerCert->text(),
-                                       u, ui->lePassword->text());
+    try {
+        User u(ui->leUsername->text(), ui->lePublicKey->text());
+
+        addWorker();
+        ui->pbRegister->setEnabled(false);
+        sdcc::SessionManager::registerUser(ui->leServer->text(), ui->leServerCert->text(),
+                                           u, ui->lePassword->text());
+    } catch (const sdc::SecurityException &e) {
+        QMessageBox::warning(this, "Error", e.what());
+    }
 }
 
 void LoginDialog::addWorker()
