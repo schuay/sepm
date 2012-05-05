@@ -56,9 +56,13 @@ Session::Session(const User &user, const QString &pwd, sdc::AuthenticationIPrx a
     sdc::User sdcUser = *user.getIceUser().data();
 
     Ice::CommunicatorPtr communicator = auth->ice_getCommunicator();
-    Ice::ObjectAdapterPtr adapter = communicator
-                                    ->createObjectAdapterWithEndpoints("ChatClientCallback", "default");
+    Ice::ConnectionPtr connection = auth->ice_getConnection();
+    Ice::ObjectAdapterPtr adapter = connection->getAdapter();
     Ice::Identity identity = { IceUtil::generateUUID(), "" };
+
+    if (!adapter) {
+        adapter = communicator->createObjectAdapterWithEndpoints("ChatClientCallback", "default");
+    }
 
     sdc::ChatClientCallbackIPtr callback(d->clientCallback.data());
     adapter->add(callback, identity);
