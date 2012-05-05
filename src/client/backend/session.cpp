@@ -13,26 +13,26 @@ class ChatClientCallback : public sdc::ChatClientCallbackI
 public:
     void initChat(const sdc::StringSeq& /*users*/, const std::string& /*chatID*/,
                   const sdc::ByteSeq& /*key*/, const Ice::Current &) {
-        QLOG_TRACE() << "ChatClientCallback::initChat()";
+        QLOG_TRACE() << __PRETTY_FUNCTION__;
     }
 
     void addChatParticipant(const sdc::User& /*participant*/,
                             const ::std::string& /*chatID*/, const Ice::Current &) {
-        QLOG_TRACE() << "ChatClientCallback::addChatParticipant()";
+        QLOG_TRACE() << __PRETTY_FUNCTION__;
     }
 
     void removeChatParticipant(const sdc::User& /*participant*/,
                                const ::std::string& /*chatID*/, const Ice::Current &) {
-        QLOG_TRACE() << "ChatClientCallback::removeChatParticipant()";
+        QLOG_TRACE() << __PRETTY_FUNCTION__;
     }
 
     void appendMessageToChat(const sdc::ByteSeq& /*message*/, const ::std::string& /*chatID*/,
                              const sdc::User& /*participant*/, const Ice::Current &) {
-        QLOG_TRACE() << "ChatClientCallback::appendMessageToChat()";
+        QLOG_TRACE() << __PRETTY_FUNCTION__;
     }
 
     std::string echo(const ::std::string& message, const Ice::Current &) {
-        QLOG_TRACE() << "ChatClientCallback::echo()";
+        QLOG_TRACE() << __PRETTY_FUNCTION__;
         return message;
     }
 };
@@ -51,6 +51,7 @@ struct SessionPrivate {
 Session::Session(const User &user, const QString &pwd, sdc::AuthenticationIPrx auth)
     : d_ptr(new SessionPrivate(auth))
 {
+    QLOG_TRACE() << __PRETTY_FUNCTION__;
     Q_D(Session);
 
     sdc::User sdcUser = *user.getIceUser().data();

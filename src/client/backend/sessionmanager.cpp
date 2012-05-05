@@ -81,7 +81,7 @@ SessionManager *SessionManager::getInstance()
 void SessionManager::login(const QString &serverName, const QString &serverCertPath,
                            const User &usr, const QString &pwd)
 {
-    QLOG_TRACE() << "login()";
+    QLOG_TRACE() << __PRETTY_FUNCTION__;
     QtConcurrent::run(&instance, &SessionManager::runLogin,
                       serverName, serverCertPath, usr, pwd);
 }
@@ -117,7 +117,7 @@ void SessionManager::registerUser(const QString &serverName,
                                   const QString &serverCertPath,
                                   const User &usr, const QString &pwd)
 {
-    QLOG_TRACE() << "registerUser()";
+    QLOG_TRACE() << __PRETTY_FUNCTION__;
     QtConcurrent::run(&instance, &SessionManager::runRegisterUser,
                       serverName, serverCertPath, usr, pwd);
 }
@@ -152,7 +152,7 @@ out:
 
 void SessionManager::testConnection (const QString &serverName)
 {
-    QLOG_TRACE() << "testConnection()";
+    QLOG_TRACE() << __PRETTY_FUNCTION__;
     QtConcurrent::run(&instance, &SessionManager::runTestConnection,
                       serverName);
 }
