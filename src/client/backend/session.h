@@ -11,7 +11,7 @@ namespace sdcc
 {
 
 class SessionManager;
-class ChatClientCallback;
+class SessionPrivate;
 
 /**
  * A session is the context of a user logged into a server.
@@ -78,11 +78,8 @@ private:
     Session(const User &user, const QString &pwd, sdc::AuthenticationIPrx auth);
     Session(const Session &);
 
-    QList<QSharedPointer<User> > users;
-    QSharedPointer<ChatClientCallback> clientCallback;
-    sdc::AuthenticationIPrx authenticationProxy;
-    sdc::SessionIPrx session;
-    QList<QSharedPointer<Chat> > chats;
+    SessionPrivate *d_ptr;
+    Q_DECLARE_PRIVATE(Session)
 };
 
 }

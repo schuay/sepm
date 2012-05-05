@@ -37,9 +37,22 @@ public:
     }
 };
 
+struct SessionPrivate {
+    SessionPrivate(sdc::AuthenticationIPrx auth)
+        : clientCallback(new ChatClientCallback), authenticationProxy(auth) { }
+
+    QList<QSharedPointer<User> > users;
+    QSharedPointer<ChatClientCallback> clientCallback;
+    sdc::AuthenticationIPrx authenticationProxy;
+    sdc::SessionIPrx session;
+    QList<QSharedPointer<Chat> > chats;
+};
+
 Session::Session(const User &user, const QString &pwd, sdc::AuthenticationIPrx auth)
-    : clientCallback(new ChatClientCallback), authenticationProxy(auth)
+    : d_ptr(new SessionPrivate(auth))
 {
+    Q_D(Session);
+
     sdc::User sdcUser = *user.getIceUser().data();
 
     Ice::CommunicatorPtr communicator = auth->ice_getCommunicator();
@@ -47,14 +60,14 @@ Session::Session(const User &user, const QString &pwd, sdc::AuthenticationIPrx a
                                     ->createObjectAdapterWithEndpoints("ChatClientCallback", "default");
     Ice::Identity identity = { IceUtil::generateUUID(), "" };
 
-    sdc::ChatClientCallbackIPtr callback(clientCallback.data());
+    sdc::ChatClientCallbackIPtr callback(d->clientCallback.data());
     adapter->add(callback, identity);
     adapter->activate();
     auth->ice_getConnection()->setAdapter(adapter);
 
-    session = auth->login(sdcUser, pwd.toStdString(), identity);
+    d->session = auth->login(sdcUser, pwd.toStdString(), identity);
 
-    if (!session)
+    if (!d->session)
         throw sdc::SDCException("Login failed");
 }
 
