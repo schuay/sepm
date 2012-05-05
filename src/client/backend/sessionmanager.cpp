@@ -73,7 +73,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS(CommunicatorPtrWrapper::Options)
  * Needed to make this public unfortunately, save someone tells me
  * how to connect a signal from an instance you don't have access to...
  */
-SessionManager *SessionManager::getInstance ()
+SessionManager *SessionManager::getInstance()
 {
     return &instance;
 }
