@@ -2,7 +2,14 @@ include_directories(
     ${CMAKE_BINARY_DIR}/src/shared/
     ${CMAKE_SOURCE_DIR}/src/shared/
     ${CMAKE_SOURCE_DIR}/src/client/backend
+    ${CMAKE_CURRENT_BINARY_DIR}
     ${QCA2_INCLUDE_DIR}
+)
+
+set(WORKING_DIR ${CMAKE_CURRENT_SOURCE_DIR})
+configure_file(
+    ${CMAKE_CURRENT_SOURCE_DIR}/common.h.in
+    ${CMAKE_CURRENT_BINARY_DIR}/common.h
 )
 
 set(sessionManagerTest_QTHEADERS
@@ -38,7 +45,6 @@ add_dependencies(sessionManagerTest
 
 add_test(NAME sessionManagerTest
     COMMAND sessionManagerTest
-    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/test/client/backend
 )
 
 set(sessionTest_QTHEADERS
@@ -74,5 +80,4 @@ add_dependencies(sessionTest
 
 add_test(NAME sessionTest
     COMMAND sessionTest
-    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/test/client/backend
 )

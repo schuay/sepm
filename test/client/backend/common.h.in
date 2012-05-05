@@ -1,6 +1,7 @@
 #include <QtTest/QTest>
 #include <QtTest/QSignalSpy>
 
+#define WORKING_DIR "@WORKING_DIR@/"
 #define TEMP_SESSION_USER "TEMP_SESSION_USER@selinux.inso.tuwien.ac.at"
 
 /**

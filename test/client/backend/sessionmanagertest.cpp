@@ -40,7 +40,7 @@ void SessionManagerTests::testTestConnection()
 void SessionManagerTests::testUserCtorNamePath()
 {
     try {
-        User u("user@example.com", "public.pem");
+        User u("user@example.com", WORKING_DIR "public.pem");
         QCOMPARE(u.getName(), QString("user@example.com"));
     } catch (sdc::SecurityException s) {
         QFAIL(s.what());
@@ -50,7 +50,7 @@ void SessionManagerTests::testUserCtorNamePath()
 void SessionManagerTests::testUserCtorSdcUser()
 {
     sdc::Security s;
-    sdc::ByteSeq pubkey = s.readPubKey("public.pem");
+    sdc::ByteSeq pubkey = s.readPubKey(WORKING_DIR "public.pem");
     sdc::User su = { "user@example.com", pubkey };
     User u(su);
 
@@ -60,7 +60,7 @@ void SessionManagerTests::testUserCtorSdcUser()
 void SessionManagerTests::testUserGetIceUser()
 {
     sdc::Security s;
-    sdc::ByteSeq pubkey = s.readPubKey("public.pem");
+    sdc::ByteSeq pubkey = s.readPubKey(WORKING_DIR "public.pem");
     sdc::User su1 = { "user@example.com", pubkey };
 
     User u(su1);
@@ -78,8 +78,8 @@ void SessionManagerTests::testRegisterUserNew()
     QVERIFY(spy.isValid());
     QVERIFY(spy.isEmpty());
 
-    User u(TEMP_SESSION_USER, "public.pem");
-    sessionManager->registerUser("selinux.inso.tuwien.ac.at", "ca.crt", u,
+    User u(TEMP_SESSION_USER, WORKING_DIR "public.pem");
+    sessionManager->registerUser("selinux.inso.tuwien.ac.at", WORKING_DIR "ca.crt", u,
                                  "password");
 
     waitForResult(spy);
@@ -102,8 +102,8 @@ void SessionManagerTests::testRegisterUserRandom()
                                          "hh:mm:ss.zzz").toAscii(),
                                      QCryptographicHash::Sha1).toHex());
     User u(QString("%1@selinux.inso.tuwien.ac.at").arg(randomName.left(10)),
-           "public.pem");
-    sessionManager->registerUser("selinux.inso.tuwien.ac.at", "ca.crt", u,
+           WORKING_DIR "public.pem");
+    sessionManager->registerUser("selinux.inso.tuwien.ac.at", WORKING_DIR "ca.crt", u,
                                  "password");
 
     waitForResult(spy);
@@ -121,8 +121,8 @@ void SessionManagerTests::testRegisterUserAgain()
     QVERIFY(spy.isValid());
     QVERIFY(spy.isEmpty());
 
-    User u("fefeb10c@selinux.inso.tuwien.ac.at", "public.pem");
-    sessionManager->registerUser("selinux.inso.tuwien.ac.at", "ca.crt", u,
+    User u("fefeb10c@selinux.inso.tuwien.ac.at", WORKING_DIR "public.pem");
+    sessionManager->registerUser("selinux.inso.tuwien.ac.at", WORKING_DIR "ca.crt", u,
                                  "password");
 
     waitForResult(spy);
@@ -140,8 +140,8 @@ void SessionManagerTests::testLoginNonexistentUser()
     QVERIFY(spy.isValid());
     QVERIFY(spy.isEmpty());
 
-    User u("thisuserbetternotexist@selinux.inso.tuwien.ac.at", "public.pem");
-    sessionManager->login("selinux.inso.tuwien.ac.at", "ca.crt", u,
+    User u("thisuserbetternotexist@selinux.inso.tuwien.ac.at", WORKING_DIR "public.pem");
+    sessionManager->login("selinux.inso.tuwien.ac.at", WORKING_DIR "ca.crt", u,
                           "password");
 
     waitForResult(spy);
@@ -159,8 +159,8 @@ void SessionManagerTests::testLoginIncorrectCredentials()
     QVERIFY(spy.isValid());
     QVERIFY(spy.isEmpty());
 
-    User u("fefeb10c@selinux.inso.tuwien.ac.at", "public.pem");
-    sessionManager->login("selinux.inso.tuwien.ac.at", "ca.crt", u,
+    User u("fefeb10c@selinux.inso.tuwien.ac.at", WORKING_DIR "public.pem");
+    sessionManager->login("selinux.inso.tuwien.ac.at", WORKING_DIR "ca.crt", u,
                           "wrongpassword");
 
     waitForResult(spy);
@@ -178,8 +178,8 @@ void SessionManagerTests::testLoginCorrectCredentials()
     QVERIFY(spy.isValid());
     QVERIFY(spy.isEmpty());
 
-    User u("fefeb10c@selinux.inso.tuwien.ac.at", "public.pem");
-    sessionManager->login("selinux.inso.tuwien.ac.at", "ca.crt", u,
+    User u("fefeb10c@selinux.inso.tuwien.ac.at", WORKING_DIR "public.pem");
+    sessionManager->login("selinux.inso.tuwien.ac.at", WORKING_DIR "ca.crt", u,
                           "password");
 
     waitForResult(spy);
@@ -197,10 +197,10 @@ void SessionManagerTests::testLoginRepeated()
     QVERIFY(spy.isValid());
     QVERIFY(spy.isEmpty());
 
-    User u("fefeb10c@selinux.inso.tuwien.ac.at", "public.pem");
-    sessionManager->login("selinux.inso.tuwien.ac.at", "ca.crt", u,
+    User u("fefeb10c@selinux.inso.tuwien.ac.at", WORKING_DIR "public.pem");
+    sessionManager->login("selinux.inso.tuwien.ac.at", WORKING_DIR "ca.crt", u,
                           "password");
-    sessionManager->login("selinux.inso.tuwien.ac.at", "ca.crt", u,
+    sessionManager->login("selinux.inso.tuwien.ac.at", WORKING_DIR "ca.crt", u,
                           "password");
 
     waitForResult(spy, 2);

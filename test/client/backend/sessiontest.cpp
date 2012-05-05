@@ -26,8 +26,8 @@ void SessionTests::init()
     QVERIFY(spy.isValid());
     QVERIFY(spy.isEmpty());
 
-    User u(TEMP_SESSION_USER, "public.pem");
-    sessionManager->login("selinux.inso.tuwien.ac.at", "ca.crt", u,
+    User u(TEMP_SESSION_USER, WORKING_DIR "public.pem");
+    sessionManager->login("selinux.inso.tuwien.ac.at", WORKING_DIR "ca.crt", u,
                           "password");
 
     waitForResult(spy);
@@ -58,7 +58,7 @@ void SessionTests::testDeleteUserNonexistent()
     QVERIFY(spy.isValid());
     QVERIFY(spy.isEmpty());
 
-    session->deleteUser(User("thisuserbetternotexist@selinux.inso.tuwien.ac.at", "public.pem"));
+    session->deleteUser(User("thisuserbetternotexist@selinux.inso.tuwien.ac.at", WORKING_DIR "public.pem"));
     waitForResult(spy);
 
     QCOMPARE(spy.count(), 1);
@@ -72,7 +72,7 @@ void SessionTests::testDeleteUser()
     QVERIFY(spy.isValid());
     QVERIFY(spy.isEmpty());
 
-    session->deleteUser(User(TEMP_SESSION_USER, "public.pem"));
+    session->deleteUser(User(TEMP_SESSION_USER, WORKING_DIR "public.pem"));
     waitForResult(spy);
 
     QCOMPARE(spy.count(), 1);
