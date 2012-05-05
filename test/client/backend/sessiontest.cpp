@@ -26,12 +26,11 @@ void SessionTests::init()
     QVERIFY(spy.isValid());
     QVERIFY(spy.isEmpty());
 
-    User u("fefeb10c@selinux.inso.tuwien.ac.at", "public.pem");
+    User u(TEMP_SESSION_USER, "public.pem");
     sessionManager->login("selinux.inso.tuwien.ac.at", "ca.crt", u,
                           "password");
 
     waitForResult(spy);
-
     QCOMPARE(spy.count(), 1);
     QList<QVariant> arguments = spy.takeFirst();
     QVERIFY2(arguments.at(1) == true, arguments.at(2).toString().toStdString().c_str());
@@ -46,6 +45,34 @@ void SessionTests::testLogout()
     QVERIFY(spy.isEmpty());
 
     session->logout();
+    waitForResult(spy);
+
+    QCOMPARE(spy.count(), 1);
+    QList<QVariant> arguments = spy.takeFirst();
+    QVERIFY2(arguments.at(0) == true, arguments.at(1).toString().toStdString().c_str());
+}
+
+void SessionTests::testDeleteUserNonexistent()
+{
+    QSignalSpy spy(session.data(), SIGNAL(deleteUserCompleted(bool, QString)));
+    QVERIFY(spy.isValid());
+    QVERIFY(spy.isEmpty());
+
+    session->deleteUser(User("thisuserbetternotexist@selinux.inso.tuwien.ac.at", "public.pem"));
+    waitForResult(spy);
+
+    QCOMPARE(spy.count(), 1);
+    QList<QVariant> arguments = spy.takeFirst();
+    QVERIFY2(arguments.at(0) == false, arguments.at(1).toString().toStdString().c_str());
+}
+
+void SessionTests::testDeleteUser()
+{
+    QSignalSpy spy(session.data(), SIGNAL(deleteUserCompleted(bool, QString)));
+    QVERIFY(spy.isValid());
+    QVERIFY(spy.isEmpty());
+
+    session->deleteUser(User(TEMP_SESSION_USER, "public.pem"));
     waitForResult(spy);
 
     QCOMPARE(spy.count(), 1);

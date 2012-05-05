@@ -57,6 +57,21 @@ struct SessionPrivate {
         emit q->logoutCompleted(success, message);
     }
 
+    void runDeleteUser(const User &user) {
+        Q_Q(Session);
+        bool success = true;
+        QString message;
+
+        try {
+            session->deleteUser(*user.getIceUser().data());
+        } catch (const sdc::UserHandlingException &e) {
+            success = false;
+            message = e.what.c_str();
+        }
+
+        emit q->deleteUserCompleted(success, message);
+    }
+
     ~SessionPrivate() {
         if (communicator) {
             communicator->destroy();
@@ -111,6 +126,13 @@ void Session::logout()
     QLOG_TRACE() << __PRETTY_FUNCTION__;
     Q_D(Session);
     QtConcurrent::run(d, &SessionPrivate::runLogout);
+}
+
+void Session::deleteUser(const User &user)
+{
+    QLOG_TRACE() << __PRETTY_FUNCTION__;
+    Q_D(Session);
+    QtConcurrent::run(d, &SessionPrivate::runDeleteUser, user);
 }
 
 Session::~Session()

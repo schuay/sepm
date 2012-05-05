@@ -78,6 +78,25 @@ void SessionManagerTests::testRegisterUserNew()
     QVERIFY(spy.isValid());
     QVERIFY(spy.isEmpty());
 
+    User u(TEMP_SESSION_USER, "public.pem");
+    sessionManager->registerUser("selinux.inso.tuwien.ac.at", "ca.crt", u,
+                                 "password");
+
+    waitForResult(spy);
+
+    QCOMPARE(spy.count(), 1);
+    QList<QVariant> arguments = spy.takeFirst();
+    QVERIFY2(arguments.at(0) == true, arguments.at(1).toString().toStdString().c_str());
+}
+
+void SessionManagerTests::testRegisterUserRandom()
+{
+    SessionManager *sessionManager = SessionManager::getInstance();
+    QSignalSpy spy(sessionManager,
+                   SIGNAL(registerCompleted(bool, const QString &)));
+    QVERIFY(spy.isValid());
+    QVERIFY(spy.isEmpty());
+
     QString randomName = QString(QCryptographicHash::hash(
                                      QTime::currentTime().toString(
                                          "hh:mm:ss.zzz").toAscii(),

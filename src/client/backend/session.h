@@ -51,6 +51,11 @@ public:
      */
     void retrieveUser(const QString &username);
 
+    /**
+     * Delete the given user from the server.
+     */
+    void deleteUser(const User &user);
+
 signals:
 
     /**
@@ -74,6 +79,11 @@ signals:
      */
     void retrieveUserCompleted(const User &user, bool success,
                                const QString &msg);
+
+    /**
+     * A user has been deleted from the server.
+     */
+    void deleteUserCompleted(bool success, const QString &msg);
 
 private:
     /* Prevent unintended construction of instances by user. */

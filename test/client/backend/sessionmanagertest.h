@@ -11,6 +11,7 @@ private slots:
     void testUserCtorSdcUser();
     void testUserGetIceUser();
     void testRegisterUserNew();
+    void testRegisterUserRandom();
     void testRegisterUserAgain();
     void testLoginNonexistentUser();
     void testLoginIncorrectCredentials();
