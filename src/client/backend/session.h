@@ -10,8 +10,8 @@
 namespace sdcc
 {
 
-using IceProxy::sdc::ChatClientCallbackI;
-using IceProxy::sdc::SessionI;
+class SessionManager;
+class ChatClientCallback;
 
 /**
  * A session is the context of a user logged into a server.
@@ -22,6 +22,9 @@ using IceProxy::sdc::SessionI;
 class Session : public QObject
 {
     Q_OBJECT
+
+    /* Allow SessionManager to call the private constructor. */
+    friend class SessionManager;
 
 public:
 
@@ -72,12 +75,13 @@ signals:
 
 private:
     /* Prevent unintended construction of instances by user. */
-    Session();
+    Session(const User &user, const QString &pwd, sdc::AuthenticationIPrx auth);
     Session(const Session &);
 
     QList<QSharedPointer<User> > users;
-    QSharedPointer<ChatClientCallbackI> clientCallback;
-    QSharedPointer<SessionI> session;
+    QSharedPointer<ChatClientCallback> clientCallback;
+    sdc::AuthenticationIPrx authenticationProxy;
+    sdc::SessionIPrx session;
     QList<QSharedPointer<Chat> > chats;
 };
 

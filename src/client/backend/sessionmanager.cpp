@@ -78,6 +78,40 @@ SessionManager *SessionManager::getInstance()
     return &instance;
 }
 
+void SessionManager::login(const QString &serverName, const QString &serverCertPath,
+                           const User &usr, const QString &pwd)
+{
+    QLOG_TRACE() << "login()";
+    QtConcurrent::run(&instance, &SessionManager::runLogin,
+                      serverName, serverCertPath, usr, pwd);
+}
+
+void SessionManager::runLogin(const QString &serverName, const QString &serverCertPath,
+                              const User &usr, const QString &pwd)
+{
+    bool success;
+    QString msg;
+    Session *session;
+
+    try {
+        CommunicatorPtrWrapper commWrapper(serverName, serverCertPath,
+                                           CommunicatorPtrWrapper::DontDestroyComm,
+                                           success, msg);
+        if (!success)
+            goto out;
+
+        session = new Session(usr, pwd, commWrapper.auth);
+    } catch (const sdc::SDCException &e) {
+        msg = e.what.c_str();
+        success = false;
+    } catch (const Ice::Exception &e) {
+        msg = e.what();
+        success = false;
+    }
+
+out:
+    emit loginCompleted(QSharedPointer<Session>(session), success, msg);
+}
 
 void SessionManager::registerUser(const QString &serverName,
                                   const QString &serverCertPath,

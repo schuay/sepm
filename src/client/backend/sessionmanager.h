@@ -105,7 +105,8 @@ private:
      * Internal method for testConnection to hand over to QtConcurrent
      */
     void runTestConnection(const QString &serverName);
-
+    void runLogin(const QString &serverName, const QString &serverCertPath,
+                  const User &usr, const QString &pwd);
     void runRegisterUser(const QString &serverName,
                          const QString &serverCertPath,
                          const User &usr, const QString &pwd);
