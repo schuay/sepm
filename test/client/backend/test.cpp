@@ -17,13 +17,19 @@ QTEST_MAIN(ClientBackendTests)
  * Checks every 50 ms if spy has received a result, and returns if it did.
  * Otherwise, it aborts after 10 seconds.
  */
-static void waitForResult(const QSignalSpy &spy)
+static void waitForResult(const QSignalSpy &spy, int count = 1)
 {
     for (int i = 0; i < 200; i++) {
         QTest::qWait(50);
-        if (spy.count() > 0)
+        if (spy.count() >= count)
             break;
     }
+}
+
+Q_DECLARE_METATYPE(QSharedPointer<Session>)
+void ClientBackendTests::initTestCase()
+{
+    qRegisterMetaType<QSharedPointer<Session> >("QSharedPointer<Session>");
 }
 
 void ClientBackendTests::testTestConnection()
@@ -117,4 +123,84 @@ void ClientBackendTests::testRegisterUserAgain()
     QCOMPARE(spy.count(), 1);
     QList<QVariant> arguments = spy.takeFirst();
     QVERIFY(arguments.at(0) == false);
+}
+
+void ClientBackendTests::testLoginNonexistentUser()
+{
+    SessionManager *sessionManager = SessionManager::getInstance();
+    QSignalSpy spy(sessionManager,
+                   SIGNAL(loginCompleted(QSharedPointer<Session>,bool,QString)));
+    QVERIFY(spy.isValid());
+    QVERIFY(spy.isEmpty());
+
+    User u("thisuserbetternotexist@selinux.inso.tuwien.ac.at", "public.pem");
+    sessionManager->login("selinux.inso.tuwien.ac.at", "ca.crt", u,
+                          "password");
+
+    waitForResult(spy);
+
+    QCOMPARE(spy.count(), 1);
+    QList<QVariant> arguments = spy.takeFirst();
+    QVERIFY(arguments.at(1) == false);
+}
+
+void ClientBackendTests::testLoginIncorrectCredentials()
+{
+    SessionManager *sessionManager = SessionManager::getInstance();
+    QSignalSpy spy(sessionManager,
+                   SIGNAL(loginCompleted(QSharedPointer<Session>,bool,QString)));
+    QVERIFY(spy.isValid());
+    QVERIFY(spy.isEmpty());
+
+    User u("fefeb10c@selinux.inso.tuwien.ac.at", "public.pem");
+    sessionManager->login("selinux.inso.tuwien.ac.at", "ca.crt", u,
+                          "wrongpassword");
+
+    waitForResult(spy);
+
+    QCOMPARE(spy.count(), 1);
+    QList<QVariant> arguments = spy.takeFirst();
+    QVERIFY(arguments.at(1) == false);
+}
+
+void ClientBackendTests::testLoginCorrectCredentials()
+{
+    SessionManager *sessionManager = SessionManager::getInstance();
+    QSignalSpy spy(sessionManager,
+                   SIGNAL(loginCompleted(QSharedPointer<Session>,bool,QString)));
+    QVERIFY(spy.isValid());
+    QVERIFY(spy.isEmpty());
+
+    User u("fefeb10c@selinux.inso.tuwien.ac.at", "public.pem");
+    sessionManager->login("selinux.inso.tuwien.ac.at", "ca.crt", u,
+                          "password");
+
+    waitForResult(spy);
+
+    QCOMPARE(spy.count(), 1);
+    QList<QVariant> arguments = spy.takeFirst();
+    QVERIFY2(arguments.at(1) == true, arguments.at(2).toString().toStdString().c_str());
+}
+
+void ClientBackendTests::testLoginRepeated()
+{
+    SessionManager *sessionManager = SessionManager::getInstance();
+    QSignalSpy spy(sessionManager,
+                   SIGNAL(loginCompleted(QSharedPointer<Session>,bool,QString)));
+    QVERIFY(spy.isValid());
+    QVERIFY(spy.isEmpty());
+
+    User u("fefeb10c@selinux.inso.tuwien.ac.at", "public.pem");
+    sessionManager->login("selinux.inso.tuwien.ac.at", "ca.crt", u,
+                          "password");
+    sessionManager->login("selinux.inso.tuwien.ac.at", "ca.crt", u,
+                          "password");
+
+    waitForResult(spy, 2);
+
+    QCOMPARE(spy.count(), 2);
+    QList<QVariant> arguments = spy.takeFirst();
+    QVERIFY2(arguments.at(1) == true, arguments.at(2).toString().toStdString().c_str());
+    arguments = spy.takeFirst();
+    QVERIFY2(arguments.at(1) == true, arguments.at(2).toString().toStdString().c_str());
 }
