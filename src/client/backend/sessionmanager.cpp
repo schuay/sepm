@@ -91,7 +91,7 @@ void SessionManager::runLogin(const QString &serverName, const QString &serverCe
 {
     bool success;
     QString msg;
-    Session *session = NULL;
+    QSharedPointer<Session> session;
 
     try {
         CommunicatorPtrWrapper commWrapper(serverName, serverCertPath,
@@ -100,25 +100,17 @@ void SessionManager::runLogin(const QString &serverName, const QString &serverCe
         if (!success)
             goto out;
 
-        session = new Session(usr, pwd, commWrapper.auth);
+        session = QSharedPointer<Session>(new Session(usr, pwd, commWrapper.auth));
     } catch (const sdc::SDCException &e) {
         msg = e.what.c_str();
         success = false;
-        if (session) {
-            delete session;
-            session = NULL;
-        }
     } catch (const Ice::Exception &e) {
         msg = e.what();
         success = false;
-        if (session) {
-            delete session;
-            session = NULL;
-        }
     }
 
 out:
-    emit loginCompleted(QSharedPointer<Session>(session), success, msg);
+    emit loginCompleted(session, success, msg);
 }
 
 void SessionManager::registerUser(const QString &serverName,
