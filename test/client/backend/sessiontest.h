@@ -12,6 +12,7 @@ class SessionTests : public QObject
 private slots:
     void initTestCase();
     void init();
+    void testInitChat();
     void testLogout();
     void testDeleteUserNonexistent();
     void testDeleteUserUnauthorized();

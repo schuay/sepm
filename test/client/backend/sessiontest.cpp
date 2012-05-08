@@ -16,6 +16,7 @@ Q_DECLARE_METATYPE(QSharedPointer<Session>)
 void SessionTests::initTestCase()
 {
     qRegisterMetaType<QSharedPointer<Session> >("QSharedPointer<Session>");
+    qRegisterMetaType<QSharedPointer<Chat> >("QSharedPointer<Chat>");
 }
 
 void SessionTests::init()
@@ -36,6 +37,21 @@ void SessionTests::init()
     QVERIFY2(arguments.at(1) == true, arguments.at(2).toString().toStdString().c_str());
 
     session = arguments.at(0).value<QSharedPointer<Session> >();
+}
+
+void SessionTests::testInitChat()
+{
+    QSignalSpy spy(session.data(), SIGNAL(initChatCompleted(QSharedPointer<Chat>, bool,
+                                          QString)));
+    QVERIFY(spy.isValid());
+    QVERIFY(spy.isEmpty());
+
+    session->initChat();
+    waitForResult(spy);
+
+    QCOMPARE(spy.count(), 1);
+    QList<QVariant> arguments = spy.takeFirst();
+    QVERIFY2(arguments.at(1) == true, arguments.at(2).toString().toStdString().c_str());
 }
 
 void SessionTests::testLogout()
