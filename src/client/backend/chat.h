@@ -8,6 +8,8 @@
 namespace sdcc
 {
 
+static const int SESSION_KEY_SIZE = 256;
+
 class Session;
 
 /**
@@ -22,6 +24,9 @@ class Session;
 class Chat : public QObject
 {
     Q_OBJECT
+
+    /* Allow SessionPrivate to call the private constructor. */
+    friend class SessionPrivate;
 
 public:
 
@@ -75,7 +80,8 @@ signals:
 
 private:
     /* Prevent unintended construction of instances by user. */
-    Chat(const Session &session, const QString &chatID);
+    Chat(const Session &session, const QString &chatID)
+    throw ( sdc::SecurityException );
     Chat(const Chat &);
 
     /**
@@ -91,7 +97,14 @@ private:
     /**
      * The session this chat belongs to.
      */
-    Session &session;
+    const Session &session;
+
+    /**
+     * The chat's session key.
+     */
+    sdc::ByteSeq key;
+
+    void runInvite(const User &user);
 };
 
 }

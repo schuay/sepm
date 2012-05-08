@@ -25,6 +25,7 @@ class Session : public QObject
 
     /* Allow SessionManager to call the private constructor. */
     friend class SessionManager;
+    friend class Chat;
 
 public:
 
@@ -55,6 +56,11 @@ public:
      * Delete the given user from the server.
      */
     void deleteUser(const User &user);
+
+    /**
+     * Retrieve the user of this session.
+     */
+    const QSharedPointer<User> getUser() const;
 
 signals:
 
@@ -89,6 +95,11 @@ private:
     /* Prevent unintended construction of instances by user. */
     Session(const User &user, const QString &pwd, sdc::AuthenticationIPrx auth);
     Session(const Session &);
+
+    /**
+     * Chat needs to access this.
+     */
+    sdc::SessionIPrx getSDCSession() const;
 
     SessionPrivate *d_ptr;
     Q_DECLARE_PRIVATE(Session)
