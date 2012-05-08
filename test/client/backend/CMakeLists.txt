@@ -81,3 +81,38 @@ add_dependencies(sessionTest
 add_test(NAME sessionTest
     COMMAND sessionTest
 )
+
+set(chatTest_QTHEADERS
+    chattest.h
+)
+
+qt4_wrap_cpp(chatTest_QTHEADERS_MOC
+    ${chatTest_QTHEADERS}
+)
+
+add_executable(chatTest
+    chattest.cpp
+    ${chatTest_QTHEADERS_MOC}
+)
+
+add_dependencies(chatTest
+    client_backend
+)
+
+target_link_libraries(chatTest
+    client_backend
+    Shared
+    ${QT_LIBRARIES}
+    ${QT_QTTEST_LIBRARY}
+    ${CMAKE_THREAD_LIBS_INIT}
+    ${ZeroCIce_LIBRARIES}
+    ${QCA2_LIBRARIES}
+)
+
+add_dependencies(chatTest
+    client_backend
+)
+
+add_test(NAME chatTest
+    COMMAND chatTest
+)
