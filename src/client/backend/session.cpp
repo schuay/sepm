@@ -3,6 +3,7 @@
 #include <Ice/Ice.h>
 #include <IceUtil/IceUtil.h>
 #include <QtConcurrentRun>
+#include <QMutexLocker>
 
 #include "QsLog.h"
 
@@ -51,6 +52,8 @@ struct SessionPrivate {
         try {
             QString key = QString::fromStdString(session->initChat());
             cp = QSharedPointer<Chat>(new Chat(session, *q, key));
+
+            QMutexLocker locker(&chatsMutex);
             chats[key] = cp;
         } catch (const sdc::SessionException &e) {
             success = false;
@@ -99,6 +102,7 @@ struct SessionPrivate {
         }
     }
 
+    QMutex chatsMutex;
     QMap<QString, QSharedPointer<Chat> > chats;
     QList<QSharedPointer<User> > users;
 
