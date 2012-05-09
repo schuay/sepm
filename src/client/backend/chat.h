@@ -80,7 +80,7 @@ signals:
 
 private:
     /* Prevent unintended construction of instances by user. */
-    Chat(sdc::SessionIPrx sessionPrx, const Session &session,
+    Chat(sdc::SessionIPrx sessionPrx, Session &session,
          const QString &chatID) throw (sdc::SecurityException);
     Chat(const Chat &);
 
@@ -97,7 +97,7 @@ private:
     /**
      * The session this chat belongs to.
      */
-    const Session &session;
+    Session &session;
 
     /**
      * This chat's session proxy.

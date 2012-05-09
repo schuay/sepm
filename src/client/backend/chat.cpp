@@ -8,7 +8,7 @@
 
 namespace sdcc
 {
-Chat::Chat(sdc::SessionIPrx sessionPrx, const Session &session,
+Chat::Chat(sdc::SessionIPrx sessionPrx, Session &session,
            const QString &chatID) throw (sdc::SecurityException)
     : chatID(chatID), session(session), sessionPrx(sessionPrx)
 {
