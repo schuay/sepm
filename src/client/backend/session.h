@@ -96,11 +96,6 @@ private:
     Session(const User &user, const QString &pwd, sdc::AuthenticationIPrx auth);
     Session(const Session &);
 
-    /**
-     * Chat needs to access this.
-     */
-    sdc::SessionIPrx getSDCSession() const;
-
     SessionPrivate *d_ptr;
     Q_DECLARE_PRIVATE(Session)
 };

@@ -49,7 +49,7 @@ struct SessionPrivate {
         QSharedPointer<Chat> cp;
 
         try {
-            cp = QSharedPointer<Chat>(new Chat(*q, session->initChat().c_str()));
+            cp = QSharedPointer<Chat>(new Chat(session, *q, session->initChat().c_str()));
             chats.append(cp);
         } catch (const sdc::SessionException &e) {
             success = false;
@@ -115,14 +115,6 @@ private:
     Session *q_ptr;
     Q_DECLARE_PUBLIC(Session)
 };
-
-sdc::SessionIPrx Session::getSDCSession() const
-{
-    QLOG_TRACE() << __PRETTY_FUNCTION__;
-    Q_D(const Session);
-
-    return d->session;
-}
 
 const QSharedPointer<User> Session::getUser() const
 {

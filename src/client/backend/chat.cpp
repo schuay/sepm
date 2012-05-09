@@ -8,9 +8,9 @@
 
 namespace sdcc
 {
-Chat::Chat(const Session &session, const QString &chatID)
-throw ( sdc::SecurityException )
-    : chatID(chatID), session(session)
+Chat::Chat(sdc::SessionIPrx sessionPrx, const Session &session,
+           const QString &chatID) throw (sdc::SecurityException)
+    : chatID(chatID), session(session), sessionPrx(sessionPrx)
 {
     sdc::Security s;
     key = s.genAESKey(SESSION_KEY_SIZE);
@@ -32,8 +32,8 @@ void Chat::runInvite(const User &user)
     sdc::Security s;
 
     try {
-        session.getSDCSession()->invite(sdcUser, chatID.toStdString(),
-                                        s.encryptRSA(sdcUser.publicKey, key));
+        sessionPrx->invite(sdcUser, chatID.toStdString(),
+                           s.encryptRSA(sdcUser.publicKey, key));
     } catch (const sdc::SecurityException &e) {
         success = false;
         message = e.what();
