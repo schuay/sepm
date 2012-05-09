@@ -46,10 +46,11 @@ struct SessionPrivate {
         Q_Q(Session);
         bool success = true;
         QString message;
-        Chat *c = NULL;
+        QSharedPointer<Chat> cp;
 
         try {
-            c = new Chat(*q, session->initChat().c_str());
+            cp = QSharedPointer<Chat>(new Chat(*q, session->initChat().c_str()));
+            chats.append(cp);
         } catch (const sdc::SessionException &e) {
             success = false;
             message = e.what.c_str();
@@ -57,9 +58,6 @@ struct SessionPrivate {
             success = false;
             message = e.what();
         }
-
-        QSharedPointer<Chat> cp(c);
-        chats.append(cp);
 
         emit q->initChatCompleted(cp, success, message);
     }
