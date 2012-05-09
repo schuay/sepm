@@ -10,9 +10,10 @@
 namespace sdcc
 {
 
-class ChatClientCallback : public sdc::ChatClientCallbackI
-{
-public:
+struct SessionPrivate : public sdc::ChatClientCallbackI {
+    SessionPrivate(Session *q, Ice::CommunicatorPtr c)
+        : communicator(c), q_ptr(q) { }
+
     void initChat(const sdc::StringSeq& /*users*/, const std::string& /*chatID*/,
                   const sdc::ByteSeq& /*key*/, const Ice::Current &) {
         QLOG_TRACE() << __PRETTY_FUNCTION__;
@@ -37,11 +38,6 @@ public:
         QLOG_TRACE() << __PRETTY_FUNCTION__;
         return message;
     }
-};
-
-struct SessionPrivate {
-    SessionPrivate(Session *q, Ice::CommunicatorPtr c)
-        : clientCallback(new ChatClientCallback), communicator(c), q_ptr(q) { }
 
     void runInitChat() {
         Q_Q(Session);
@@ -106,11 +102,6 @@ struct SessionPrivate {
     QMap<QString, QSharedPointer<Chat> > chats;
     QList<QSharedPointer<User> > users;
 
-    /* Note that all Ice objects are destroyed automatically
-     * when communicator->destroy() is called. This includes
-     * the clientCallback, which is why we're not wrapping it in
-     * a smart pointer. */
-    ChatClientCallback *clientCallback;
     Ice::CommunicatorPtr communicator;
     sdc::SessionIPrx session;
 
@@ -146,7 +137,7 @@ Session::Session(const User &user, const QString &pwd, sdc::AuthenticationIPrx a
         adapter = d->communicator->createObjectAdapterWithEndpoints("ChatClientCallback", "default");
     }
 
-    sdc::ChatClientCallbackIPtr callback(d->clientCallback);
+    sdc::ChatClientCallbackIPtr callback(d);
     adapter->add(callback, identity);
     adapter->activate();
     auth->ice_getConnection()->setAdapter(adapter);
@@ -176,12 +167,6 @@ void Session::deleteUser(const User &user)
     QLOG_TRACE() << __PRETTY_FUNCTION__;
     Q_D(Session);
     QtConcurrent::run(d, &SessionPrivate::runDeleteUser, user);
-}
-
-Session::~Session()
-{
-    Q_D(Session);
-    delete d;
 }
 
 }
