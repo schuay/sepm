@@ -49,8 +49,9 @@ struct SessionPrivate {
         QSharedPointer<Chat> cp;
 
         try {
-            cp = QSharedPointer<Chat>(new Chat(session, *q, session->initChat().c_str()));
-            chats.append(cp);
+            QString key = QString::fromStdString(session->initChat());
+            cp = QSharedPointer<Chat>(new Chat(session, *q, key));
+            chats[key] = cp;
         } catch (const sdc::SessionException &e) {
             success = false;
             message = e.what.c_str();
@@ -98,8 +99,8 @@ struct SessionPrivate {
         }
     }
 
+    QMap<QString, QSharedPointer<Chat> > chats;
     QList<QSharedPointer<User> > users;
-    QList<QSharedPointer<Chat> > chats;
 
     /* Note that all Ice objects are destroyed automatically
      * when communicator->destroy() is called. This includes
