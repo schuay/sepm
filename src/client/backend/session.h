@@ -63,7 +63,7 @@ public:
 signals:
 
     /**
-     * Received an invitiation to a chat from the server.
+     * Received an invitation to a chat from the server.
      */
     void invitationReceived(QSharedPointer<Chat> chat);
 
