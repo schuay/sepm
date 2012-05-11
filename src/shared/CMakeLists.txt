@@ -32,6 +32,7 @@ set( SHARED_SRC
      QsDebugOutput.cpp
      QsLog.cpp
      QsLogDest.cpp
+     settings.cpp
 )
 
 add_library(Shared ${SHARED_SRC})
