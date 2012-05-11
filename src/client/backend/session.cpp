@@ -29,12 +29,21 @@ struct SessionPrivate : public sdc::ChatClientCallbackI {
         QLOG_TRACE() << __PRETTY_FUNCTION__;
     }
 
-    void appendMessageToChat(const sdc::ByteSeq& /*message*/, const ::std::string& /*chatID*/,
-                             const sdc::User& /*participant*/, const Ice::Current &) {
+    void appendMessageToChat(const sdc::ByteSeq &message, const std::string &chatID,
+                             const sdc::User &participant, const Ice::Current &) {
+
         QLOG_TRACE() << __PRETTY_FUNCTION__;
+
+        ChatMap_t::const_iterator iter = chats.find(QString(chatID.c_str()));
+        if(iter != chats.end()) {
+            (*iter)->receiveMessage(participant, message);
+        } else {
+            // TODO: what to do in this case? we got no generic error reporting method
+        }
+
     }
 
-    std::string echo(const ::std::string& message, const Ice::Current &) {
+    std::string echo(const ::std::string &message, const Ice::Current &) {
         QLOG_TRACE() << __PRETTY_FUNCTION__;
         return message;
     }
@@ -110,7 +119,7 @@ struct SessionPrivate : public sdc::ChatClientCallbackI {
 private:
     Session *q_ptr;
     Q_DECLARE_PUBLIC(Session)
-};
+}; // struct SessionPrivate
 
 const QSharedPointer<User> Session::getUser() const
 {

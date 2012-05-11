@@ -89,6 +89,7 @@ signals:
      */
     void deleteUserCompleted(bool success, const QString &msg);
 
+
 private:
     /* Prevent unintended construction of instances by user. */
     Session(const User &user, const QString &pwd, sdc::AuthenticationIPrx auth);

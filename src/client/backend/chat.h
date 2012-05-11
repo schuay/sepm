@@ -110,6 +110,8 @@ private:
     sdc::ByteSeq key;
 
     void runInvite(const User &user);
+    void runSend(const QString &msg);
+    void receiveMessage(const User &participant, const sdc::ByteSeq &encMsg);
 };
 
 }
