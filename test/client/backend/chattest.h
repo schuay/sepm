@@ -15,6 +15,7 @@ private slots:
     void testInviteNotLoggedIn();
     void testInviteNonexistent();
     void testInvite();
+    void testEchoMessage();
 
     /* This test is commented intentionally to show that this
      * behavior should actually be implemented. Currently, a repeated
