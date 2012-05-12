@@ -86,19 +86,13 @@ void Chat::runSend(const QString &msg)
 void Chat::receiveMessage(const User &participant, const sdc::ByteSeq &encMsg)
 {
     try {
-        // kinda complicated, is there not a standard method somewhere??
-        // convert vector<byte> --> byte* --> QString
         sdc::Security s;
         sdc::ByteSeq decMsg = s.decryptAES(key, encMsg);
-        char *umsg = new char[decMsg.size()];
-        char *j = umsg;
 
-        for (sdc::ByteSeq::iterator i = decMsg.begin(); i != decMsg.end(); ++i) {
-            *(j++) = *i;
-        }
-
-        QString msg = QString::fromUtf8(umsg, decMsg.size());
-        delete umsg;
+        /* Vectors store contents contiguously, thus we can use it like an array.
+         * Unfortunately, we still need a cast from to char *. */
+        unsigned char *umsg = &decMsg[0];
+        QString msg = QString::fromUtf8(reinterpret_cast<char *>(umsg), decMsg.size());
 
         // TODO: What if we receive invalid UTF8 code points? QString doesn't
         // give us any information on this. This should only occur if other clients
