@@ -163,7 +163,7 @@ void ChatTests::testEchoMessage()
 
     chat = arguments2.at(0).value<QSharedPointer<Chat> >();
 
-    QSignalSpy spy3(&(*chat),
+    QSignalSpy spy3(chat.data(),
                     SIGNAL(messageReceived(const User &, const QString &)));
     QVERIFY(spy3.isValid());
     QVERIFY(spy3.isEmpty());
