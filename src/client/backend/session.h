@@ -80,7 +80,7 @@ signals:
     /**
      * A user has been retrieved from the server.
      */
-    void retrieveUserCompleted(const User &user, bool success,
+    void retrieveUserCompleted(QSharedPointer<User> user, bool success,
                                const QString &msg);
 
     /**

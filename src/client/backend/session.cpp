@@ -48,6 +48,26 @@ struct SessionPrivate : public sdc::ChatClientCallbackI {
         return message;
     }
 
+    void runRetrieveUser(const QString &username) {
+        Q_Q(Session);
+        bool success = true;
+        QString message;
+        QSharedPointer<User> usr;
+
+        try {
+            usr = retrieveUser(username);
+            users[username] = usr;
+        } catch (const sdc::UserHandlingException &e) {
+            success = false;
+            message = e.what.c_str();
+        } catch (const sdc::InterServerException &e) {
+            success = false;
+            message = e.what.c_str();
+        }
+
+        emit q->retrieveUserCompleted(usr, success, message);
+    }
+
     void runInitChat() {
         Q_Q(Session);
         bool success = true;
@@ -109,7 +129,7 @@ struct SessionPrivate : public sdc::ChatClientCallbackI {
 
     QMutex chatsMutex;
     QMap<QString, QSharedPointer<Chat> > chats;
-    QList<QSharedPointer<User> > users;
+    QMap<QString, QSharedPointer<User> > users;
 
     Ice::CommunicatorPtr communicator;
     sdc::SessionIPrx session;
@@ -119,6 +139,13 @@ struct SessionPrivate : public sdc::ChatClientCallbackI {
 private:
     Session *q_ptr;
     Q_DECLARE_PUBLIC(Session)
+
+    /* Internal helper to get a User. */
+    QSharedPointer<User> retrieveUser(const QString &username) {
+        return QSharedPointer<User>(new User(session->retrieveUser(
+                username.toStdString())));
+    }
+
 }; // struct SessionPrivate
 
 const QSharedPointer<User> Session::getUser() const
@@ -177,6 +204,13 @@ void Session::deleteUser(const User &user)
     QLOG_TRACE() << __PRETTY_FUNCTION__;
     Q_D(Session);
     QtConcurrent::run(d, &SessionPrivate::runDeleteUser, user);
+}
+
+void Session::retrieveUser(const QString &username)
+{
+    QLOG_TRACE() << __PRETTY_FUNCTION__;
+    Q_D(Session);
+    QtConcurrent::run(d, &SessionPrivate::runRetrieveUser, username);
 }
 
 }
