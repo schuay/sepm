@@ -34,13 +34,13 @@ struct SessionPrivate : public sdc::ChatClientCallbackI {
 
         QLOG_TRACE() << __PRETTY_FUNCTION__;
 
-        ChatMap_t::const_iterator iter = chats.find(QString(chatID.c_str()));
-        if(iter != chats.end()) {
-            (*iter)->receiveMessage(participant, message);
-        } else {
-            // TODO: what to do in this case? we got no generic error reporting method
+        QString key = QString::fromStdString(chatID);
+        if (!chats.contains(key)) {
+            QLOG_ERROR() << QString("Received message for nonexistant chat '%1'").arg(key);
+            return;
         }
 
+        chats[key]->receiveMessage(participant, message);
     }
 
     std::string echo(const ::std::string &message, const Ice::Current &) {
