@@ -14,6 +14,8 @@ private slots:
     void init();
     void testInitChat();
     void testLogout();
+    void retrieveUser();
+    void retrieveUserNonexistent();
     void testDeleteUserNonexistent();
     void testDeleteUserUnauthorized();
     void testDeleteUser(); /* This test must be last since it deletes our user. */

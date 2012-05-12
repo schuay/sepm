@@ -13,10 +13,12 @@ QTEST_MAIN(SessionTests)
 
 
 Q_DECLARE_METATYPE(QSharedPointer<Session>)
+Q_DECLARE_METATYPE(QSharedPointer<User>)
 void SessionTests::initTestCase()
 {
     qRegisterMetaType<QSharedPointer<Session> >("QSharedPointer<Session>");
     qRegisterMetaType<QSharedPointer<Chat> >("QSharedPointer<Chat>");
+    qRegisterMetaType<QSharedPointer<User> >("QSharedPointer<User>");
 }
 
 void SessionTests::init()
@@ -108,4 +110,35 @@ void SessionTests::testDeleteUserUnauthorized()
     QCOMPARE(spy.count(), 1);
     QList<QVariant> arguments = spy.takeFirst();
     QVERIFY(arguments.at(0) == false);
+}
+
+void SessionTests::retrieveUser()
+{
+    QSignalSpy spy(session.data(), SIGNAL(retrieveUserCompleted(QSharedPointer<User> ,bool, QString)));
+    QVERIFY(spy.isValid());
+    QVERIFY(spy.isEmpty());
+
+    session->retrieveUser("fefeb10c@selinux.inso.tuwien.ac.at");
+    waitForResult(spy);
+
+    QCOMPARE(spy.count(), 1);
+    QList<QVariant> arguments = spy.takeFirst();
+    QVERIFY2(arguments.at(1) == true, arguments.at(2).toString().toStdString().c_str());
+
+    QSharedPointer<User> usr = arguments.at(0).value<QSharedPointer<User> >();
+    QCOMPARE(usr.data()->getName(), QString("fefeb10c@selinux.inso.tuwien.ac.at"));
+}
+
+void SessionTests::retrieveUserNonexistent()
+{
+    QSignalSpy spy(session.data(), SIGNAL(retrieveUserCompleted(QSharedPointer<User> ,bool, QString)));
+    QVERIFY(spy.isValid());
+    QVERIFY(spy.isEmpty());
+
+    session->retrieveUser("thisuserbetternotexist@selinux.inso.tuwien.ac.at");
+    waitForResult(spy);
+
+    QCOMPARE(spy.count(), 1);
+    QList<QVariant> arguments = spy.takeFirst();
+    QVERIFY2(arguments.at(1) == false, arguments.at(2).toString().toStdString().c_str());
 }
