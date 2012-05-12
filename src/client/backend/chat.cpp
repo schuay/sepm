@@ -99,7 +99,7 @@ void Chat::receiveMessage(const User &participant, const sdc::ByteSeq &encMsg)
         // encode their messages differently though.
         emit messageReceived(participant, msg);
 
-    } catch (sdc::SecurityException e) {
+    } catch (const sdc::SecurityException &e) {
         // TODO: Workaround cause I don't know how to report generic errors...
         emit messageReceived(participant, "<received message but could not decrypt it>");
     }
