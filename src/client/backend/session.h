@@ -25,7 +25,6 @@ class Session : public QObject
 
     /* Allow SessionManager to call the private constructor. */
     friend class SessionManager;
-    friend class Chat;
 
 public:
 
