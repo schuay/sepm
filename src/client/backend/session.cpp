@@ -143,7 +143,8 @@ Session::Session(const User &user, const QString &pwd, sdc::AuthenticationIPrx a
     Ice::Identity identity = { IceUtil::generateUUID(), "" };
 
     if (!adapter) {
-        adapter = d->communicator->createObjectAdapterWithEndpoints("ChatClientCallback", "default");
+        adapter = d->communicator->createObjectAdapterWithEndpoints(
+                      "ChatClientCallback", "default");
     }
 
     sdc::ChatClientCallbackIPtr callback(d);
