@@ -65,9 +65,7 @@ struct SessionPrivate : public sdc::ChatClientCallbackI {
         }
 
         QMutexLocker userLocker(&usersMutex);
-        if (!users.contains(usr->getName())) {
-            users[usr->getName()] = usr;
-        }
+        users[usr->getName()] = usr;
 
         chats[key]->addChatParticipant(usr);
 
@@ -94,9 +92,7 @@ struct SessionPrivate : public sdc::ChatClientCallbackI {
         }
 
         QMutexLocker userLocker(&usersMutex);
-        if (!users.contains(usr->getName())) {
-            users[usr->getName()] = usr;
-        }
+        users[usr->getName()] = usr;
 
         chats[key]->receiveMessage(*usr.data(), message);
     }
