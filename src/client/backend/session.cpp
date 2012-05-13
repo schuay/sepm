@@ -16,8 +16,8 @@ struct SessionPrivate : public sdc::ChatClientCallbackI {
     SessionPrivate(Session *q, Ice::CommunicatorPtr c)
         : communicator(c), q_ptr(q) { }
 
-    void initChat(const sdc::StringSeq& cUsers, const std::string& chatID,
-                  const sdc::ByteSeq& sessionKey, const Ice::Current &) {
+    void initChat(const sdc::StringSeq &cUsers, const std::string &chatID,
+                  const sdc::ByteSeq &sessionKey, const Ice::Current &) {
         QLOG_TRACE() << __PRETTY_FUNCTION__;
         Q_Q(Session);
 
@@ -53,8 +53,8 @@ struct SessionPrivate : public sdc::ChatClientCallbackI {
         emit q->invitationReceived(cp);
     }
 
-    void addChatParticipant(const sdc::User& participant,
-                            const ::std::string& chatID, const Ice::Current &) {
+    void addChatParticipant(const sdc::User &participant,
+                            const std::string &chatID, const Ice::Current &) {
         QLOG_TRACE() << __PRETTY_FUNCTION__;
 
         QSharedPointer<User> usr(new User(participant));
@@ -76,8 +76,8 @@ struct SessionPrivate : public sdc::ChatClientCallbackI {
         emit chats[key]->userJoined(*usr.data());
     }
 
-    void removeChatParticipant(const sdc::User& /*participant*/,
-                               const ::std::string& /*chatID*/, const Ice::Current &) {
+    void removeChatParticipant(const sdc::User &/*participant*/,
+                               const std::string &/*chatID*/, const Ice::Current &) {
         QLOG_TRACE() << __PRETTY_FUNCTION__;
     }
 
@@ -103,7 +103,7 @@ struct SessionPrivate : public sdc::ChatClientCallbackI {
         chats[key]->receiveMessage(*usr.data(), message);
     }
 
-    std::string echo(const ::std::string &message, const Ice::Current &) {
+    std::string echo(const std::string &message, const Ice::Current &) {
         QLOG_TRACE() << __PRETTY_FUNCTION__;
         return message;
     }
