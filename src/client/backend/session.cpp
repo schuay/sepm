@@ -40,17 +40,15 @@ struct SessionPrivate : public sdc::ChatClientCallbackI {
             for (i = cUsers.begin(); i < cUsers.end(); i++) {
                 cp->addChatParticipant(getUser(QString::fromStdString(*i)));
             }
+
+            emit q->invitationReceived(cp);
         } catch (const sdc::UserHandlingException &e) {
             QLOG_ERROR() << QString("Received invitation with invalid user, '%1', '%2'")
                          .arg(key).arg(QString::fromStdString(*i));
-            return;
         } catch (const sdc::InterServerException &e) {
             QLOG_ERROR() << QString("Received invitation with invalid user, '%1', '%2'")
                          .arg(key).arg(QString::fromStdString(*i));
-            return;
         }
-
-        emit q->invitationReceived(cp);
     }
 
     void addChatParticipant(const sdc::User &participant,
