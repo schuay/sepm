@@ -37,6 +37,16 @@ public:
         props->setProperty("Ice.Plugin.IceSSL", "IceSSL:createIceSSL");
         props->setProperty("Ice.Override.Timeout", "5000");
 
+        /* Increase the size of the client thread pool. Otherwise callbacks
+         * won't work. The standard thread pool contains just 1 thread. If the
+         * server uses a callback and the callback in turn tries to call a
+         * function on the server in that callback the client will freeze
+         * because it needs at least one thread per direction.
+         *
+         * see http://doc.zeroc.com/display/Ice/Nested+Invocations
+         */
+        props->setProperty("Ice.ThreadPool.Client.SizeMax", "5");
+
         if (opts & DontVerifyPeer)
             props->setProperty("IceSSL.VerifyPeer", "0");
         else
