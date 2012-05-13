@@ -2,13 +2,12 @@
 #define _CHAT_H
 
 #include <QSharedPointer>
+#include <QMutexLocker>
 
 #include "user.h"
 
 namespace sdcc
 {
-
-static const int SESSION_KEY_SIZE = 256;
 
 class Session;
 
@@ -51,6 +50,11 @@ public:
      */
     void send(const QString &msg);
 
+    /**
+     * Retrieves a list of the users currently in this chat.
+     */
+    QList<QSharedPointer<User> > getUserList();
+
 signals:
 
     /**
@@ -81,13 +85,14 @@ signals:
 private:
     /* Prevent unintended construction of instances by user. */
     Chat(sdc::SessionIPrx sessionPrx, Session &session,
-         const QString &chatID) throw (sdc::SecurityException);
+         const QString &chatID, const sdc::ByteSeq key);
     Chat(const Chat &);
 
     /**
      * All users in the chat.
      */
-    QList<QSharedPointer<User> > users;
+    QMutex usersMutex;
+    QMap<QString, QSharedPointer<User> > users;
 
     /**
      * The ID of the chat.
@@ -112,6 +117,8 @@ private:
     void runInvite(const User &user);
     void runSend(const QString &msg);
     void receiveMessage(const User &participant, const sdc::ByteSeq &encMsg);
+    void addChatParticipant(QSharedPointer<User> participant);
+    void removeChatParticipant(const QString participant);
 };
 
 }

@@ -10,6 +10,8 @@
 namespace sdcc
 {
 
+static const int SESSION_KEY_SIZE = 256;
+
 class SessionManager;
 class SessionPrivate;
 

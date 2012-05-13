@@ -3,19 +3,18 @@
 
 #include <QtConcurrentRun>
 
-#include <Security.h>
 #include "SecureDistributedChat.h"
 
 namespace sdcc
 {
-Chat::Chat(sdc::SessionIPrx sessionPrx, Session &session,
-           const QString &chatID) throw (sdc::SecurityException)
-    : chatID(chatID), session(session), sessionPrx(sessionPrx)
-{
-    sdc::Security s;
-    key = s.genAESKey(SESSION_KEY_SIZE);
 
-    users.append(session.getUser());
+Chat::Chat(sdc::SessionIPrx sessionPrx, Session &session,
+           const QString &chatID, const sdc::ByteSeq key)
+    : chatID(chatID), session(session), sessionPrx(sessionPrx), key(key)
+{
+    QMutexLocker locker(&usersMutex);
+    QSharedPointer<User> usr = session.getUser();
+    users[usr->getName()] = usr;
 }
 
 void Chat::invite(const User &user)
@@ -104,6 +103,21 @@ void Chat::receiveMessage(const User &participant, const sdc::ByteSeq &encMsg)
         emit messageReceived(participant, "<received message but could not decrypt it>");
     }
 
+}
+
+void Chat::addChatParticipant(QSharedPointer<User> participant)
+{
+    QMutexLocker locker(&usersMutex);
+    users[participant->getName()] = participant;
+    /* Don't emit a signal here because it may be undesireable if a signal per
+     * user is emitted once we join a new chat. Also, there is currently no
+     * way to receive them. Emit them in Session. */
+}
+
+QList<QSharedPointer<User> > Chat::getUserList()
+{
+    QMutexLocker locker(&usersMutex);
+    return users.values();
 }
 
 }
