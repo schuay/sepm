@@ -32,7 +32,6 @@ struct SessionPrivate : public sdc::ChatClientCallbackI {
         }
 
         cp = QSharedPointer<Chat>(new Chat(session, *q, key, sessionKey));
-        chats[key] = cp;
 
         sdc::StringSeq::const_iterator i;
         cp->addChatParticipant(user);
@@ -41,6 +40,7 @@ struct SessionPrivate : public sdc::ChatClientCallbackI {
                 cp->addChatParticipant(getUser(QString::fromStdString(*i)));
             }
 
+            chats[key] = cp;
             emit q->invitationReceived(cp);
         } catch (const sdc::UserHandlingException &e) {
             QLOG_ERROR() << QString("Received invitation with invalid user, '%1', '%2'")
