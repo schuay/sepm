@@ -18,6 +18,7 @@ void ChatTests::initTestCase()
 {
     qRegisterMetaType<QSharedPointer<Session> >("QSharedPointer<Session>");
     qRegisterMetaType<QSharedPointer<Chat> >("QSharedPointer<Chat>");
+    qRegisterMetaType<User>("User");
 }
 
 void ChatTests::init()

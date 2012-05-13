@@ -18,6 +18,7 @@ namespace sdcc
 class User
 {
 public:
+    User() { } /* Added (temporarily?) for qRegisterMetatype. */
     User(const QString &name, const QString &certificatePath) throw (sdc::SecurityException);
     User(const sdc::User &user);
 
