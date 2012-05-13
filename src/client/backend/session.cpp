@@ -68,8 +68,6 @@ struct SessionPrivate : public sdc::ChatClientCallbackI {
         users[usr->getName()] = usr;
 
         chats[key]->addChatParticipant(usr);
-
-        emit chats[key]->userJoined(*usr.data());
     }
 
     void removeChatParticipant(const sdc::User &/*participant*/,

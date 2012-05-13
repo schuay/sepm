@@ -109,9 +109,7 @@ void Chat::addChatParticipant(QSharedPointer<User> participant)
 {
     QMutexLocker locker(&usersMutex);
     users[participant->getName()] = participant;
-    /* Don't emit a signal here because it may be undesireable if a signal per
-     * user is emitted once we join a new chat. Also, there is currently no
-     * way to receive them. Emit them in Session. */
+    emit userJoined(*participant);
 }
 
 QList<QSharedPointer<User> > Chat::getUserList()
