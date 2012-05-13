@@ -136,6 +136,8 @@ struct SessionPrivate : public sdc::ChatClientCallbackI {
 
             QMutexLocker locker(&chatsMutex);
             chats[key] = cp;
+
+            cp->addChatParticipant(user);
         } catch (const sdc::SessionException &e) {
             success = false;
             message = e.what.c_str();
@@ -143,8 +145,6 @@ struct SessionPrivate : public sdc::ChatClientCallbackI {
             success = false;
             message = e.what();
         }
-
-        cp->addChatParticipant(user);
 
         emit q->initChatCompleted(cp, success, message);
     }
