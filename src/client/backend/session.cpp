@@ -201,10 +201,10 @@ private:
 
     /* Internal helper to get a User from the server and cache it. */
     QSharedPointer<User> retrieveUser(const QString &username) {
-        QMutexLocker locker(&usersMutex);
         QSharedPointer<User> usr(new User(session->retrieveUser(
                                               username.toStdString())));
 
+        QMutexLocker locker(&usersMutex);
         users[username] = usr;
         return usr;
     }
