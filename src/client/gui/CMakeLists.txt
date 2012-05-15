@@ -3,21 +3,33 @@ include_directories(
         ${CMAKE_SOURCE_DIR}/src/shared/
         ${CMAKE_BINARY_DIR}/src/shared/
         ${CMAKE_CURRENT_BINARY_DIR}
+        ${CMAKE_CURRENT_SOURCE_DIR}
         ${QCA2_INCLUDE_DIR}
 )
 
 set(client_gui_FORMS
         logindialog.ui
+        appwindow.ui
+        chatwidget.ui
+        settingsdialog.ui
 )
 qt4_wrap_ui(client_gui_FORMS_HEADERS ${client_gui_FORMS})
 
 set(client_gui_QTHEADERS
         logindialog.h
+        appwindow.h
+        chatwidget.h
+        settingsdialog.h
+        chatlistitem.h
 )
 qt4_wrap_cpp(client_gui_QTHEADERS_MOC ${client_gui_QTHEADERS})
 
 set(client_gui_SRCS
         logindialog.cpp
+        appwindow.cpp
+        chatwidget.cpp
+        settingsdialog.cpp
+        chatlistitem.cpp
 )
 
 add_library(client_gui STATIC

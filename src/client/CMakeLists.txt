@@ -5,6 +5,8 @@ include_directories(
         ${CMAKE_CURRENT_SOURCE_DIR}/backend
         ${CMAKE_CURRENT_SOURCE_DIR}/gui
         ${CMAKE_SOURCE_DIR}/src/shared/
+        ${CMAKE_BINARY_DIR}/src/shared/
+        ${QCA2_INCLUDE_DIR}
 )
 
 add_executable(client

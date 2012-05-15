@@ -21,7 +21,8 @@ public:
     enum SettingsKey {
         CCertPath,
         CPublicKeyPath,
-        CPrivateKeyPath
+        CPrivateKeyPath,
+        CUsername
     };
 
     /**

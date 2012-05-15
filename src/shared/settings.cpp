@@ -14,6 +14,8 @@ QString Settings::getKey(SettingsKey key)
         return "client/publicKeyPath";
     case CPrivateKeyPath:
         return "client/privateKeyPath";
+    case CUsername:
+        return "client/username";
     default:
         assert(0);
     }

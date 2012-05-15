@@ -82,6 +82,11 @@ signals:
      */
     void sendCompleted(bool success, const QString &msg);
 
+    /**
+     * A user left the chat.
+     */
+    void userLeft(const User &user);
+
 private:
     /* Prevent unintended construction of instances by user. */
     Chat(sdc::SessionIPrx sessionPrx, Session &session,
