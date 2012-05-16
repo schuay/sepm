@@ -29,13 +29,18 @@ void SettingsDialog::okButtonClicked()
 
 void SettingsDialog::onChoosePrivateKeyClicked()
 {
-    ui->lePrivateKey->setText(QFileDialog::getOpenFileName(this, "Select private key..."));
-
+    QString temp=QFileDialog::getOpenFileName(this, "Select private key...",ui->lePrivateKey->text());
+    if(!temp.isNull())
+        ui->lePrivateKey->setText(temp);
+    settings.setValue(settings.CPrivateKeyPath,ui->lePrivateKey->text());
 }
 
 void SettingsDialog::onChoosePublicKeyClicked()
 {
-    ui->lePublicKey->setText(QFileDialog::getOpenFileName(this, "Select public key..."));
+    QString temp=QFileDialog::getOpenFileName(this, "Select public key...",ui->lePublicKey->text());
+    if(!temp.isNull())
+        ui->lePublicKey->setText(temp);
+    settings.setValue(settings.CPublicKeyPath,ui->lePublicKey->text());
 }
 
 SettingsDialog::~SettingsDialog()

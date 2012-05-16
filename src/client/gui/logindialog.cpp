@@ -49,23 +49,26 @@ LoginDialog::LoginDialog(QWidget *parent) :
 
 void LoginDialog::onChooseServerCertClicked()
 {
-    QString temp=QFileDialog::getOpenFileName(this, "Select server certificate...");
-    ui->leServerCert->setText(temp);
-    settings.setValue(settings.CCertPath,temp);
+    QString temp=QFileDialog::getOpenFileName(this, "Select server certificate...",ui->leServerCert->text());
+    if(!temp.isNull())
+        ui->leServerCert->setText(temp);
+    settings.setValue(settings.CCertPath,ui->leServerCert->text());
 }
 
 void LoginDialog::onChoosePrivateKeyClicked()
 {
-    QString temp=QFileDialog::getOpenFileName(this, "Select private key...");
-    ui->lePrivateKey->setText(temp);
-    settings.setValue(settings.CPrivateKeyPath,temp);
+    QString temp=QFileDialog::getOpenFileName(this, "Select private key...",ui->lePrivateKey->text());
+    if(!temp.isNull())
+        ui->lePrivateKey->setText(temp);
+    settings.setValue(settings.CPrivateKeyPath,ui->lePrivateKey->text());
 }
 
 void LoginDialog::onChoosePublicKeyClicked()
 {
-    QString temp=QFileDialog::getOpenFileName(this, "Select public key...");
-    ui->lePublicKey->setText(temp);
-    settings.setValue(settings.CPublicKeyPath,temp);
+    QString temp=QFileDialog::getOpenFileName(this, "Select public key...",ui->lePublicKey->text());
+    if(!temp.isNull())
+        ui->lePublicKey->setText(temp);
+    settings.setValue(settings.CPublicKeyPath,ui->lePublicKey->text());
 }
 
 void LoginDialog::onTestConnectionClicked()
