@@ -91,7 +91,9 @@ void AppWindow::onInviteClicked()
     if(username.isEmpty()) {
         QMessageBox::warning(this, "Invite failed", "You didn't specify a username.");
     } else {
-        QMessageBox::information(this, "Function not implemented", "Function is not yet implemented because it cannot be achieved with the current backend.");
+        QMessageBox::information(this, "Function not implemented",
+                                 "Function is not yet implemented because it cannot be achieved "
+                                 "with the current backend.");
     }
 }
 void AppWindow::onChatActivated(ChatWidget *widget)
