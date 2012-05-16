@@ -18,8 +18,7 @@ AppWindow::AppWindow(QWidget *parent, QSharedPointer<Session> session) :
     qRegisterMetaType<QSharedPointer<Chat> >("QSharedPointer<Chat>");
     d_session = session;
     ui->setupUi(this);
-
-    connect(ui->pbLogout, SIGNAL(clicked()), this, SLOT(onLogoutClicked()));
+    setWindowTitle("SDCC");
     connect(ui->pbInitiateChat, SIGNAL(clicked()), this, SLOT(onInitiateChatClicked()));
     connect(ui->pbInvite, SIGNAL(clicked()), this, SLOT(onInviteClicked()));
     connect(ui->lwChats, SIGNAL(itemActivated(QListWidgetItem*)),
@@ -41,11 +40,23 @@ AppWindow::AppWindow(QWidget *parent, QSharedPointer<Session> session) :
             SIGNAL(invitationReceived(QSharedPointer<Chat>)),
             this,
             SLOT(onChatOpened(QSharedPointer<Chat>)));
+
+    settingspopupmenu = new QMenu(this);
+    settingspopupmenu->addAction("Add Contact",this,SLOT(onAddContactEntryClicked()));
+    settingspopupmenu->addAction("Options",this,SLOT(onSettingsEntryClicked()));
+    settingspopupmenu->addAction("Logout",this,SLOT(onLogoutClicked()));
+    ui->pbOptions->setMenu(settingspopupmenu);
+
 }
 
 AppWindow::~AppWindow()
 {
     delete ui;
+    delete settingspopupmenu;
+}
+
+void AppWindow::onAddContactEntryClicked(){
+
 }
 
 void AppWindow::onLogoutClicked()
@@ -107,8 +118,13 @@ void AppWindow::onActiveItemChanged(QListWidgetItem *widget)
     onChatActivated(item->getWidget());
 }
 
-void AppWindow::onSettingsButtonClicked()
+void AppWindow::onSettingsEntryClicked()
 {
     SettingsDialog *dialog = new SettingsDialog();
     dialog->show();
+}
+
+void AppWindow::onSettingsButtonClicked()
+{
+    ui->pbOptions->menu()->exec(QCursor::pos());
 }

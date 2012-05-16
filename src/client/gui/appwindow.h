@@ -34,11 +34,13 @@ public slots:
     void onChatActivated(ChatWidget *widget);
     void onActiveItemChanged(QListWidgetItem *widget);
     void onSettingsButtonClicked();
-
+    void onAddContactEntryClicked();
+    void onSettingsEntryClicked();
 private:
     Ui::AppWindow *ui;
     QSharedPointer<Session> d_session;
     ChatWidget *activeChat;
+    QMenu *settingspopupmenu;
 };
 
 #endif // APPWINDOW_H
