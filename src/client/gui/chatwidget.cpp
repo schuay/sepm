@@ -34,7 +34,6 @@ ChatWidget::ChatWidget(QWidget *parent) :
 
 void ChatWidget::returnPressed()
 {
-    //QMessageBox::information(this, "Test", "Event happened, yay!");
     lastMsg = ui->leMessage->text();
     d_chat->send(lastMsg);
     ui->leMessage->setText("");
@@ -54,18 +53,7 @@ void ChatWidget::messageReceived(const User &user, const QString &msg)
 void ChatWidget::userJoined(const User &user)
 {
     QListWidgetItem userWidget(user.getName(), ui->lwParticipants);
-    //ui->lwParticipants->addItem(user.getName());
 }
-
-/*
- * A user left the chat.
- *
-void ChatWidget::userLeft(const User &user)
-{
-    user;
-    //ui->lwParticipants->
-}
-*/
 
 /**
  * Response signal for leaveChat.
