@@ -3,13 +3,14 @@
 #include <iostream>
 #include <QtGui>
 
-
 ChatWidget::ChatWidget(QSharedPointer<Session> session,
                        QSharedPointer<Chat> chat, QWidget *parent) :
     QWidget(parent),
     ui(new Ui::ChatWidget)
 {
     ui->setupUi(this);
+
+    qRegisterMetaType<User>("User");
 
     d_chat = chat;
     this->session = session;
