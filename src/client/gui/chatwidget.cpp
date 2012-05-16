@@ -34,10 +34,10 @@ ChatWidget::ChatWidget(QWidget *parent) :
 
 void ChatWidget::returnPressed()
 {
-     //QMessageBox::information(this, "Test", "Event happened, yay!");
-     lastMsg = ui->leMessage->text();
-     d_chat->send(lastMsg);
-     ui->leMessage->setText("");
+    //QMessageBox::information(this, "Test", "Event happened, yay!");
+    lastMsg = ui->leMessage->text();
+    d_chat->send(lastMsg);
+    ui->leMessage->setText("");
 }
 
 /**
@@ -86,10 +86,10 @@ void ChatWidget::leaveChatCompleted(bool success, const QString &msg)
  */
 void ChatWidget::inviteCompleted(bool success, const QString &msg)
 {
-     if(!success) {
-         QMessageBox::warning(this, "Couldn't invite User",
-                              "The server couldn't invite the user you requested into the chat.\n" + msg);
-     }
+    if(!success) {
+        QMessageBox::warning(this, "Couldn't invite User",
+                             "The server couldn't invite the user you requested into the chat.\n" + msg);
+    }
 }
 
 /**
@@ -97,7 +97,7 @@ void ChatWidget::inviteCompleted(bool success, const QString &msg)
   */
 void ChatWidget::invite(QSharedPointer<User> user)
 {
-     d_chat->invite(*(user.data()));
+    d_chat->invite(*(user.data()));
 }
 
 /**
@@ -105,12 +105,12 @@ void ChatWidget::invite(QSharedPointer<User> user)
  */
 void ChatWidget::sendCompleted(bool success, const QString &msg)
 {
-     if(!success) {
-         QMessageBox::warning(this, "Failed to Send",
-                              "The message didn't reach the other participants.\n" + msg);
-     } else {
+    if(!success) {
+        QMessageBox::warning(this, "Failed to Send",
+                             "The message didn't reach the other participants.\n" + msg);
+    } else {
         messageReceived(*(session->getUser().data()), lastMsg);
-     }
+    }
 }
 
 
