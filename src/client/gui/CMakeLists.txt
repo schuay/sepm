@@ -20,7 +20,6 @@ set(client_gui_QTHEADERS
         appwindow.h
         chatwidget.h
         settingsdialog.h
-        chatlistitem.h
 )
 qt4_wrap_cpp(client_gui_QTHEADERS_MOC ${client_gui_QTHEADERS})
 
@@ -29,7 +28,6 @@ set(client_gui_SRCS
         appwindow.cpp
         chatwidget.cpp
         settingsdialog.cpp
-        chatlistitem.cpp
 )
 
 if (CMAKE_COMPILER_IS_GNUCXX)

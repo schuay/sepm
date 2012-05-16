@@ -4,7 +4,6 @@
 #include "logindialog.h"
 #include "chat.h"
 #include "chatwidget.h"
-#include "chatlistitem.h"
 #include "settingsdialog.h"
 #include <QListWidgetItem>
 #include <QtGui>
@@ -21,10 +20,7 @@ AppWindow::AppWindow(QWidget *parent, QSharedPointer<Session> session) :
     setWindowTitle("SDCC");
     connect(ui->pbInitiateChat, SIGNAL(clicked()), this, SLOT(onInitiateChatClicked()));
     connect(ui->pbInvite, SIGNAL(clicked()), this, SLOT(onInviteClicked()));
-    connect(ui->lwChats, SIGNAL(itemActivated(QListWidgetItem*)),
-            this, SLOT(onActiveItemChanged(QListWidgetItem*)));
-    connect(ui->lwChats, SIGNAL(itemClicked(QListWidgetItem*)),
-            this, SLOT(onActiveItemChanged(QListWidgetItem*)));
+    connect(ui->twChats, SIGNAL(tabCloseRequested(int)), this, SLOT(onTabCloseRequested(int)));
     connect(ui->pbOptions, SIGNAL(clicked()),
             this, SLOT(onSettingsButtonClicked()));
     connect(this, SIGNAL(destroyed()), this, SLOT(onLogoutClicked()));
@@ -55,7 +51,8 @@ AppWindow::~AppWindow()
     delete settingspopupmenu;
 }
 
-void AppWindow::onAddContactEntryClicked(){
+void AppWindow::onAddContactEntryClicked()
+{
 
 }
 
@@ -77,9 +74,8 @@ void AppWindow::onLogoutComplete(bool success, const QString &msg)
 void AppWindow::onChatOpened(QSharedPointer<Chat> chat)
 {
     ChatWidget *widget = new ChatWidget(d_session, chat);
-    ui->swChats->addWidget(widget);
-    ui->swChats->setCurrentWidget(widget);
-    new ChatListItem(widget, ui->lwChats);
+    ui->twChats->addTab(widget,"A Chat...");
+    ui->twChats->setCurrentWidget(widget);
 }
 
 void AppWindow::onChatOpened(QSharedPointer<Chat> chat, bool success, const QString &msg)
@@ -107,16 +103,6 @@ void AppWindow::onInviteClicked()
                                  "with the current backend.");
     }
 }
-void AppWindow::onChatActivated(ChatWidget *widget)
-{
-    ui->swChats->setCurrentWidget(widget);
-}
-
-void AppWindow::onActiveItemChanged(QListWidgetItem *widget)
-{
-    ChatListItem *item = dynamic_cast<ChatListItem*>(widget);
-    onChatActivated(item->getWidget());
-}
 
 void AppWindow::onSettingsEntryClicked()
 {
@@ -127,4 +113,9 @@ void AppWindow::onSettingsEntryClicked()
 void AppWindow::onSettingsButtonClicked()
 {
     ui->pbOptions->menu()->exec(QCursor::pos());
+}
+
+void AppWindow::onTabCloseRequested(int tab)
+{
+    ui->twChats->removeTab(tab);
 }
