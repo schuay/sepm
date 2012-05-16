@@ -19,7 +19,6 @@ LoginDialog::LoginDialog(QWidget *parent) :
     ui(new Ui::LoginDialog), busyWorkers(0)
 {
     ui->setupUi(this);
-
     qRegisterMetaType<QSharedPointer<Session> >("QSharedPointer<Session>");
 
     connect(ui->pbTestConnection, SIGNAL(clicked()), this, SLOT(onTestConnectionClicked()));
@@ -45,6 +44,9 @@ LoginDialog::LoginDialog(QWidget *parent) :
     ui->lePublicKey->setText(this->settings.getValue(settings.CPublicKeyPath).toString());
     ui->lePrivateKey->setText(this->settings.getValue(settings.CPrivateKeyPath).toString());
     ui->leUsername->setText(this->settings.getValue(settings.CUsername).toString());
+
+    QRect rect = QApplication::desktop()->availableGeometry();
+    this->move(rect.center() - this->rect().center());
 }
 
 void LoginDialog::onChooseServerCertClicked()
@@ -195,6 +197,7 @@ void LoginDialog::onTestConnectionCompleted(bool success, const QString &msg)
                                  .arg(msg));
     }
 }
+
 
 LoginDialog::~LoginDialog()
 {

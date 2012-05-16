@@ -43,6 +43,9 @@ AppWindow::AppWindow(QWidget *parent, QSharedPointer<Session> session) :
     settingspopupmenu->addAction("Logout",this,SLOT(onLogoutClicked()));
     ui->pbOptions->setMenu(settingspopupmenu);
 
+    QRect rect = QApplication::desktop()->availableGeometry();
+    this->move(rect.center() - this->rect().center());
+
 }
 
 AppWindow::~AppWindow()
