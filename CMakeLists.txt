@@ -12,6 +12,7 @@ find_package(Threads REQUIRED)
 
 include(${QT_USE_FILE})
 add_definitions(${QT_DEFINITIONS})
+set(QT_USE_QTSQL 1)
 
 if (CMAKE_COMPILER_IS_GNUCXX)
     ADD_DEFINITIONS( -Wall -Wundef -Wcast-align -Wchar-subscripts -Wpointer-arith

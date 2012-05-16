@@ -2,6 +2,7 @@ include_directories(
         ${CMAKE_SOURCE_DIR}/src/shared/
         ${CMAKE_BINARY_DIR}/src/shared/
         ${QCA2_INCLUDE_DIR}
+        ${QT_QTSQL_INCLUDE_DIR}
 )
 
 add_executable(server
@@ -15,6 +16,8 @@ add_executable(server
 )
 
 target_link_libraries(server
+        Shared
+        ${ZeroCIce_LIBRARIES}
         ${QT_LIBRARIES}
         ${QCA2_LIBRARIES}
         ${CMAKE_THREAD_LIBS_INIT}
