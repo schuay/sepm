@@ -20,7 +20,8 @@ class AppWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit AppWindow(QWidget *parent = 0, QSharedPointer<Session> session = 0);
+    explicit AppWindow(QWidget *parent = 0, QSharedPointer<Session> session
+                       = QSharedPointer<Session>());
     ~AppWindow();
 
 public slots:
