@@ -77,7 +77,7 @@ void AppWindow::onLogoutComplete(bool success, const QString &msg)
 void AppWindow::onChatOpened(QSharedPointer<Chat> chat)
 {
     ChatWidget *widget = new ChatWidget(d_session, chat);
-    ui->twChats->addTab(widget,"A Chat...");
+    ui->twChats->addTab(widget,chat->getID());
     ui->twChats->setCurrentWidget(widget);
 }
 
