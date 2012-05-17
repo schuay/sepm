@@ -1,4 +1,4 @@
-#include <QApplication>
+#include <QCoreApplication>
 #include <QSharedPointer>
 
 #include "QsLog.h"
@@ -8,7 +8,7 @@
 
 int main(int argc, char **argv)
 {
-    QApplication a(argc, argv);
+    QCoreApplication a(argc, argv);
 
     /* Init QSettings */
     QCoreApplication::setOrganizationName("group22");
@@ -31,5 +31,4 @@ int main(int argc, char **argv)
 
 
     return 0;
-    // return a.exec();
 }
