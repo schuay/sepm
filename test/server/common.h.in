@@ -1,0 +1,10 @@
+#include <QtTest/QTest>
+#include <QtTest/QSignalSpy>
+
+#define WORKING_DIR "@WORKING_DIR@/"
+
+#define DB_DRIVER "QPSQL"
+#define DB_HOST "localhost"
+#define DB_DATABASE "sdcs_test"
+#define DB_USER "sdcs_test"
+#define DB_PASSWORD "sdcs_test"
