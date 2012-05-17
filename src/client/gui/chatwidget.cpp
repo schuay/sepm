@@ -35,7 +35,6 @@ ChatWidget::ChatWidget(QWidget *parent) :
 
 void ChatWidget::returnPressed()
 {
-    lastMsg = ui->leMessage->text();
     d_chat->send(lastMsg);
     ui->leMessage->setText("");
 }
@@ -97,8 +96,6 @@ void ChatWidget::sendCompleted(bool success, const QString &msg)
     if(!success) {
         QMessageBox::warning(this, "Failed to Send",
                              "The message didn't reach the other participants.\n" + msg);
-    } else {
-        messageReceived(*(session->getUser().data()), lastMsg);
     }
 }
 
