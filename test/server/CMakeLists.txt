@@ -32,6 +32,7 @@ add_dependencies(userDbProxyTest
 
 target_link_libraries(userDbProxyTest
     Shared
+    serverlib
     ${QT_LIBRARIES}
     ${QT_QTTEST_LIBRARY}
     ${CMAKE_THREAD_LIBS_INIT}
