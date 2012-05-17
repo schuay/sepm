@@ -51,7 +51,7 @@ LoginDialog::LoginDialog(QWidget *parent) :
 
 void LoginDialog::onChooseServerCertClicked()
 {
-    QString temp=QFileDialog::getOpenFileName(this, "Select server certificate...",ui->leServerCert->text());
+    QString temp=QFileDialog::getOpenFileName(this, "Selectd_session->logout(); server certificate...",ui->leServerCert->text());
     if(!temp.isNull())
         ui->leServerCert->setText(temp);
     settings.setValue(settings.CCertPath,ui->leServerCert->text());

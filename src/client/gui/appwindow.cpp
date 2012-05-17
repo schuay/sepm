@@ -109,7 +109,7 @@ void AppWindow::onInviteClicked()
 
 void AppWindow::onSettingsEntryClicked()
 {
-    SettingsDialog *dialog = new SettingsDialog();
+    SettingsDialog *dialog = new SettingsDialog(this,d_session);
     dialog->show();
 }
 
