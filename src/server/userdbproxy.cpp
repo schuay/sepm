@@ -10,6 +10,8 @@
 namespace sdcs
 {
 
+#define CONNECTION ("sdcs")
+
 /* Initialize static connection member. */
 UserDbProxy::Connection UserDbProxy::connection;
 
@@ -34,7 +36,7 @@ void UserDbProxy::Connection::open()
     if (db.isOpen())
         return;
 
-    db = QSqlDatabase::addDatabase(driver);
+    db = QSqlDatabase::addDatabase(driver, CONNECTION);
     db.setHostName(host);
     db.setDatabaseName(database);
     db.setUserName(user);
@@ -98,7 +100,7 @@ throw (UserHandlingException)
 {
     connection.open();
 
-    QSqlQuery query;
+    QSqlQuery query(QSqlDatabase::database(CONNECTION));
     query.prepare("select username, public_key, password_hash "
                   "from public.user where username = :username");
     query.bindValue(":username", username);
