@@ -17,6 +17,12 @@ Chat::Chat(sdc::SessionIPrx sessionPrx, Session &session,
     users[usr->getName()] = usr;
 }
 
+
+const QString &Chat::getID() const
+{
+    return chatID;
+}
+
 void Chat::invite(const User &user)
 {
     QtConcurrent::run(this, &Chat::runInvite, user);

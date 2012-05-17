@@ -30,6 +30,11 @@ class Chat : public QObject
 public:
 
     /**
+     * Returns the ID of the chat object.
+     */
+    const QString &getID() const;
+
+    /**
      * Leave the chat. After leaveChatCompleted(), the object is invalid
      * and must not be used anymore.
      * Returns immediately.
