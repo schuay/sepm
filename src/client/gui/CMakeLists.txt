@@ -32,6 +32,11 @@ set(client_gui_SRCS
         chatlistitem.cpp
 )
 
+if (CMAKE_COMPILER_IS_GNUCXX)
+    # Creates error in qendian.h, as it uses glibc's byteswap.
+    REMOVE_DEFINITIONS( -Wold-style-cast )
+endif(CMAKE_COMPILER_IS_GNUCXX)
+
 add_library(client_gui STATIC
         ${client_gui_SRCS}
         ${client_gui_QTHEADERS_MOC}
