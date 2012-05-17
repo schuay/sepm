@@ -2,6 +2,7 @@
 #include "ui_chatwidget.h"
 #include <iostream>
 #include <QtGui>
+#include "QsLog.h"
 
 ChatWidget::ChatWidget(QSharedPointer<Session> session,
                        QSharedPointer<Chat> chat, QWidget *parent) :
@@ -35,7 +36,7 @@ ChatWidget::ChatWidget(QWidget *parent) :
 
 void ChatWidget::returnPressed()
 {
-    d_chat->send(lastMsg);
+    d_chat->send(ui->leMessage->text());
     ui->leMessage->setText("");
 }
 
@@ -44,7 +45,8 @@ void ChatWidget::returnPressed()
  */
 void ChatWidget::messageReceived(const User &user, const QString &msg)
 {
-    ui->tbChat->append(user.getName() + ": "+ msg);
+    QLOG_DEBUG() << msg;
+    ui->tbChat->append(user.getName() + QString(": ") + msg);
 }
 
 /**
