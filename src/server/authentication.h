@@ -1,17 +1,30 @@
 #include "SecureDistributedChat.h"
+#include <QMap>
+
+#include "chat.h"
+// #include "session.h" -> uncomment as soon as plausible
 
 using namespace sdc;
 
+namespace sdcs
+{
+
 class Authentication : public AuthenticationI
 {
+
 public:
-    void registerUser(User participant, std::string pwd) throw AuthenticationException;
-    SessionI *login(User participant, std::string pwd,
-                    Ice::Identity ident) throw AuthenticationException;
-    std::string echo(std::string message) throw SDCException;
+    Authentication();
+
+    virtual void registerUser(const User &participant, const std::string &pwd, const Ice::Current &);
+    virtual SessionIPrx login(const User &participant, const std::string &pwd,
+                              const Ice::Identity &ident, const Ice::Current&);
+    virtual std::string echo(const std::string &message, const Ice::Current&);
 
 private:
     /* Every resource is protected by mutexes. */
     QMap<QString, Chat> chats;
-    QMap<QString, Session> sessions;
+    // uncomment as soon as Session is compilable
+    // QMap<QString, Session> sessions;
+};
+
 }

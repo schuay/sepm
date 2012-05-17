@@ -1,4 +1,5 @@
 #include "SecureDistributedChat.h"
+#include <Ice/Ice.h>
 
 using namespace sdc;
 
@@ -7,50 +8,53 @@ namespace sdcs
 
 class Session : public SessionI
 {
+
 signals:
-    chatCreated(Chatptr, ...);
-    chatDestroyed(Chatptr, ...);
+    /* pseudocode?
+      chatCreated(Chatptr, ...);
+      chatDestroyed(Chatptr, ...);
+    */
 
 public:
     /* destroy self, notify all open chats */
-    void logout() throw UserHandlingException;
+    void logout(const Ice::Current&) // throw UserHandlingException;
 
     /* local user: db lookup
      * remote: create interserver, forward call, return. */
-    User retrieveUser(std::string userID) throw UserHandlingException, InterServerException;
+    User retrieveUser(const std::string &userID, const Ice::Current&); // throw UserHandlingException, InterServerException;
 
     /* gen ID (protected by sema, uuid@serverurl)
      * create LocalChat, insert in global and own list, add self as participant.
      * idea: server attaches to chatCreated signal.
      * */
-    std::string initChat() throw SessionException;
+    std::string initChat(const Ice::Current&); // throw SessionException;
 
     /* notify chat, remove from local list */
-    void leaveChat(std::string chatID) throw SessionException, InterServerException;
+    void leaveChat(const std::string &chatID, const Ice::Current&); // throw SessionException, InterServerException;
 
     /* check consistency (chat exists, chat joined)
      * create participant (remote or local), call invite. */
-    void invite(User participant, std::string chatID,
-                ByteSeq sessionKey) throw UserHandlingException, InterServerException;
+    void invite(const User &participant, const std::string &chatID,
+                const ByteSeq &sessionKey, const Ice::Current&); // throw UserHandlingException, InterServerException;
 
     /* looks up chat and calls appendMessageFrom. */
-    void sendMessage(ByteSeq message, std::string chatID) throw MessageException, InterServerException;
+    void sendMessage(const ByteSeq &message, const std::string &chatID, const Ice::Current&); // throw MessageException, InterServerException;
 
     /* check auth, do db ops, logout (make sure everything is consistent), destroy session */
-    void deleteUser(User participant) throw UserHandlingException;
+    void deleteUser(const User &participant, const Ice::Current&); //throw UserHandlingException;
 
 
     /* --------------------- */
 
-    void saveLog(std::string chatID, long timestamp, SecureContainer log) throw LogException;
-    Loglist retrieveLoglist() throw LogException;
-    SecureContainer retrieveLog(std::string chatID, long timestamp) throw LogException;
-    void saveContactList(SecureContainer contactList) throw ContactException;
-    SecureContainer retrieveContactList() throw ContactException;
+    void saveLog(const std::string &chatID, long timestamp, const SecureContainer &log, const Ice::Current&); // throw LogException;
+    Loglist retrieveLoglist(const Ice::Current &); //throw LogException;
+    SecureContainer retrieveLog(const std::string &chatID, long timestamp, const Ice::Current&); // throw LogException;
+    void saveContactList(const SecureContainer &contactList, const Ice::Current&); // throw ContactException;
+    SecureContainer retrieveContactList(const Ice::Current&);//  throw ContactException;
 
 private:
     QMap<QString, Chat> chats;
-    Participant self;
+    LocalParticipant self;
 };
 
 }
