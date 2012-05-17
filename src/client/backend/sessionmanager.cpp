@@ -89,7 +89,7 @@ SessionManager *SessionManager::getInstance()
 }
 
 void SessionManager::login(const QString &serverName, const QString &serverCertPath,
-                           const User &usr, const QString &pwd)
+                           const LoginUser &usr, const QString &pwd)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
     QtConcurrent::run(&instance, &SessionManager::runLogin,
@@ -97,7 +97,7 @@ void SessionManager::login(const QString &serverName, const QString &serverCertP
 }
 
 void SessionManager::runLogin(const QString &serverName, const QString &serverCertPath,
-                              const User &usr, const QString &pwd)
+                              const LoginUser &usr, const QString &pwd)
 {
     bool success;
     QString msg;

@@ -6,6 +6,7 @@
 #include "SecureDistributedChat.h"
 #include "chat.h"
 #include "user.h"
+#include "loginuser.h"
 
 namespace sdcc
 {
@@ -93,7 +94,7 @@ signals:
 
 private:
     /* Prevent unintended construction of instances by user. */
-    Session(const User &user, const QString &pwd, sdc::AuthenticationIPrx auth);
+    Session(const LoginUser &user, const QString &pwd, sdc::AuthenticationIPrx auth);
     Session(const Session &);
 
     SessionPrivate *d_ptr;

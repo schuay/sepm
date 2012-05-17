@@ -9,6 +9,7 @@ set(client_backend_SRCS
     session.cpp
     sessionmanager.cpp
     user.cpp
+    loginuser.cpp
 )
 
 set(client_backend_QTHEADERS

@@ -17,12 +17,20 @@ struct SessionPrivate : public sdc::ChatClientCallbackI {
         : communicator(c), q_ptr(q) { }
 
     void initChat(const sdc::StringSeq &cUsers, const std::string &chatID,
-                  const sdc::ByteSeq &sessionKey, const Ice::Current &) {
+                  const sdc::ByteSeq &sessionKeyEnc, const Ice::Current &) {
         QLOG_TRACE() << __PRETTY_FUNCTION__;
         Q_Q(Session);
 
         QString key = QString::fromStdString(chatID);
         QSharedPointer<Chat> cp;
+
+        sdc::ByteSeq sessionKey;
+        try {
+            sessionKey = user->decrypt(sessionKeyEnc);
+        } catch (const sdc::SecurityException &e) {
+            QLOG_ERROR() << QString("Could not decrypt session key for '%1'").arg(key);
+            return;
+        }
 
         QMutexLocker locker(&chatsMutex);
         if (chats.contains(key)) {
@@ -191,7 +199,7 @@ struct SessionPrivate : public sdc::ChatClientCallbackI {
     Ice::CommunicatorPtr communicator;
     sdc::SessionIPrx session;
 
-    QSharedPointer<User> user;
+    QSharedPointer<LoginUser> user;
 
 private:
     Session *q_ptr;
@@ -229,14 +237,14 @@ const QSharedPointer<User> Session::getUser() const
     return d->user;
 }
 
-Session::Session(const User &user, const QString &pwd, sdc::AuthenticationIPrx auth)
+Session::Session(const LoginUser &user, const QString &pwd, sdc::AuthenticationIPrx auth)
     : d_ptr(new SessionPrivate(this, auth->ice_getCommunicator()))
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
     Q_D(Session);
 
     sdc::User sdcUser = *user.getIceUser().data();
-    d->user = QSharedPointer<User> (new User(sdcUser));
+    d->user = QSharedPointer<LoginUser> (new LoginUser(user));
 
     Ice::ConnectionPtr connection = auth->ice_getConnection();
     Ice::ObjectAdapterPtr adapter = connection->getAdapter();

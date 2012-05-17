@@ -23,6 +23,12 @@ User::User(const sdc::User &user)
     this->publicKey = user.publicKey;
 }
 
+User::User(const User &user)
+{
+    this->name = user.name;
+    this->publicKey = user.publicKey;
+}
+
 QSharedPointer<sdc::User> User::getIceUser() const
 {
     sdc::User *u = new sdc::User();
