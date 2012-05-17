@@ -29,7 +29,7 @@ void SessionTests::init()
     QVERIFY(spy.isValid());
     QVERIFY(spy.isEmpty());
 
-    User u(TEMP_SESSION_USER, WORKING_DIR "public.pem");
+    LoginUser u(TEMP_SESSION_USER, WORKING_DIR "public.pem", WORKING_DIR "private.pem");
     sessionManager->login("selinux.inso.tuwien.ac.at", WORKING_DIR "ca.crt", u,
                           "password");
 

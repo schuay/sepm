@@ -10,6 +10,7 @@ private slots:
     void testUserCtorNamePath();
     void testUserCtorSdcUser();
     void testUserGetIceUser();
+    void testLoginUser();
     void testRegisterUserNew();
     void testRegisterUserRandom();
     void testRegisterUserAgain();

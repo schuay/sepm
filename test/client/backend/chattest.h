@@ -16,6 +16,7 @@ private slots:
     void testInviteNonexistent();
     void testInvite();
     void testEchoMessage();
+    void testTransmitMessage();
 
     /* This test is commented intentionally to show that this
      * behavior should actually be implemented. Currently, a repeated
@@ -26,5 +27,6 @@ private slots:
 
 private:
     QSharedPointer<Session> session;
+    QSharedPointer<Session> session2;
     QSharedPointer<Chat> chat;
 };
