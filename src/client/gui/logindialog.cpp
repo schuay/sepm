@@ -124,8 +124,8 @@ void LoginDialog::onConnectClicked()
     }
 
     try {
-        User u(ui->leUsername->text() + QString("@") + ui->leServer->text(),
-               ui->lePublicKey->text());
+        LoginUser u(ui->leUsername->text() + QString("@") + ui->leServer->text(),
+                    ui->lePublicKey->text(), ui->lePrivateKey->text());
 
         sdcc::SessionManager::login(ui->leServer->text(),
                                     ui->leServerCert->text(),
