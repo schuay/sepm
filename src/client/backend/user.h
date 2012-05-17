@@ -19,7 +19,7 @@ class User
 {
 public:
     User() { } /* Added (temporarily?) for qRegisterMetatype. */
-    User(const QString &name, const QString &certificatePath) throw (sdc::SecurityException);
+    User(const QString &name, const QString &publicKeyPath) throw (sdc::SecurityException);
     User(const sdc::User &user);
 
     const QString &getName() const;
@@ -28,7 +28,7 @@ public:
 
 private:
     QString      name;
-    sdc::ByteSeq certificate;
+    sdc::ByteSeq publicKey;
 };
 
 }
