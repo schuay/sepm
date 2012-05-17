@@ -2,6 +2,7 @@
 
 #include <QtTest/QTest>
 #include <QtTest/QSignalSpy>
+#include <QSqlQuery>
 
 #include "userdbproxy.h"
 #include "common.h"
@@ -26,6 +27,21 @@ void UserDbProxyTests::initTestCase()
     user1.ID = "test1";
     user1.publicKey = sdc::ByteSeq(pubkey, pubkey + sizeof(pubkey));
     hash1 = sdc::ByteSeq(hash, hash + sizeof(hash));
+
+    QSqlDatabase db = QSqlDatabase::addDatabase(DB_DRIVER);
+    db.setHostName(DB_HOST);
+    db.setDatabaseName(DB_DATABASE);
+    db.setUserName(DB_USER);
+    db.setPassword(DB_PASSWORD);
+
+    QVERIFY(db.open());
+
+    QSqlQuery query;
+    query.exec("truncate table public.user;");
+    query.exec("insert into public.user(username, public_key, password_hash) select 'test1', 'bla', 'bla';");
+    query.exec("insert into public.user(username, public_key, password_hash) select 'test2', 'bla', 'bla';");
+
+    db.close();
 }
 
 void UserDbProxyTests::testConnection()
