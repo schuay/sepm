@@ -13,12 +13,12 @@ QTEST_MAIN(SessionTests)
 
 
 Q_DECLARE_METATYPE(QSharedPointer<Session>)
-Q_DECLARE_METATYPE(QSharedPointer<User>)
+Q_DECLARE_METATYPE(QSharedPointer<const User>)
 void SessionTests::initTestCase()
 {
     qRegisterMetaType<QSharedPointer<Session> >("QSharedPointer<Session>");
     qRegisterMetaType<QSharedPointer<Chat> >("QSharedPointer<Chat>");
-    qRegisterMetaType<QSharedPointer<User> >("QSharedPointer<User>");
+    qRegisterMetaType<QSharedPointer<const User> >("QSharedPointer<const User>");
 }
 
 void SessionTests::init()
@@ -29,7 +29,8 @@ void SessionTests::init()
     QVERIFY(spy.isValid());
     QVERIFY(spy.isEmpty());
 
-    LoginUser u(TEMP_SESSION_USER, WORKING_DIR "public.pem", WORKING_DIR "private.pem");
+    QSharedPointer<const LoginUser> u(new LoginUser(TEMP_SESSION_USER, WORKING_DIR "public.pem",
+                                      WORKING_DIR "private.pem"));
     sessionManager->login("selinux.inso.tuwien.ac.at", WORKING_DIR "ca.crt", u,
                           "password");
 
@@ -76,7 +77,9 @@ void SessionTests::testDeleteUserNonexistent()
     QVERIFY(spy.isValid());
     QVERIFY(spy.isEmpty());
 
-    session->deleteUser(User("thisuserbetternotexist@selinux.inso.tuwien.ac.at", WORKING_DIR "public.pem"));
+    session->deleteUser(QSharedPointer<const User>(new User(
+                            "thisuserbetternotexist@selinux.inso.tuwien.ac.at",
+                            WORKING_DIR "public.pem")));
     waitForResult(spy);
 
     QCOMPARE(spy.count(), 1);
@@ -90,7 +93,8 @@ void SessionTests::testDeleteUser()
     QVERIFY(spy.isValid());
     QVERIFY(spy.isEmpty());
 
-    session->deleteUser(User(TEMP_SESSION_USER, WORKING_DIR "public.pem"));
+    session->deleteUser(QSharedPointer<const User>(new User(TEMP_SESSION_USER,
+                        WORKING_DIR "public.pem")));
     waitForResult(spy);
 
     QCOMPARE(spy.count(), 1);
@@ -104,7 +108,8 @@ void SessionTests::testDeleteUserUnauthorized()
     QVERIFY(spy.isValid());
     QVERIFY(spy.isEmpty());
 
-    session->deleteUser(User("fefeb10c@selinux.inso.tuwien.ac.at", WORKING_DIR "public.pem"));
+    session->deleteUser(QSharedPointer<const User>(new User("fefeb10c@selinux.inso.tuwien.ac.at",
+                        WORKING_DIR "public.pem")));
     waitForResult(spy);
 
     QCOMPARE(spy.count(), 1);
@@ -114,7 +119,7 @@ void SessionTests::testDeleteUserUnauthorized()
 
 void SessionTests::retrieveUser()
 {
-    QSignalSpy spy(session.data(), SIGNAL(retrieveUserCompleted(QSharedPointer<User> ,bool, QString)));
+    QSignalSpy spy(session.data(), SIGNAL(retrieveUserCompleted(QSharedPointer<const User> ,bool, QString)));
     QVERIFY(spy.isValid());
     QVERIFY(spy.isEmpty());
 
@@ -125,13 +130,13 @@ void SessionTests::retrieveUser()
     QList<QVariant> arguments = spy.takeFirst();
     QVERIFY2(arguments.at(1) == true, arguments.at(2).toString().toStdString().c_str());
 
-    QSharedPointer<User> usr = arguments.at(0).value<QSharedPointer<User> >();
+    QSharedPointer<const User> usr = arguments.at(0).value<QSharedPointer<const User> >();
     QCOMPARE(usr.data()->getName(), QString("fefeb10c@selinux.inso.tuwien.ac.at"));
 }
 
 void SessionTests::retrieveUserNonexistent()
 {
-    QSignalSpy spy(session.data(), SIGNAL(retrieveUserCompleted(QSharedPointer<User> ,bool, QString)));
+    QSignalSpy spy(session.data(), SIGNAL(retrieveUserCompleted(QSharedPointer<const User> ,bool, QString)));
     QVERIFY(spy.isValid());
     QVERIFY(spy.isEmpty());
 
