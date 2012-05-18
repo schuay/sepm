@@ -15,6 +15,7 @@ set(client_backend_SRCS
 set(client_backend_QTHEADERS
     chat.h
     session.h
+    session_p.h
     sessionmanager.h
 )
 

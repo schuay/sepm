@@ -125,6 +125,7 @@ private:
     sdc::ByteSeq key;
 
     void runInvite(QSharedPointer<const User> user);
+    void runLeaveChat();
     void runSend(const QString &msg);
     void receiveMessage(QSharedPointer<const User> participant, const sdc::ByteSeq &encMsg);
     void addChatParticipant(QSharedPointer<const User> participant);

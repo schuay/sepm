@@ -111,6 +111,30 @@ void Chat::receiveMessage(QSharedPointer<const User> participant, const sdc::Byt
 
 }
 
+void Chat::leaveChat()
+{
+    QtConcurrent::run(this, &Chat::runLeaveChat);
+}
+
+void Chat::runLeaveChat()
+{
+    bool success = true;
+    QString message;
+
+    try {
+        sessionPrx->leaveChat(chatID.toStdString());
+
+    } catch (const sdc::SessionException &e) {
+        success = false;
+        message = e.what.c_str();
+    } catch (const sdc::InterServerException &e) {
+        success = false;
+        message = e.what.c_str();
+    }
+
+    emit leaveChatCompleted(success, message);
+}
+
 void Chat::addChatParticipant(QSharedPointer<const User> participant)
 {
     QMutexLocker locker(&usersMutex);

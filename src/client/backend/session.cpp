@@ -1,4 +1,5 @@
 #include "session.h"
+#include "session_p.h"
 
 #include <Ice/Ice.h>
 #include <IceUtil/IceUtil.h>
@@ -7,227 +8,236 @@
 
 #include "QsLog.h"
 
-#include "Security.h"
-
 namespace sdcc
 {
 
-struct SessionPrivate : public sdc::ChatClientCallbackI {
-    SessionPrivate(Session *q, Ice::CommunicatorPtr c)
-        : communicator(c), q_ptr(q) { }
+void SessionPrivate::initChat(const sdc::StringSeq &cUsers,
+                              const std::string &chatID,
+                              const sdc::ByteSeq &sessionKeyEnc,
+                              const Ice::Current &)
+{
+    QLOG_TRACE() << __PRETTY_FUNCTION__;
+    Q_Q(Session);
 
-    void initChat(const sdc::StringSeq &cUsers, const std::string &chatID,
-                  const sdc::ByteSeq &sessionKeyEnc, const Ice::Current &) {
-        QLOG_TRACE() << __PRETTY_FUNCTION__;
-        Q_Q(Session);
+    QString key = QString::fromStdString(chatID);
+    QSharedPointer<Chat> cp;
 
-        QString key = QString::fromStdString(chatID);
-        QSharedPointer<Chat> cp;
+    sdc::ByteSeq sessionKey;
+    try {
+        sessionKey = user->decrypt(sessionKeyEnc);
+    } catch (const sdc::SecurityException &e) {
+        QLOG_ERROR() << QString("Could not decrypt session key for '%1'").arg(key);
+        return;
+    }
 
-        sdc::ByteSeq sessionKey;
-        try {
-            sessionKey = user->decrypt(sessionKeyEnc);
-        } catch (const sdc::SecurityException &e) {
-            QLOG_ERROR() << QString("Could not decrypt session key for '%1'").arg(key);
-            return;
+    QMutexLocker locker(&chatsMutex);
+    if (chats.contains(key)) {
+        QLOG_WARN() << QString("Received invitation for a chat we are already in ('%1')")
+                    .arg(key);
+        return;
+    }
+
+    cp = QSharedPointer<Chat>(new Chat(session, *q, key, sessionKey));
+    connect(cp.data(), SIGNAL( leaveChatCompleted(bool, QString) ),
+            this, SLOT( leaveChatCompletedSlot(bool, QString) ));
+
+    sdc::StringSeq::const_iterator i;
+    cp->addChatParticipant(user);
+    try {
+        for (i = cUsers.begin(); i < cUsers.end(); i++) {
+            cp->addChatParticipant(getUser(QString::fromStdString(*i)));
         }
+
+        chats[key] = cp;
+        emit q->invitationReceived(cp);
+    } catch (const sdc::UserHandlingException &e) {
+        QLOG_ERROR() << QString("Received invitation with invalid user, '%1', '%2'")
+                     .arg(key).arg(QString::fromStdString(*i));
+    } catch (const sdc::InterServerException &e) {
+        QLOG_ERROR() << QString("Received invitation with invalid user, '%1', '%2'")
+                     .arg(key).arg(QString::fromStdString(*i));
+    }
+}
+
+void SessionPrivate::addChatParticipant(const sdc::User &participant,
+                                        const std::string &chatID,
+                                        const Ice::Current &)
+{
+    QLOG_TRACE() << __PRETTY_FUNCTION__;
+
+    QSharedPointer<const User> usr(new User(participant));
+    QString key = QString::fromStdString(chatID);
+
+    QMutexLocker chatLocker(&chatsMutex);
+    if (!chats.contains(key)) {
+        QLOG_ERROR() << QString("New participant for nonexistant chat '%1'").arg(key);
+        return;
+    }
+
+    QMutexLocker userLocker(&usersMutex);
+    users[usr->getName()] = usr;
+
+    chats[key]->addChatParticipant(usr);
+}
+
+void SessionPrivate::removeChatParticipant(const sdc::User &/*participant*/,
+        const std::string &/*chatID*/,
+        const Ice::Current &)
+{
+    QLOG_TRACE() << __PRETTY_FUNCTION__;
+}
+
+void SessionPrivate::appendMessageToChat(const sdc::ByteSeq &message,
+        const std::string &chatID,
+        const sdc::User &participant,
+        const Ice::Current &)
+{
+    QLOG_TRACE() << __PRETTY_FUNCTION__;
+
+    QSharedPointer<const User> usr(new User(participant));
+
+    QMutexLocker chatLocker(&chatsMutex);
+    QString key = QString::fromStdString(chatID);
+    if (!chats.contains(key)) {
+        QLOG_ERROR() << QString("Received message for nonexistant chat '%1'").arg(key);
+        return;
+    }
+
+    QMutexLocker userLocker(&usersMutex);
+    users[usr->getName()] = usr;
+
+    chats[key]->receiveMessage(usr, message);
+}
+
+std::string SessionPrivate::echo(const std::string &message, const Ice::Current &)
+{
+    QLOG_TRACE() << __PRETTY_FUNCTION__;
+    return message;
+}
+
+void SessionPrivate::runRetrieveUser(const QString &username, const QObject *id)
+{
+    Q_Q(Session);
+    bool success = true;
+    QString message;
+    QSharedPointer<const User> usr;
+
+    try {
+        QMutexLocker locker(&chatsMutex);
+        usr = retrieveUser(username);
+    } catch (const sdc::UserHandlingException &e) {
+        success = false;
+        message = e.what.c_str();
+    } catch (const sdc::InterServerException &e) {
+        success = false;
+        message = e.what.c_str();
+    }
+
+    emit q->retrieveUserCompleted(usr, id, success, message);
+}
+
+void SessionPrivate::runInitChat()
+{
+    Q_Q(Session);
+    bool success = true;
+    QString message;
+    QSharedPointer<Chat> cp;
+
+    try {
+        QString key = QString::fromStdString(session->initChat());
+        sdc::Security s;
+        cp = QSharedPointer<Chat>(new Chat(session, *q, key,
+                                           s.genAESKey(SESSION_KEY_SIZE)));
+        connect(cp.data(), SIGNAL( leaveChatCompleted(bool, QString) ),
+                this, SLOT( leaveChatCompletedSlot(bool, QString) ));
 
         QMutexLocker locker(&chatsMutex);
-        if (chats.contains(key)) {
-            QLOG_WARN() << QString("Received invitation for a chat we are already in ('%1')")
-                        .arg(key);
-            return;
-        }
+        chats[key] = cp;
 
-        cp = QSharedPointer<Chat>(new Chat(session, *q, key, sessionKey));
-
-        sdc::StringSeq::const_iterator i;
         cp->addChatParticipant(user);
-        try {
-            for (i = cUsers.begin(); i < cUsers.end(); i++) {
-                cp->addChatParticipant(getUser(QString::fromStdString(*i)));
-            }
-
-            chats[key] = cp;
-            emit q->invitationReceived(cp);
-        } catch (const sdc::UserHandlingException &e) {
-            QLOG_ERROR() << QString("Received invitation with invalid user, '%1', '%2'")
-                         .arg(key).arg(QString::fromStdString(*i));
-        } catch (const sdc::InterServerException &e) {
-            QLOG_ERROR() << QString("Received invitation with invalid user, '%1', '%2'")
-                         .arg(key).arg(QString::fromStdString(*i));
-        }
+    } catch (const sdc::SessionException &e) {
+        success = false;
+        message = e.what.c_str();
+    } catch (const sdc::SecurityException &e) {
+        success = false;
+        message = e.what();
     }
 
-    void addChatParticipant(const sdc::User &participant,
-                            const std::string &chatID, const Ice::Current &) {
-        QLOG_TRACE() << __PRETTY_FUNCTION__;
+    emit q->initChatCompleted(cp, success, message);
+}
 
-        QSharedPointer<const User> usr(new User(participant));
-        QString key = QString::fromStdString(chatID);
+void SessionPrivate::runLogout()
+{
+    QLOG_TRACE() << __PRETTY_FUNCTION__;
 
-        QMutexLocker chatLocker(&chatsMutex);
-        if (!chats.contains(key)) {
-            QLOG_ERROR() << QString("New participant for nonexistant chat '%1'").arg(key);
-            return;
-        }
+    Q_Q(Session);
+    bool success = true;
+    QString message;
 
-        QMutexLocker userLocker(&usersMutex);
-        users[usr->getName()] = usr;
-
-        chats[key]->addChatParticipant(usr);
+    try {
+        session->logout();
+    } catch (const sdc::UserHandlingException &e) {
+        success = false;
+        message = e.what.c_str();
     }
 
-    void removeChatParticipant(const sdc::User &/*participant*/,
-                               const std::string &/*chatID*/, const Ice::Current &) {
-        QLOG_TRACE() << __PRETTY_FUNCTION__;
+    emit q->logoutCompleted(success, message);
+}
+
+void SessionPrivate::runDeleteUser(QSharedPointer<const User> user)
+{
+    Q_Q(Session);
+    bool success = true;
+    QString message;
+
+    try {
+        session->deleteUser(*user->getIceUser().data());
+    } catch (const sdc::UserHandlingException &e) {
+        success = false;
+        message = e.what.c_str();
     }
 
-    void appendMessageToChat(const sdc::ByteSeq &message, const std::string &chatID,
-                             const sdc::User &participant, const Ice::Current &) {
+    emit q->deleteUserCompleted(success, message);
+}
 
-        QLOG_TRACE() << __PRETTY_FUNCTION__;
+SessionPrivate::~SessionPrivate()
+{
+    if (communicator) {
+        communicator->destroy();
+    }
+}
 
-        QSharedPointer<const User> usr(new User(participant));
+/* Internal helper to get a User from the server and cache it. */
+QSharedPointer<const User> SessionPrivate::retrieveUser(const QString &username)
+{
+    QSharedPointer<const User> usr(new User(session->retrieveUser(
+            username.toStdString())));
 
-        QMutexLocker chatLocker(&chatsMutex);
-        QString key = QString::fromStdString(chatID);
-        if (!chats.contains(key)) {
-            QLOG_ERROR() << QString("Received message for nonexistant chat '%1'").arg(key);
-            return;
-        }
+    QMutexLocker locker(&usersMutex);
+    users[username] = usr;
+    return usr;
+}
 
-        QMutexLocker userLocker(&usersMutex);
-        users[usr->getName()] = usr;
-
-        chats[key]->receiveMessage(usr, message);
+/* Internal helper to get a User from the local cache. The server is only
+ * asked if the user is not in the cache. */
+QSharedPointer<const User> SessionPrivate::getUser(const QString &username)
+{
+    QMutexLocker locker(&usersMutex);
+    if (!users.contains(username)) {
+        locker.unlock();
+        return retrieveUser(username);
     }
 
-    std::string echo(const std::string &message, const Ice::Current &) {
-        QLOG_TRACE() << __PRETTY_FUNCTION__;
-        return message;
-    }
+    return users[username];
+}
 
-    void runRetrieveUser(const QString &username, const QObject *id) {
-        Q_Q(Session);
-        bool success = true;
-        QString message;
-        QSharedPointer<const User> usr;
-
-        try {
-            QMutexLocker locker(&chatsMutex);
-            usr = retrieveUser(username);
-        } catch (const sdc::UserHandlingException &e) {
-            success = false;
-            message = e.what.c_str();
-        } catch (const sdc::InterServerException &e) {
-            success = false;
-            message = e.what.c_str();
-        }
-
-        emit q->retrieveUserCompleted(usr, id, success, message);
-    }
-
-    void runInitChat() {
-        Q_Q(Session);
-        bool success = true;
-        QString message;
-        QSharedPointer<Chat> cp;
-
-        try {
-            QString key = QString::fromStdString(session->initChat());
-            sdc::Security s;
-            cp = QSharedPointer<Chat>(new Chat(session, *q, key,
-                                               s.genAESKey(SESSION_KEY_SIZE)));
-
-            QMutexLocker locker(&chatsMutex);
-            chats[key] = cp;
-
-            cp->addChatParticipant(user);
-        } catch (const sdc::SessionException &e) {
-            success = false;
-            message = e.what.c_str();
-        } catch (const sdc::SecurityException &e) {
-            success = false;
-            message = e.what();
-        }
-
-        emit q->initChatCompleted(cp, success, message);
-    }
-
-    void runLogout() {
-        Q_Q(Session);
-        bool success = true;
-        QString message;
-
-        try {
-            session->logout();
-        } catch (const sdc::UserHandlingException &e) {
-            success = false;
-            message = e.what.c_str();
-        }
-
-        emit q->logoutCompleted(success, message);
-    }
-
-    void runDeleteUser(QSharedPointer<const User> user) {
-        Q_Q(Session);
-        bool success = true;
-        QString message;
-
-        try {
-            session->deleteUser(*user->getIceUser().data());
-        } catch (const sdc::UserHandlingException &e) {
-            success = false;
-            message = e.what.c_str();
-        }
-
-        emit q->deleteUserCompleted(success, message);
-    }
-
-    ~SessionPrivate() {
-        if (communicator) {
-            communicator->destroy();
-        }
-    }
-
-    QMutex chatsMutex;
-    QMutex usersMutex;
-    QMap<QString, QSharedPointer<Chat> > chats;
-    QMap<QString, QSharedPointer<const User> > users;
-
-    Ice::CommunicatorPtr communicator;
-    sdc::SessionIPrx session;
-
-    QSharedPointer<const LoginUser> user;
-
-private:
-    Session *q_ptr;
-    Q_DECLARE_PUBLIC(Session)
-
-    /* Internal helper to get a User from the server and cache it. */
-    QSharedPointer<const User> retrieveUser(const QString &username) {
-        QSharedPointer<const User> usr(new User(session->retrieveUser(
-                username.toStdString())));
-
-        QMutexLocker locker(&usersMutex);
-        users[username] = usr;
-        return usr;
-    }
-
-    /* Internal helper to get a User from the local cache. The server is only
-     * asked if the user is not in the cache. */
-    QSharedPointer<const User> getUser(const QString &username) {
-        QMutexLocker locker(&usersMutex);
-        if (!users.contains(username)) {
-            locker.unlock();
-            return retrieveUser(username);
-        }
-
-        return users[username];
-    }
-
-}; // struct SessionPrivate
+void SessionPrivate::leaveChatCompletedSlot(bool /* success */,
+        const QString /* &message */)
+{
+    QLOG_TRACE() << __PRETTY_FUNCTION__;
+    QMutexLocker locker(&chatsMutex);
+    chats.remove(qobject_cast<Chat*>(this->sender())->getID());
+}
 
 const QSharedPointer<const User> Session::getUser() const
 {
