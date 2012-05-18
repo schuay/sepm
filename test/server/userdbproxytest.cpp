@@ -87,3 +87,8 @@ void UserDbProxyTests::testRetrieveUser()
     QCOMPARE(u.publicKey, user1.publicKey);
     QCOMPARE(p->getHash(), hash1);
 }
+
+void UserDbProxyTests::testRetrieveNonexistentUser()
+{
+    QVERIFY_THROW(UserDbProxy::getProxy("thisuserdoesntexist"), sdc::UserHandlingException);
+}
