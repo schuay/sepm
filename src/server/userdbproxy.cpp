@@ -44,12 +44,12 @@ void UserDbProxy::Connection::open()
 
     bool ok = db.open();
     if (!ok) {
-        throw UserHandlingException(db.lastError().text().toStdString());
+        throw sdc::UserHandlingException(db.lastError().text().toStdString());
     }
 }
 
 QSharedPointer<UserDbProxy> UserDbProxy::getProxy(const QString &user)
-throw (UserHandlingException)
+throw (sdc::UserHandlingException)
 {
     return QSharedPointer<UserDbProxy>(new UserDbProxy(user));
 }
@@ -109,7 +109,7 @@ void UserDbProxy::deleteUser()
     query.exec();
 }
 
-void UserDbProxy::createUser(User user, ByteSeq hash)
+void UserDbProxy::createUser(sdc::User user, sdc::ByteSeq hash)
 throw (sdc::UserHandlingException)
 {
     QSqlQuery query(QSqlDatabase::database(CONNECTION));
@@ -125,7 +125,7 @@ throw (sdc::UserHandlingException)
 }
 
 UserDbProxy::UserDbProxy(const QString &username)
-throw (UserHandlingException)
+throw (sdc::UserHandlingException)
 {
     connection.open();
 
@@ -136,7 +136,7 @@ throw (UserHandlingException)
     query.exec();
 
     if (query.size() == 0)
-        throw UserHandlingException("User not found.");
+        throw sdc::UserHandlingException("User not found.");
 
     assert(query.size() == 1);
     query.first();

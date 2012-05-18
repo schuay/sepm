@@ -4,8 +4,6 @@
 
 #include "SecureDistributedChat.h"
 
-using namespace sdc;
-
 namespace sdcs
 {
 
@@ -39,7 +37,7 @@ public:
      * the user could not be retrieved.
      */
     static QSharedPointer<UserDbProxy> getProxy(const QString &user)
-    throw (UserHandlingException);
+    throw (sdc::UserHandlingException);
 
     sdc::User getUser() const;
     sdc::ByteSeq getHash() const;
@@ -81,7 +79,7 @@ public:
     static void setPassword(const QString &password);
 
 private:
-    UserDbProxy(const QString &user) throw (UserHandlingException);
+    UserDbProxy(const QString &user) throw (sdc::UserHandlingException);
     UserDbProxy(const UserDbProxy &);
 
     sdc::User user;
