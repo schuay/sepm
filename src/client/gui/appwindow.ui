@@ -93,19 +93,25 @@
             </widget>
            </item>
            <item>
-            <widget class="QLineEdit" name="lineEdit"/>
+            <widget class="QLineEdit" name="lineEdit">
+             <property name="placeholderText">
+              <string>Contact</string>
+             </property>
+            </widget>
            </item>
           </layout>
          </item>
          <item>
-          <widget class="QLabel" name="label">
-           <property name="text">
+          <widget class="QGroupBox" name="groupBox">
+           <property name="title">
             <string>Contacts</string>
            </property>
+           <layout class="QHBoxLayout" name="horizontalLayout_2">
+            <item>
+             <widget class="QListWidget" name="lwChats"/>
+            </item>
+           </layout>
           </widget>
-         </item>
-         <item>
-          <widget class="QListWidget" name="lwChats"/>
          </item>
         </layout>
        </item>
