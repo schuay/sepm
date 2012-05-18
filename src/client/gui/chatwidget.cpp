@@ -2,7 +2,6 @@
 #include "ui_chatwidget.h"
 #include <iostream>
 #include <QtGui>
-#include "QsLog.h"
 
 ChatWidget::ChatWidget(QSharedPointer<Session> session,
                        QSharedPointer<Chat> chat, QWidget *parent) :
@@ -49,7 +48,6 @@ void ChatWidget::returnPressed()
  */
 void ChatWidget::messageReceived(QSharedPointer<const User> user, const QString &msg)
 {
-    QLOG_DEBUG() << msg;
     ui->tbChat->append(user->getName() + QString(": ") + msg);
 }
 
@@ -91,7 +89,6 @@ void ChatWidget::inviteCompleted(bool success, const QString &msg)
   */
 void ChatWidget::invite(QSharedPointer<const User> user, const QObject *id, bool success, const QString &msg)
 {
-    QLOG_DEBUG() << "Signal received";
     if(id != this)
         return;
     if(success) {

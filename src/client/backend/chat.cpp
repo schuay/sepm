@@ -4,6 +4,7 @@
 #include <QtConcurrentRun>
 
 #include "SecureDistributedChat.h"
+#include "QsLog.h"
 
 namespace sdcc
 {
@@ -98,6 +99,8 @@ void Chat::receiveMessage(QSharedPointer<const User> participant, const sdc::Byt
          * Unfortunately, we still need a cast from to char *. */
         unsigned char *umsg = &decMsg[0];
         QString msg = QString::fromUtf8(reinterpret_cast<char *>(umsg), decMsg.size());
+
+        QLOG_TRACE() << "Received message:" << msg;
 
         // TODO: What if we receive invalid UTF8 code points? QString doesn't
         // give us any information on this. This should only occur if other clients
