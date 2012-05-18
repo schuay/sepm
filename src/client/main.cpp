@@ -20,8 +20,8 @@ int main(int argc, char **argv)
         QsLogging::DestinationFactory::MakeDebugOutputDestination());
     logger.addDestination(debugDestination.get());
 
-    LoginDialog win;
-    win.show();
+    LoginDialog *win = new LoginDialog();
+    win->show();
 
     return a.exec();
 }

@@ -19,6 +19,7 @@ LoginDialog::LoginDialog(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::LoginDialog), busyWorkers(0)
 {
+    setAttribute(Qt::WA_DeleteOnClose, true);
     ui->setupUi(this);
     qRegisterMetaType<QSharedPointer<Session> >("QSharedPointer<Session>");
 
@@ -49,11 +50,10 @@ LoginDialog::LoginDialog(QWidget *parent) :
     ui->leUsername->setText(this->settings.getValue(settings.CUsername).toString());
 
     ui->groupBox_2->setCheckable(true);
-    if(ui->leUsername->text().isEmpty()){
-       onGroupCheckboxClicked(true);
-    }
-    else{
-       onGroupCheckboxClicked(false);
+    if(ui->leUsername->text().isEmpty()) {
+        onGroupCheckboxClicked(true);
+    } else {
+        onGroupCheckboxClicked(false);
     }
 
     QRect rect = QApplication::desktop()->availableGeometry();
@@ -67,13 +67,12 @@ void LoginDialog::onGroupCheckboxClicked(bool checked)
     ui->groupBox_2->setChecked( checked );
     ui->groupBox_2->setFlat( ! checked );
 
-    if(!checked){
-      ui->groupBox_2->setMaximumSize(60,20);
-      this->setMaximumHeight(100);
-    }
-    else{
-      ui->groupBox_2->setMaximumSize(16777215,16777215);
-      this->setMaximumHeight(480);
+    if(!checked) {
+        ui->groupBox_2->setMaximumSize(60,20);
+        this->setMaximumHeight(100);
+    } else {
+        ui->groupBox_2->setMaximumSize(16777215,16777215);
+        this->setMaximumHeight(480);
     }
 }
 
@@ -175,8 +174,7 @@ void LoginDialog::onConnectFinished(QSharedPointer<Session> session, bool succes
     if(success) {
         AppWindow * win = new AppWindow(0, session);
         win->show();
-        hide();
-        connect(win, SIGNAL(destroyed()), this, SLOT(show()));
+        close();
     } else {
         QMessageBox::warning(this, "Login Failed", msg);
     }
