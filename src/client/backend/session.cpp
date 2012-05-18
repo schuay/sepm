@@ -108,7 +108,7 @@ struct SessionPrivate : public sdc::ChatClientCallbackI {
         return message;
     }
 
-    void runRetrieveUser(const QString &username) {
+    void runRetrieveUser(const QString &username, const QObject *const id) {
         Q_Q(Session);
         bool success = true;
         QString message;
@@ -125,7 +125,7 @@ struct SessionPrivate : public sdc::ChatClientCallbackI {
             message = e.what.c_str();
         }
 
-        emit q->retrieveUserCompleted(usr, success, message);
+        emit q->retrieveUserCompleted(usr, id, success, message);
     }
 
     void runInitChat() {
@@ -288,11 +288,11 @@ void Session::deleteUser(QSharedPointer<const User> user)
     QtConcurrent::run(d, &SessionPrivate::runDeleteUser, user);
 }
 
-void Session::retrieveUser(const QString &username)
+void Session::retrieveUser(const QString &username, const QObject *const id)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
     Q_D(Session);
-    QtConcurrent::run(d, &SessionPrivate::runRetrieveUser, username);
+    QtConcurrent::run(d, &SessionPrivate::runRetrieveUser, username, id);
 }
 
 }

@@ -50,7 +50,7 @@ public:
      * User object will contain the user's public key.
      * username shall be in the form "user@server".
      */
-    void retrieveUser(const QString &username);
+    void retrieveUser(const QString &username, const QObject *const id);
 
     /**
      * Delete the given user from the server.
@@ -83,8 +83,8 @@ signals:
     /**
      * A user has been retrieved from the server.
      */
-    void retrieveUserCompleted(QSharedPointer<const User> user, bool success,
-                               const QString &msg);
+    void retrieveUserCompleted(QSharedPointer<const User> user, const QObject *const id,
+                               bool success, const QString &msg);
 
     /**
      * A user has been deleted from the server.
