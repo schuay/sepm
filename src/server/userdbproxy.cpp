@@ -97,7 +97,10 @@ sdc::ByteSeq UserDbProxy::getHash() const
 
 void UserDbProxy::deleteUser()
 {
-    throw UserHandlingException(); // Not implemented yet
+    QSqlQuery query(QSqlDatabase::database(CONNECTION));
+    query.prepare("delete from public.user where username = :username");
+    query.bindValue(":username", QString::fromStdString(user.ID));
+    query.exec();
 }
 
 UserDbProxy::UserDbProxy(const QString &username)
