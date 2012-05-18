@@ -89,16 +89,6 @@ private:
      * Wraps the QSqlDatabase object and closes it automatically on destruction.
      */
     static Connection connection;
-
-    /**
-     * Converts a QByteArray to a sdc::ByteSeq.
-     */
-    static sdc::ByteSeq toByteSeq(const QByteArray &array);
-
-    /**
-     * Converts an sdc::ByteSeq into a QByteArray.
-     */
-    static QByteArray fromByteSeq(const sdc::ByteSeq &seq);
 };
 
 }

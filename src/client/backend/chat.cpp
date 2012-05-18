@@ -3,6 +3,7 @@
 
 #include <QtConcurrentRun>
 
+#include "sdcHelper.h"
 #include "SecureDistributedChat.h"
 #include "QsLog.h"
 
@@ -96,11 +97,7 @@ void Chat::receiveMessage(QSharedPointer<const User> participant, const sdc::Byt
     try {
         sdc::Security s;
         sdc::ByteSeq decMsg = s.decryptAES(key, encMsg);
-
-        /* Vectors store contents contiguously, thus we can use it like an array.
-         * Unfortunately, we still need a cast from to char *. */
-        unsigned char *umsg = &decMsg[0];
-        QString msg = QString::fromUtf8(reinterpret_cast<char *>(umsg), decMsg.size());
+        QString msg = QString::fromStdString(sdc::sdcHelper::getBinaryString(decMsg));
 
         QLOG_TRACE() << "Received message:" << msg;
 

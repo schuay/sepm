@@ -8,6 +8,7 @@
 #include <assert.h>
 
 #include "QsLog.h"
+#include "sdcHelper.h"
 
 namespace sdcs
 {
@@ -55,18 +56,6 @@ throw(sdc::UserHandlingException)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
     return QSharedPointer<UserDbProxy>(new UserDbProxy(user));
-}
-
-sdc::ByteSeq UserDbProxy::toByteSeq(const QByteArray &array)
-{
-    const unsigned char *p = reinterpret_cast<const unsigned char *>(array.data());
-    return sdc::ByteSeq(p, p + array.size());
-}
-
-QByteArray UserDbProxy::fromByteSeq(const sdc::ByteSeq &seq)
-{
-    const char *p = reinterpret_cast<const char *>(&seq[0]);
-    return QByteArray(p, seq.size());
 }
 
 void UserDbProxy::setHost(const QString &host)
@@ -121,8 +110,8 @@ throw(sdc::UserHandlingException)
     query.prepare("insert into public.user(username, public_key, password_hash) "
                   "select :username, :public_key, :password_hash;");
     query.bindValue(":username", QString::fromStdString(user.ID));
-    query.bindValue(":public_key", fromByteSeq(user.publicKey));
-    query.bindValue(":password_hash", fromByteSeq(hash));
+    query.bindValue(":public_key", sdc::sdcHelper::byteSeqToByteArray(user.publicKey));
+    query.bindValue(":password_hash", sdc::sdcHelper::byteSeqToByteArray(hash));
 
     bool ok = query.exec();
     if (!ok)
@@ -147,8 +136,8 @@ throw(sdc::UserHandlingException)
     query.first();
 
     user.ID = username.toStdString();
-    user.publicKey = toByteSeq(query.value(1).toByteArray());
-    hash = toByteSeq(query.value(2).toByteArray());
+    user.publicKey = sdc::sdcHelper::byteArraytoByteSeq(query.value(1).toByteArray());
+    hash = sdc::sdcHelper::byteArraytoByteSeq(query.value(2).toByteArray());
 }
 
 }
