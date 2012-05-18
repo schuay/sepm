@@ -17,6 +17,7 @@ private slots:
     void testInvite();
     void testEchoMessage();
     void testTransmitMessage();
+    void testLeaveChat();
 
     /* This test is commented intentionally to show that this
      * behavior should actually be implemented. Currently, a repeated
