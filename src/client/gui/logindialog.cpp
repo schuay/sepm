@@ -13,7 +13,7 @@
 
 using namespace sdcc;
 
-Q_DECLARE_METATYPE(QSharedPointer<Session>);
+Q_DECLARE_METATYPE(QSharedPointer<Session>)
 
 LoginDialog::LoginDialog(QWidget *parent) :
     QMainWindow(parent),
@@ -50,11 +50,7 @@ LoginDialog::LoginDialog(QWidget *parent) :
     ui->leUsername->setText(this->settings.getValue(settings.CUsername).toString());
 
     ui->groupBox_2->setCheckable(true);
-    if(ui->leUsername->text().isEmpty()) {
-        onGroupCheckboxClicked(true);
-    } else {
-        onGroupCheckboxClicked(false);
-    }
+    onGroupCheckboxClicked(ui->leUsername->text().isEmpty());
 
     QRect rect = QApplication::desktop()->availableGeometry();
     this->move(rect.center() - this->rect().center());
