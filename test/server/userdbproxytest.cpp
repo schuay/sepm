@@ -2,7 +2,6 @@
 
 #include <QtTest/QTest>
 #include <QtTest/QSignalSpy>
-#include <QSqlQuery>
 
 #include "userdbproxy.h"
 #include "common.h"
@@ -28,7 +27,7 @@ void UserDbProxyTests::initTestCase()
     user1.publicKey = sdc::ByteSeq(pubkey, pubkey + sizeof(pubkey));
     hash1 = sdc::ByteSeq(hash, hash + sizeof(hash));
 
-    QSqlDatabase db = QSqlDatabase::addDatabase(DB_DRIVER);
+    db = QSqlDatabase::addDatabase(DB_DRIVER);
     db.setHostName(DB_HOST);
     db.setDatabaseName(DB_DATABASE);
     db.setUserName(DB_USER);
@@ -40,8 +39,38 @@ void UserDbProxyTests::initTestCase()
     query.exec("truncate table public.user;");
     query.exec("insert into public.user(username, public_key, password_hash) select 'test1', 'bla', 'bla';");
     query.exec("insert into public.user(username, public_key, password_hash) select 'test2', 'bla', 'bla';");
+    query.exec("insert into public.user(username, public_key, password_hash) select 'test3', 'bla', 'bla';");
+}
 
+
+void UserDbProxyTests::cleanupTestCase()
+{
     db.close();
+}
+
+void UserDbProxyTests::testDeleteExistentUser()
+{
+    QSharedPointer<UserDbProxy> p = UserDbProxy::getProxy("test2");
+    p->deleteUser();
+
+    QSqlQuery query(db);
+    query.exec("select * from public.user where username = 'test2';");
+
+    QCOMPARE(query.size(), 0);
+}
+
+void UserDbProxyTests::testDeleteNonexistentUser()
+{
+    QSharedPointer<UserDbProxy> p = UserDbProxy::getProxy("test3");
+    p->deleteUser();
+
+    QSqlQuery query(db);
+    query.exec("select * from public.user where username = 'test3';");
+
+    QCOMPARE(query.size(), 0);
+
+    /* This should not throw an exception (even though the user doesn't exist) */
+    p->deleteUser();
 }
 
 void UserDbProxyTests::testConnection()

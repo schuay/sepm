@@ -95,6 +95,11 @@ sdc::ByteSeq UserDbProxy::getHash() const
     return hash;
 }
 
+void UserDbProxy::deleteUser()
+{
+    throw UserHandlingException(); // Not implemented yet
+}
+
 UserDbProxy::UserDbProxy(const QString &username)
 throw (UserHandlingException)
 {
