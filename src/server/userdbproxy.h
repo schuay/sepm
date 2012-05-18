@@ -30,7 +30,8 @@ public:
     /**
      * Adds the user with the given salted password hash to the database.
      */
-    static void createUser(sdc::User user, sdc::ByteSeq hash);
+    static void createUser(sdc::User user, sdc::ByteSeq hash)
+    throw (sdc::UserHandlingException);
 
     /**
      * Returns a UserDbProxy instance which can be used to query and manipulate
@@ -95,6 +96,11 @@ private:
      * Converts a QByteArray to a sdc::ByteSeq.
      */
     static sdc::ByteSeq toByteSeq(const QByteArray &array);
+
+    /**
+     * Converts an sdc::ByteSeq into a QByteArray.
+     */
+    static QByteArray fromByteSeq(const sdc::ByteSeq &seq);
 };
 
 }

@@ -60,6 +60,12 @@ sdc::ByteSeq UserDbProxy::toByteSeq(const QByteArray &array)
     return sdc::ByteSeq(p, p + array.size());
 }
 
+QByteArray UserDbProxy::fromByteSeq(const sdc::ByteSeq &seq)
+{
+    const char *p = reinterpret_cast<const char *>(&seq[0]);
+    return QByteArray(p, seq.size());
+}
+
 void UserDbProxy::setHost(const QString &host)
 {
     connection.host = host;
@@ -104,9 +110,18 @@ void UserDbProxy::deleteUser()
 }
 
 void UserDbProxy::createUser(User user, ByteSeq hash)
+throw (sdc::UserHandlingException)
 {
-    Q_UNUSED(user);
-    Q_UNUSED(hash);
+    QSqlQuery query(QSqlDatabase::database(CONNECTION));
+    query.prepare("insert into public.user(username, public_key, password_hash) "
+                  "select :username, :public_key, :password_hash;");
+    query.bindValue(":username", QString::fromStdString(user.ID));
+    query.bindValue(":public_key", fromByteSeq(user.publicKey));
+    query.bindValue(":password_hash", fromByteSeq(hash));
+
+    bool ok = query.exec();
+    if (!ok)
+        throw sdc::UserHandlingException(query.lastError().text().toStdString());
 }
 
 UserDbProxy::UserDbProxy(const QString &username)
