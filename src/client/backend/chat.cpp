@@ -26,6 +26,7 @@ const QString &Chat::getID() const
 
 void Chat::invite(QSharedPointer<const User> user)
 {
+    QLOG_TRACE() << __PRETTY_FUNCTION__;
     QtConcurrent::run(this, &Chat::runInvite, user);
 }
 
@@ -56,6 +57,7 @@ void Chat::runInvite(QSharedPointer<const User> user)
 
 void Chat::send(const QString &msg)
 {
+    QLOG_TRACE() << __PRETTY_FUNCTION__;
     QtConcurrent::run(this, &Chat::runSend, msg);
 }
 
@@ -116,6 +118,7 @@ void Chat::receiveMessage(QSharedPointer<const User> participant, const sdc::Byt
 
 void Chat::leaveChat()
 {
+    QLOG_TRACE() << __PRETTY_FUNCTION__;
     QtConcurrent::run(this, &Chat::runLeaveChat);
 }
 
