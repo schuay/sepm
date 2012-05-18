@@ -37,18 +37,18 @@ ByteSeq sdcHelper::byteArraytoByteSeq(const QByteArray &arr)
 
 std::string sdcHelper::getServerFromID(const std::string &id)
 {
-    size_t seperator = id.find("@");
-    if (seperator != std::string::npos) {
-        return id.substr(seperator + 1);
+    size_t separator = id.find("@");
+    if (separator != std::string::npos) {
+        return id.substr(separator + 1);
     }
     return "";
 }
 
 std::string sdcHelper::getNameFromID(const std::string &id)
 {
-    size_t seperator = id.find("@");
-    if (seperator != std::string::npos) {
-        return id.substr(0, seperator);
+    size_t separator = id.find("@");
+    if (separator != std::string::npos) {
+        return id.substr(0, separator);
     }
     return "";
 }
