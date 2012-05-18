@@ -11,14 +11,15 @@ ChatWidget::ChatWidget(QSharedPointer<Session> session,
 {
     ui->setupUi(this);
 
-    qRegisterMetaType<User>("User");
+    qRegisterMetaType<QSharedPointer<const User> >("QSharedPointer<const User>");
 
     d_chat = chat;
     this->session = session;
 
     connect(ui->leMessage, SIGNAL(returnPressed()), this, SLOT(returnPressed()));
-    connect(d_chat.data(), SIGNAL(messageReceived(User, QString)), this, SLOT(messageReceived(User, QString)));
-    connect(d_chat.data(), SIGNAL(userJoined(User)), this, SLOT(userJoined(User)));
+    connect(d_chat.data(), SIGNAL(messageReceived(QSharedPointer<const User>, QString)), this,
+            SLOT(messageReceived(QSharedPointer<const User>, QString)));
+    connect(d_chat.data(), SIGNAL(userJoined(QSharedPointer<const User>)), this, SLOT(userJoined(QSharedPointer<const User>)));
     connect(d_chat.data(), SIGNAL(leaveChatCompleted(bool, QString)), this, SLOT(leaveChatCompleted(bool,QString)));
     connect(d_chat.data(), SIGNAL(inviteCompleted(bool, QString)), this, SLOT(inviteCompleted(bool, QString)));
     connect(d_chat.data(), SIGNAL(sendCompleted(bool, QString)), this, SLOT(sendCompleted(bool, QString)));
@@ -43,18 +44,18 @@ void ChatWidget::returnPressed()
 /**
  * Another user sent a message to the chat.
  */
-void ChatWidget::messageReceived(const User &user, const QString &msg)
+void ChatWidget::messageReceived(QSharedPointer<const User> user, const QString &msg)
 {
     QLOG_DEBUG() << msg;
-    ui->tbChat->append(user.getName() + QString(": ") + msg);
+    ui->tbChat->append(user->getName() + QString(": ") + msg);
 }
 
 /**
  * Another user joined the chat.
  */
-void ChatWidget::userJoined(const User &user)
+void ChatWidget::userJoined(QSharedPointer<const User> user)
 {
-    QListWidgetItem userWidget(user.getName(), ui->lwParticipants);
+    QListWidgetItem userWidget(user->getName(), ui->lwParticipants);
 }
 
 /**
@@ -85,9 +86,9 @@ void ChatWidget::inviteCompleted(bool success, const QString &msg)
 /**
   * Invites a user. The Format
   */
-void ChatWidget::invite(QSharedPointer<User> user)
+void ChatWidget::invite(QSharedPointer<const User> user)
 {
-    d_chat->invite(*(user.data()));
+    d_chat->invite(user);
 }
 
 /**

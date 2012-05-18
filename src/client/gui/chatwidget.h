@@ -29,16 +29,16 @@ public slots:
     /**
      * Another user sent a message to the chat.
      */
-    void messageReceived(const User &user, const QString &msg);
+    void messageReceived(QSharedPointer<const User> user, const QString &msg);
 
     /**
      * Another user joined the chat.
      */
-    void userJoined(const User &user);
+    void userJoined(QSharedPointer<const User> user);
     // /**
     //  * A user left the chat.
     //  */
-    // void userLeft(const User &user);
+    // void userLeft(QSharedPointer<const User> user);
 //
     /**
      * Response signal for leaveChat.
@@ -58,7 +58,7 @@ public slots:
     /**
       * Invites a user. The Format
       */
-    void invite(QSharedPointer<User> user);
+    void invite(QSharedPointer<const User> user);
 
 private slots:
     void returnPressed();

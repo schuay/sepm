@@ -63,9 +63,9 @@ void SettingsDialog::onDeleteAccountClicked()
     QMessageBox::StandardButton reply;
     reply = QMessageBox::question(this, tr("Delete Account"),
                                   "Are you really sure?",
-                                    QMessageBox::Yes | QMessageBox::No);
-    if (reply == QMessageBox::Yes){
-        d_session->deleteUser(*(d_session->getUser().data()));
+                                  QMessageBox::Yes | QMessageBox::No);
+    if (reply == QMessageBox::Yes) {
+        d_session->deleteUser(d_session->getUser());
         d_session->logout();
     }
 

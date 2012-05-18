@@ -128,8 +128,8 @@ void LoginDialog::onRegisterUserClicked()
     }
 
     try {
-        User u(ui->leUsername->text() + QString("@") + ui->leServer->text(),
-               ui->lePublicKey->text());
+        QSharedPointer<const User> u(new User(ui->leUsername->text() + QString("@")
+                                              + ui->leServer->text(), ui->lePublicKey->text()));
 
         addWorker();
         ui->pbRegister->setEnabled(false);
@@ -154,8 +154,9 @@ void LoginDialog::onConnectClicked()
     }
 
     try {
-        LoginUser u(ui->leUsername->text() + QString("@") + ui->leServer->text(),
-                    ui->lePublicKey->text(), ui->lePrivateKey->text());
+        QSharedPointer<const LoginUser> u(new LoginUser(ui->leUsername->text() + QString("@")
+                                          + ui->leServer->text(), ui->lePublicKey->text(),
+                                          ui->lePrivateKey->text()));
 
         sdcc::SessionManager::login(ui->leServer->text(),
                                     ui->leServerCert->text(),
