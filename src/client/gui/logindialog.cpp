@@ -6,6 +6,7 @@
 #include <QProgressBar>
 #include <Qt>
 
+
 #include "sessionmanager.h"
 #include "appwindow.h"
 #include <iostream>
@@ -31,6 +32,8 @@ LoginDialog::LoginDialog(QWidget *parent) :
     connect(ui->pbPublicKey, SIGNAL(clicked()), this, SLOT(onChoosePublicKeyClicked()));
     connect(ui->pbPrivateKey, SIGNAL(clicked()), this, SLOT(onChoosePrivateKeyClicked()));
     connect(ui->pbConnect, SIGNAL(clicked()), this, SLOT(onConnectClicked()));
+    connect(ui->groupBox_2,SIGNAL(toggled(bool)),this,SLOT(onGroupCheckboxClicked(bool)));
+
     connect(SessionManager::getInstance(),
             SIGNAL(loginCompleted(QSharedPointer<Session>,bool,QString)),
             this,
@@ -45,8 +48,33 @@ LoginDialog::LoginDialog(QWidget *parent) :
     ui->lePrivateKey->setText(this->settings.getValue(settings.CPrivateKeyPath).toString());
     ui->leUsername->setText(this->settings.getValue(settings.CUsername).toString());
 
+    ui->groupBox_2->setCheckable(true);
+    if(ui->leUsername->text().isEmpty()){
+       onGroupCheckboxClicked(true);
+    }
+    else{
+       onGroupCheckboxClicked(false);
+    }
+
     QRect rect = QApplication::desktop()->availableGeometry();
     this->move(rect.center() - this->rect().center());
+}
+
+void LoginDialog::onGroupCheckboxClicked(bool checked)
+{
+    QList<QWidget *> ch = ui->groupBox_2->findChildren<QWidget *>();
+    for( int i = 0; i < ch.count(); i++ ) ch[i]->setVisible( checked );
+    ui->groupBox_2->setChecked( checked );
+    ui->groupBox_2->setFlat( ! checked );
+
+    if(!checked){
+      ui->groupBox_2->setMaximumSize(60,20);
+      this->setMaximumHeight(100);
+    }
+    else{
+      ui->groupBox_2->setMaximumSize(16777215,16777215);
+      this->setMaximumHeight(480);
+    }
 }
 
 void LoginDialog::onChooseServerCertClicked()

@@ -18,8 +18,8 @@ AppWindow::AppWindow(QWidget *parent, QSharedPointer<Session> session) :
     d_session = session;
     ui->setupUi(this);
     setWindowTitle("SDCC");
-    connect(ui->pbInitiateChat, SIGNAL(clicked()), this, SLOT(onInitiateChatClicked()));
-    connect(ui->pbInvite, SIGNAL(clicked()), this, SLOT(onInviteClicked()));
+  //  connect(ui->pbInitiateChat, SIGNAL(clicked()), this, SLOT(onInitiateChatClicked()));
+  //  connect(ui->pbInvite, SIGNAL(clicked()), this, SLOT(onInviteClicked()));
     connect(ui->twChats, SIGNAL(tabCloseRequested(int)), this, SLOT(onTabCloseRequested(int)));
     connect(ui->pbOptions, SIGNAL(clicked()),
             this, SLOT(onSettingsButtonClicked()));
@@ -39,6 +39,7 @@ AppWindow::AppWindow(QWidget *parent, QSharedPointer<Session> session) :
 
     settingspopupmenu = new QMenu(this);
     settingspopupmenu->addAction("Add Contact",this,SLOT(onAddContactEntryClicked()));
+    settingspopupmenu->addAction("Start Chat",this,SLOT(onStartChatEntryClicked()));
     settingspopupmenu->addAction("Options",this,SLOT(onSettingsEntryClicked()));
     settingspopupmenu->addAction("Logout",this,SLOT(onLogoutClicked()));
     ui->pbOptions->setMenu(settingspopupmenu);
@@ -56,6 +57,23 @@ AppWindow::~AppWindow()
 
 void AppWindow::onAddContactEntryClicked()
 {
+    bool ok;
+        QString text = QInputDialog::getText(this, tr("Add Contact"),
+                                             tr("User name:"), QLineEdit::Normal,
+                                             "", &ok);
+        if (ok && !text.isEmpty()){
+
+        }
+}
+
+void AppWindow::onStartChatEntryClicked(){
+    bool ok;
+        QString text = QInputDialog::getText(this, tr("Start Chat with"),
+                                             tr("User name:"), QLineEdit::Normal,
+                                             "", &ok);
+        if (ok && !text.isEmpty()){
+
+        }
 
 }
 
@@ -95,6 +113,7 @@ void AppWindow::onInitiateChatClicked()
     d_session->initChat();
 }
 
+/*
 void AppWindow::onInviteClicked()
 {
     QString username = ui->leInvite->text();
@@ -105,7 +124,7 @@ void AppWindow::onInviteClicked()
                                  "Function is not yet implemented because it cannot be achieved "
                                  "with the current backend.");
     }
-}
+}*/
 
 void AppWindow::onSettingsEntryClicked()
 {

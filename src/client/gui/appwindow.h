@@ -30,11 +30,12 @@ public slots:
     void onChatOpened(QSharedPointer<Chat> chat);
     void onChatOpened(QSharedPointer<Chat> chat, bool success, const QString &msg);
     void onInitiateChatClicked();
-    void onInviteClicked();
+    //void onInviteClicked();
     void onSettingsButtonClicked();
     void onAddContactEntryClicked();
     void onSettingsEntryClicked();
     void onTabCloseRequested(int tab);
+    void onStartChatEntryClicked();
 private:
     Ui::AppWindow *ui;
     QSharedPointer<Session> d_session;

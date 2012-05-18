@@ -4,6 +4,7 @@
 #include <session.h>
 #include "settings.h"
 #include <QMainWindow>
+#include <QGroupBox>
 
 using namespace sdcc;
 
@@ -33,6 +34,7 @@ private slots:
     void onChooseServerCertClicked();
     void onChoosePrivateKeyClicked();
     void onChoosePublicKeyClicked();
+    void onGroupCheckboxClicked(bool checked);
 
 private:
     void addWorker();
