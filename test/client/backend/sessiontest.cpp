@@ -19,6 +19,7 @@ void SessionTests::initTestCase()
     qRegisterMetaType<QSharedPointer<Session> >("QSharedPointer<Session>");
     qRegisterMetaType<QSharedPointer<Chat> >("QSharedPointer<Chat>");
     qRegisterMetaType<QSharedPointer<const User> >("QSharedPointer<const User>");
+    qRegisterMetaType<const QObject*>("const QObject*");
 }
 
 void SessionTests::init()
@@ -120,7 +121,7 @@ void SessionTests::testDeleteUserUnauthorized()
 void SessionTests::retrieveUser()
 {
     QSignalSpy spy(session.data(), SIGNAL(retrieveUserCompleted(QSharedPointer<const User>,
-                                          const QObject *const, bool, QString)));
+                                          const QObject *, bool, QString)));
     QVERIFY(spy.isValid());
     QVERIFY(spy.isEmpty());
 
@@ -138,7 +139,7 @@ void SessionTests::retrieveUser()
 void SessionTests::retrieveUserNonexistent()
 {
     QSignalSpy spy(session.data(), SIGNAL(retrieveUserCompleted(QSharedPointer<const User>,
-                                          const QObject *const, bool, QString)));
+                                          const QObject *, bool, QString)));
     QVERIFY(spy.isValid());
     QVERIFY(spy.isEmpty());
 

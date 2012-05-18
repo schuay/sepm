@@ -58,7 +58,8 @@ public slots:
     /**
       * Invites a user. The Format
       */
-    void invite(QSharedPointer<const User> user);
+    void invite(QSharedPointer<const User> user, const QObject *id, bool success, const QString &msg);
+
 
 private slots:
     void returnPressed();
@@ -67,7 +68,7 @@ private:
     Ui::ChatWidget *ui;
     QSharedPointer<Chat> d_chat;
     QString lastMsg;
-    QSharedPointer<Session> session;
+    QSharedPointer<Session> d_session;
 };
 
 #endif // CHATWIDGET_H

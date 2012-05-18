@@ -14,7 +14,7 @@ ChatWidget::ChatWidget(QSharedPointer<Session> session,
     qRegisterMetaType<QSharedPointer<const User> >("QSharedPointer<const User>");
 
     d_chat = chat;
-    this->session = session;
+    d_session = session;
 
     connect(ui->leMessage, SIGNAL(returnPressed()), this, SLOT(returnPressed()));
     connect(d_chat.data(), SIGNAL(messageReceived(QSharedPointer<const User>, QString)), this,
@@ -23,6 +23,9 @@ ChatWidget::ChatWidget(QSharedPointer<Session> session,
     connect(d_chat.data(), SIGNAL(leaveChatCompleted(bool, QString)), this, SLOT(leaveChatCompleted(bool,QString)));
     connect(d_chat.data(), SIGNAL(inviteCompleted(bool, QString)), this, SLOT(inviteCompleted(bool, QString)));
     connect(d_chat.data(), SIGNAL(sendCompleted(bool, QString)), this, SLOT(sendCompleted(bool, QString)));
+    qRegisterMetaType<QObject*>("QObject*");
+    connect(d_session.data(), SIGNAL(retrieveUserCompleted(QSharedPointer<const User>, const QObject*, bool, QString)),
+            this, SLOT(invite(QSharedPointer<const User>,const QObject*,bool,QString)));
 }
 
 ChatWidget::ChatWidget(QWidget *parent) :
@@ -86,9 +89,16 @@ void ChatWidget::inviteCompleted(bool success, const QString &msg)
 /**
   * Invites a user. The Format
   */
-void ChatWidget::invite(QSharedPointer<const User> user)
+void ChatWidget::invite(QSharedPointer<const User> user, const QObject *id, bool success, const QString &msg)
 {
-    d_chat->invite(user);
+    QLOG_DEBUG() << "Signal received";
+    if(id != this)
+        return;
+    if(success) {
+        d_chat->invite(user);
+    } else {
+        QMessageBox::warning(this, "Couldn't find User", msg);
+    }
 }
 
 /**
