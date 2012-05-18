@@ -22,7 +22,10 @@ public:
         CCertPath,
         CPublicKeyPath,
         CPrivateKeyPath,
-        CUsername
+        CUsername,
+        SCertPath,
+        SCertPrivPath,
+        SHostname
     };
 
     /**
