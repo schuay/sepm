@@ -119,16 +119,17 @@ void SessionTests::testDeleteUserUnauthorized()
 
 void SessionTests::retrieveUser()
 {
-    QSignalSpy spy(session.data(), SIGNAL(retrieveUserCompleted(QSharedPointer<const User> ,bool, QString)));
+    QSignalSpy spy(session.data(), SIGNAL(retrieveUserCompleted(QSharedPointer<const User>,
+                                          const QObject *const, bool, QString)));
     QVERIFY(spy.isValid());
     QVERIFY(spy.isEmpty());
 
-    session->retrieveUser("fefeb10c@selinux.inso.tuwien.ac.at");
+    session->retrieveUser("fefeb10c@selinux.inso.tuwien.ac.at", this);
     waitForResult(spy);
 
     QCOMPARE(spy.count(), 1);
     QList<QVariant> arguments = spy.takeFirst();
-    QVERIFY2(arguments.at(1) == true, arguments.at(2).toString().toStdString().c_str());
+    QVERIFY2(arguments.at(2) == true, arguments.at(3).toString().toStdString().c_str());
 
     QSharedPointer<const User> usr = arguments.at(0).value<QSharedPointer<const User> >();
     QCOMPARE(usr.data()->getName(), QString("fefeb10c@selinux.inso.tuwien.ac.at"));
@@ -136,14 +137,15 @@ void SessionTests::retrieveUser()
 
 void SessionTests::retrieveUserNonexistent()
 {
-    QSignalSpy spy(session.data(), SIGNAL(retrieveUserCompleted(QSharedPointer<const User> ,bool, QString)));
+    QSignalSpy spy(session.data(), SIGNAL(retrieveUserCompleted(QSharedPointer<const User>,
+                                          const QObject *const, bool, QString)));
     QVERIFY(spy.isValid());
     QVERIFY(spy.isEmpty());
 
-    session->retrieveUser("thisuserbetternotexist@selinux.inso.tuwien.ac.at");
+    session->retrieveUser("thisuserbetternotexist@selinux.inso.tuwien.ac.at", this);
     waitForResult(spy);
 
     QCOMPARE(spy.count(), 1);
     QList<QVariant> arguments = spy.takeFirst();
-    QVERIFY2(arguments.at(1) == false, arguments.at(2).toString().toStdString().c_str());
+    QVERIFY2(arguments.at(2) == false, arguments.at(3).toString().toStdString().c_str());
 }
