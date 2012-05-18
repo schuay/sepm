@@ -7,6 +7,8 @@
 
 #include <assert.h>
 
+#include "QsLog.h"
+
 namespace sdcs
 {
 
@@ -51,6 +53,7 @@ void UserDbProxy::Connection::open()
 QSharedPointer<UserDbProxy> UserDbProxy::getProxy(const QString &user)
 throw (sdc::UserHandlingException)
 {
+    QLOG_TRACE() << __PRETTY_FUNCTION__;
     return QSharedPointer<UserDbProxy>(new UserDbProxy(user));
 }
 
@@ -103,6 +106,7 @@ sdc::ByteSeq UserDbProxy::getHash() const
 
 void UserDbProxy::deleteUser()
 {
+    QLOG_TRACE() << __PRETTY_FUNCTION__;
     QSqlQuery query(QSqlDatabase::database(CONNECTION));
     query.prepare("delete from public.user where username = :username");
     query.bindValue(":username", QString::fromStdString(user.ID));
@@ -112,6 +116,7 @@ void UserDbProxy::deleteUser()
 void UserDbProxy::createUser(sdc::User user, sdc::ByteSeq hash)
 throw (sdc::UserHandlingException)
 {
+    QLOG_TRACE() << __PRETTY_FUNCTION__;
     QSqlQuery query(QSqlDatabase::database(CONNECTION));
     query.prepare("insert into public.user(username, public_key, password_hash) "
                   "select :username, :public_key, :password_hash;");

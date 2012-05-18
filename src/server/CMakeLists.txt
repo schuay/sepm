@@ -14,6 +14,15 @@ add_library(serverlib STATIC
         userdbproxy.cpp
 )
 
+target_link_libraries(serverlib
+        Shared
+        ${ZeroCIce_LIBRARIES}
+        ${QT_LIBRARIES}
+        ${QT_QTTEST_LIBRARY}
+        ${QCA2_LIBRARIES}
+        ${CMAKE_THREAD_LIBS_INIT}
+)
+
 add_executable(server
         main.cpp
 )
