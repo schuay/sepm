@@ -47,7 +47,7 @@ public:
      * and userJoined() will be received.
      * Returns immediately.
      */
-    void invite(const User &user);
+    void invite(QSharedPointer<const User> user);
 
     /**
      * Send a message to the chat.
@@ -58,19 +58,19 @@ public:
     /**
      * Retrieves a list of the users currently in this chat.
      */
-    QList<QSharedPointer<User> > getUserList();
+    QList<QSharedPointer<const User> > getUserList();
 
 signals:
 
     /**
      * Another user sent a message to the chat.
      */
-    void messageReceived(const User &user, const QString &msg);
+    void messageReceived(QSharedPointer<const User> user, const QString &msg);
 
     /**
      * Another user joined the chat.
      */
-    void userJoined(const User &user);
+    void userJoined(QSharedPointer<const User> user);
 
     /**
      * Response signal for leaveChat.
@@ -90,7 +90,7 @@ signals:
     /**
      * A user left the chat.
      */
-    void userLeft(const User &user);
+    void userLeft(QSharedPointer<const User> user);
 
 private:
     /* Prevent unintended construction of instances by user. */
@@ -102,7 +102,7 @@ private:
      * All users in the chat.
      */
     QMutex usersMutex;
-    QMap<QString, QSharedPointer<User> > users;
+    QMap<QString, QSharedPointer<const User> > users;
 
     /**
      * The ID of the chat.
@@ -124,10 +124,10 @@ private:
      */
     sdc::ByteSeq key;
 
-    void runInvite(const User &user);
+    void runInvite(QSharedPointer<const User> user);
     void runSend(const QString &msg);
-    void receiveMessage(const User &participant, const sdc::ByteSeq &encMsg);
-    void addChatParticipant(QSharedPointer<User> participant);
+    void receiveMessage(QSharedPointer<const User> participant, const sdc::ByteSeq &encMsg);
+    void addChatParticipant(QSharedPointer<const User> participant);
     void removeChatParticipant(const QString participant);
 };
 

@@ -13,7 +13,7 @@ Chat::Chat(sdc::SessionIPrx sessionPrx, Session &session,
     : chatID(chatID), session(session), sessionPrx(sessionPrx), key(key)
 {
     QMutexLocker locker(&usersMutex);
-    QSharedPointer<User> usr = session.getUser();
+    QSharedPointer<const User> usr = session.getUser();
     users[usr->getName()] = usr;
 }
 
@@ -23,17 +23,17 @@ const QString &Chat::getID() const
     return chatID;
 }
 
-void Chat::invite(const User &user)
+void Chat::invite(QSharedPointer<const User> user)
 {
     QtConcurrent::run(this, &Chat::runInvite, user);
 }
 
-void Chat::runInvite(const User &user)
+void Chat::runInvite(QSharedPointer<const User> user)
 {
     bool success = true;
     QString message;
 
-    sdc::User sdcUser = *user.getIceUser().data();
+    sdc::User sdcUser = *user->getIceUser().data();
     sdc::Security s;
 
     try {
@@ -88,7 +88,7 @@ void Chat::runSend(const QString &msg)
     emit sendCompleted(success, message);
 }
 
-void Chat::receiveMessage(const User &participant, const sdc::ByteSeq &encMsg)
+void Chat::receiveMessage(QSharedPointer<const User> participant, const sdc::ByteSeq &encMsg)
 {
     try {
         sdc::Security s;
@@ -111,14 +111,14 @@ void Chat::receiveMessage(const User &participant, const sdc::ByteSeq &encMsg)
 
 }
 
-void Chat::addChatParticipant(QSharedPointer<User> participant)
+void Chat::addChatParticipant(QSharedPointer<const User> participant)
 {
     QMutexLocker locker(&usersMutex);
     users[participant->getName()] = participant;
-    emit userJoined(*participant);
+    emit userJoined(participant);
 }
 
-QList<QSharedPointer<User> > Chat::getUserList()
+QList<QSharedPointer<const User> > Chat::getUserList()
 {
     QMutexLocker locker(&usersMutex);
     return users.values();

@@ -55,12 +55,12 @@ public:
     /**
      * Delete the given user from the server.
      */
-    void deleteUser(const User &user);
+    void deleteUser(QSharedPointer<const User> user);
 
     /**
      * Retrieve the user of this session.
      */
-    const QSharedPointer<User> getUser() const;
+    const QSharedPointer<const User> getUser() const;
 
 signals:
 
@@ -83,7 +83,7 @@ signals:
     /**
      * A user has been retrieved from the server.
      */
-    void retrieveUserCompleted(QSharedPointer<User> user, bool success,
+    void retrieveUserCompleted(QSharedPointer<const User> user, bool success,
                                const QString &msg);
 
     /**
@@ -94,7 +94,8 @@ signals:
 
 private:
     /* Prevent unintended construction of instances by user. */
-    Session(const LoginUser &user, const QString &pwd, sdc::AuthenticationIPrx auth);
+    Session(QSharedPointer<const LoginUser> user, const QString &pwd,
+            sdc::AuthenticationIPrx auth);
     Session(const Session &);
 
     SessionPrivate *d_ptr;

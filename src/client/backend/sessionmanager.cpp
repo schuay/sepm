@@ -89,7 +89,7 @@ SessionManager *SessionManager::getInstance()
 }
 
 void SessionManager::login(const QString &serverName, const QString &serverCertPath,
-                           const LoginUser &usr, const QString &pwd)
+                           QSharedPointer<const LoginUser> usr, const QString &pwd)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
     QtConcurrent::run(&instance, &SessionManager::runLogin,
@@ -97,7 +97,7 @@ void SessionManager::login(const QString &serverName, const QString &serverCertP
 }
 
 void SessionManager::runLogin(const QString &serverName, const QString &serverCertPath,
-                              const LoginUser &usr, const QString &pwd)
+                              QSharedPointer<const LoginUser> usr, const QString &pwd)
 {
     bool success;
     QString msg;
@@ -125,7 +125,7 @@ out:
 
 void SessionManager::registerUser(const QString &serverName,
                                   const QString &serverCertPath,
-                                  const User &usr, const QString &pwd)
+                                  QSharedPointer<const User> usr, const QString &pwd)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
     QtConcurrent::run(&instance, &SessionManager::runRegisterUser,
@@ -134,7 +134,7 @@ void SessionManager::registerUser(const QString &serverName,
 
 void SessionManager::runRegisterUser(const QString &serverName,
                                      const QString &serverCertPath,
-                                     const User &usr, const QString &pwd)
+                                     QSharedPointer<const User> usr, const QString &pwd)
 {
     bool success;
     QString msg;
@@ -146,7 +146,7 @@ void SessionManager::runRegisterUser(const QString &serverName,
         if (!success)
             goto out;
 
-        QSharedPointer<sdc::User> usrPtr = usr.getIceUser();
+        QSharedPointer<sdc::User> usrPtr = usr->getIceUser();
         commWrapper.auth->registerUser(*(usrPtr.data()), pwd.toStdString());
     } catch (const sdc::SDCException &e) {
         msg = e.what.c_str();

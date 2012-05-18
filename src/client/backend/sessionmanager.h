@@ -63,14 +63,14 @@ public:
      * serverCertPath is the local path to the server's public key.
      */
     static void login(const QString &serverName,
-                      const QString &serverCertPath, const LoginUser &usr,
+                      const QString &serverCertPath, QSharedPointer<const LoginUser> usr,
                       const QString &pwd);
 
     /**
      * Register a new user on the server.
      */
     static void registerUser(const QString &serverName,
-                             const QString &serverCertPath, const User &usr,
+                             const QString &serverCertPath, QSharedPointer<const User> usr,
                              const QString &pwd);
 
     /**
@@ -107,10 +107,10 @@ private:
      */
     void runTestConnection(const QString &serverName);
     void runLogin(const QString &serverName, const QString &serverCertPath,
-                  const LoginUser &usr, const QString &pwd);
+                  QSharedPointer<const LoginUser> usr, const QString &pwd);
     void runRegisterUser(const QString &serverName,
                          const QString &serverCertPath,
-                         const User &usr, const QString &pwd);
+                         QSharedPointer<const User> usr, const QString &pwd);
 };
 
 }

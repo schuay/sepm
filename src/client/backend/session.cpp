@@ -63,7 +63,7 @@ struct SessionPrivate : public sdc::ChatClientCallbackI {
                             const std::string &chatID, const Ice::Current &) {
         QLOG_TRACE() << __PRETTY_FUNCTION__;
 
-        QSharedPointer<User> usr(new User(participant));
+        QSharedPointer<const User> usr(new User(participant));
         QString key = QString::fromStdString(chatID);
 
         QMutexLocker chatLocker(&chatsMutex);
@@ -88,7 +88,7 @@ struct SessionPrivate : public sdc::ChatClientCallbackI {
 
         QLOG_TRACE() << __PRETTY_FUNCTION__;
 
-        QSharedPointer<User> usr(new User(participant));
+        QSharedPointer<const User> usr(new User(participant));
 
         QMutexLocker chatLocker(&chatsMutex);
         QString key = QString::fromStdString(chatID);
@@ -100,7 +100,7 @@ struct SessionPrivate : public sdc::ChatClientCallbackI {
         QMutexLocker userLocker(&usersMutex);
         users[usr->getName()] = usr;
 
-        chats[key]->receiveMessage(*usr.data(), message);
+        chats[key]->receiveMessage(usr, message);
     }
 
     std::string echo(const std::string &message, const Ice::Current &) {
@@ -112,7 +112,7 @@ struct SessionPrivate : public sdc::ChatClientCallbackI {
         Q_Q(Session);
         bool success = true;
         QString message;
-        QSharedPointer<User> usr;
+        QSharedPointer<const User> usr;
 
         try {
             QMutexLocker locker(&chatsMutex);
@@ -170,13 +170,13 @@ struct SessionPrivate : public sdc::ChatClientCallbackI {
         emit q->logoutCompleted(success, message);
     }
 
-    void runDeleteUser(const User &user) {
+    void runDeleteUser(QSharedPointer<const User> user) {
         Q_Q(Session);
         bool success = true;
         QString message;
 
         try {
-            session->deleteUser(*user.getIceUser().data());
+            session->deleteUser(*user->getIceUser().data());
         } catch (const sdc::UserHandlingException &e) {
             success = false;
             message = e.what.c_str();
@@ -194,21 +194,21 @@ struct SessionPrivate : public sdc::ChatClientCallbackI {
     QMutex chatsMutex;
     QMutex usersMutex;
     QMap<QString, QSharedPointer<Chat> > chats;
-    QMap<QString, QSharedPointer<User> > users;
+    QMap<QString, QSharedPointer<const User> > users;
 
     Ice::CommunicatorPtr communicator;
     sdc::SessionIPrx session;
 
-    QSharedPointer<LoginUser> user;
+    QSharedPointer<const LoginUser> user;
 
 private:
     Session *q_ptr;
     Q_DECLARE_PUBLIC(Session)
 
     /* Internal helper to get a User from the server and cache it. */
-    QSharedPointer<User> retrieveUser(const QString &username) {
-        QSharedPointer<User> usr(new User(session->retrieveUser(
-                                              username.toStdString())));
+    QSharedPointer<const User> retrieveUser(const QString &username) {
+        QSharedPointer<const User> usr(new User(session->retrieveUser(
+                username.toStdString())));
 
         QMutexLocker locker(&usersMutex);
         users[username] = usr;
@@ -217,7 +217,7 @@ private:
 
     /* Internal helper to get a User from the local cache. The server is only
      * asked if the user is not in the cache. */
-    QSharedPointer<User> getUser(const QString &username) {
+    QSharedPointer<const User> getUser(const QString &username) {
         QMutexLocker locker(&usersMutex);
         if (!users.contains(username)) {
             locker.unlock();
@@ -229,7 +229,7 @@ private:
 
 }; // struct SessionPrivate
 
-const QSharedPointer<User> Session::getUser() const
+const QSharedPointer<const User> Session::getUser() const
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
     Q_D(const Session);
@@ -237,14 +237,15 @@ const QSharedPointer<User> Session::getUser() const
     return d->user;
 }
 
-Session::Session(const LoginUser &user, const QString &pwd, sdc::AuthenticationIPrx auth)
+Session::Session(QSharedPointer<const LoginUser> user, const QString &pwd,
+                 sdc::AuthenticationIPrx auth)
     : d_ptr(new SessionPrivate(this, auth->ice_getCommunicator()))
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
     Q_D(Session);
 
-    sdc::User sdcUser = *user.getIceUser().data();
-    d->user = QSharedPointer<LoginUser> (new LoginUser(user));
+    sdc::User sdcUser = *user->getIceUser().data();
+    d->user = user;
 
     Ice::ConnectionPtr connection = auth->ice_getConnection();
     Ice::ObjectAdapterPtr adapter = connection->getAdapter();
@@ -280,7 +281,7 @@ void Session::logout()
     QtConcurrent::run(d, &SessionPrivate::runLogout);
 }
 
-void Session::deleteUser(const User &user)
+void Session::deleteUser(QSharedPointer<const User> user)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
     Q_D(Session);
