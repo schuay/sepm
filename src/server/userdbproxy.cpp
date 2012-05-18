@@ -103,6 +103,12 @@ void UserDbProxy::deleteUser()
     query.exec();
 }
 
+void UserDbProxy::createUser(User user, ByteSeq hash)
+{
+    Q_UNUSED(user);
+    Q_UNUSED(hash);
+}
+
 UserDbProxy::UserDbProxy(const QString &username)
 throw (UserHandlingException)
 {

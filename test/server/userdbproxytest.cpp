@@ -73,6 +73,36 @@ void UserDbProxyTests::testDeleteNonexistentUser()
     p->deleteUser();
 }
 
+void UserDbProxyTests::testCreateUser()
+{
+    const unsigned char pub[] = "abcd";
+    const unsigned char hash[] = "abcd";
+
+    sdc::User u;
+    u.ID = "test99";
+    u.publicKey = sdc::ByteSeq(pub, pub + sizeof(pub));
+
+    UserDbProxy::createUser(u, sdc::ByteSeq(hash, hash + sizeof(hash)));
+
+    QSqlQuery query(db);
+    query.exec("select * from public.user where username = 'test99';");
+
+    QCOMPARE(query.size(), 1);
+}
+
+void UserDbProxyTests::testCreateExistingUser()
+{
+    const unsigned char pub[] = "abcd";
+    const unsigned char hash[] = "abcd";
+
+    sdc::User u;
+    u.ID = "test99";
+    u.publicKey = sdc::ByteSeq(pub, pub + sizeof(pub));
+
+    QVERIFY_THROW(UserDbProxy::createUser(u, sdc::ByteSeq(hash, hash + sizeof(hash))),
+                  sdc::UserHandlingException);
+}
+
 void UserDbProxyTests::testConnection()
 {
     QSharedPointer<UserDbProxy> p = UserDbProxy::getProxy(QString::fromStdString(user1.ID));

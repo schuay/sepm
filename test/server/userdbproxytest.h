@@ -14,6 +14,8 @@ private slots:
     void testRetrieveNonexistentUser();
     void testDeleteExistentUser();
     void testDeleteNonexistentUser();
+    void testCreateUser();
+    void testCreateExistingUser();
     void cleanupTestCase();
 
 private:
