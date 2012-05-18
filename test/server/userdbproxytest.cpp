@@ -36,10 +36,10 @@ void UserDbProxyTests::initTestCase()
     QVERIFY(db.open());
 
     QSqlQuery query;
-    query.exec("truncate table public.user;");
-    query.exec("insert into public.user(username, public_key, password_hash) select 'test1', 'bla', 'bla';");
-    query.exec("insert into public.user(username, public_key, password_hash) select 'test2', 'bla', 'bla';");
-    query.exec("insert into public.user(username, public_key, password_hash) select 'test3', 'bla', 'bla';");
+    QVERIFY(query.exec("truncate table public.user cascade;"));
+    QVERIFY(query.exec("insert into public.user(username, public_key, password_hash) select 'test1', 'bla', 'bla';"));
+    QVERIFY(query.exec("insert into public.user(username, public_key, password_hash) select 'test2', 'bla', 'bla';"));
+    QVERIFY(query.exec("insert into public.user(username, public_key, password_hash) select 'test3', 'bla', 'bla';"));
 }
 
 
