@@ -10,7 +10,7 @@ const QString &User::getName() const
 }
 
 User::User(const QString &name, const QString &publicKeyPath)
-throw (sdc::SecurityException)
+throw(sdc::SecurityException)
 {
     this->name = name;
     sdc::Security s;

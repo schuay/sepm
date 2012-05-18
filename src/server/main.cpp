@@ -25,7 +25,7 @@ int main(int argc, char **argv)
     QCoreApplication::setApplicationName("sdcs");
 
     /* Init logger */
-    QsLogging::Logger& logger = QsLogging::Logger::instance();
+    QsLogging::Logger &logger = QsLogging::Logger::instance();
     logger.setLoggingLevel(QsLogging::TraceLevel);
 
     QsLogging::DestinationPtr debugDestination(

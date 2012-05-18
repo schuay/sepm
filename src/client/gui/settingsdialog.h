@@ -18,7 +18,7 @@ class SettingsDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit SettingsDialog(QWidget *parent = 0,QSharedPointer<Session> session=QSharedPointer<Session>());
+    explicit SettingsDialog(QWidget *parent = 0, QSharedPointer<Session> session = QSharedPointer<Session>());
     ~SettingsDialog();
 private slots:
     void onChoosePrivateKeyClicked();

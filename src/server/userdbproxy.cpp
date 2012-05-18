@@ -51,7 +51,7 @@ void UserDbProxy::Connection::open()
 }
 
 QSharedPointer<UserDbProxy> UserDbProxy::getProxy(const QString &user)
-throw (sdc::UserHandlingException)
+throw(sdc::UserHandlingException)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
     return QSharedPointer<UserDbProxy>(new UserDbProxy(user));
@@ -114,7 +114,7 @@ void UserDbProxy::deleteUser()
 }
 
 void UserDbProxy::createUser(sdc::User user, sdc::ByteSeq hash)
-throw (sdc::UserHandlingException)
+throw(sdc::UserHandlingException)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
     QSqlQuery query(QSqlDatabase::database(CONNECTION));
@@ -130,7 +130,7 @@ throw (sdc::UserHandlingException)
 }
 
 UserDbProxy::UserDbProxy(const QString &username)
-throw (sdc::UserHandlingException)
+throw(sdc::UserHandlingException)
 {
     connection.open();
 

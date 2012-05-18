@@ -38,13 +38,13 @@ class LoggerImpl; // d pointer
 class Logger
 {
 public:
-    static Logger& instance() {
+    static Logger &instance() {
         static Logger staticLog;
         return staticLog;
     }
 
     //! Adds a log message destination. Don't add null destinations.
-    void addDestination(Destination* destination);
+    void addDestination(Destination *destination);
     //! Logging at a level < 'newLevel' will be ignored
     void setLoggingLevel(Level newLevel);
     //! The default level is INFO
@@ -59,7 +59,7 @@ public:
             level(logLevel),
             qtDebug(&buffer) {}
         ~Helper();
-        QDebug& stream() {
+        QDebug &stream() {
             return qtDebug;
         }
 
@@ -73,13 +73,13 @@ public:
 
 private:
     Logger();
-    Logger(const Logger&);
-    Logger& operator=(const Logger&);
+    Logger(const Logger &);
+    Logger &operator=(const Logger &);
     ~Logger();
 
-    void write(const QString& message, Level level);
+    void write(const QString &message, Level level);
 
-    LoggerImpl* d;
+    LoggerImpl *d;
 };
 
 } // end namespace

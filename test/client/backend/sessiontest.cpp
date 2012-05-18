@@ -19,14 +19,14 @@ void SessionTests::initTestCase()
     qRegisterMetaType<QSharedPointer<Session> >("QSharedPointer<Session>");
     qRegisterMetaType<QSharedPointer<Chat> >("QSharedPointer<Chat>");
     qRegisterMetaType<QSharedPointer<const User> >("QSharedPointer<const User>");
-    qRegisterMetaType<const QObject*>("const QObject*");
+    qRegisterMetaType<const QObject *>("const QObject*");
 }
 
 void SessionTests::init()
 {
     SessionManager *sessionManager = SessionManager::getInstance();
     QSignalSpy spy(sessionManager,
-                   SIGNAL(loginCompleted(QSharedPointer<Session>,bool,QString)));
+                   SIGNAL(loginCompleted(QSharedPointer<Session>, bool, QString)));
     QVERIFY(spy.isValid());
     QVERIFY(spy.isEmpty());
 

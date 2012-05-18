@@ -28,33 +28,33 @@ AppWindow::AppWindow(QWidget *parent, QSharedPointer<Session> session) :
     connect(d_session.data(),
             SIGNAL(logoutCompleted(bool, QString)),
             this,
-            SLOT(onLogoutComplete(bool,QString)));
+            SLOT(onLogoutComplete(bool, QString)));
     connect(d_session.data(),
-            SIGNAL(deleteUserCompleted(bool,QString)),
+            SIGNAL(deleteUserCompleted(bool, QString)),
             this,
-            SLOT(onLogoutComplete(bool,QString)));
+            SLOT(onLogoutComplete(bool, QString)));
     connect(d_session.data(),
             SIGNAL(initChatCompleted(QSharedPointer<Chat>, bool, QString)),
             this,
-            SLOT(onChatOpened(QSharedPointer<Chat>,bool,QString)));
+            SLOT(onChatOpened(QSharedPointer<Chat>, bool, QString)));
     connect(d_session.data(),
             SIGNAL(invitationReceived(QSharedPointer<Chat>)),
             this,
             SLOT(onChatOpened(QSharedPointer<Chat>)));
     connect(d_session.data(),
-            SIGNAL(retrieveUserCompleted(QSharedPointer<const User>, const QObject*, bool, QString)),
+            SIGNAL(retrieveUserCompleted(QSharedPointer<const User>, const QObject *, bool, QString)),
             this,
-            SLOT(onAddUserReturn(QSharedPointer<const User>,const QObject*,bool,QString)));
+            SLOT(onAddUserReturn(QSharedPointer<const User>, const QObject *, bool, QString)));
     connect(d_session.data(),
-            SIGNAL(retrieveUserCompleted(QSharedPointer<const User>, const QObject*, bool, QString)),
+            SIGNAL(retrieveUserCompleted(QSharedPointer<const User>, const QObject *, bool, QString)),
             this,
-            SLOT(onInviteUserReturn(QSharedPointer<const User>,const QObject*,bool,QString)));
+            SLOT(onInviteUserReturn(QSharedPointer<const User>, const QObject *, bool, QString)));
 
     settingspopupmenu = new QMenu(this);
-    settingspopupmenu->addAction("Add Contact",this,SLOT(onAddContactEntryClicked()));
-    settingspopupmenu->addAction("Start Chat",this,SLOT(onStartChatEntryClicked()));
-    settingspopupmenu->addAction("Options",this,SLOT(onSettingsEntryClicked()));
-    settingspopupmenu->addAction("Logout",this,SLOT(onLogoutClicked()));
+    settingspopupmenu->addAction("Add Contact", this, SLOT(onAddContactEntryClicked()));
+    settingspopupmenu->addAction("Start Chat", this, SLOT(onStartChatEntryClicked()));
+    settingspopupmenu->addAction("Options", this, SLOT(onSettingsEntryClicked()));
+    settingspopupmenu->addAction("Logout", this, SLOT(onLogoutClicked()));
     ui->pbOptions->setMenu(settingspopupmenu);
 
     QRect rect = QApplication::desktop()->availableGeometry();
@@ -93,9 +93,9 @@ void AppWindow::onStartChatEntryClicked()
 
 void AppWindow::onInviteUserReturn(QSharedPointer<const User> user, const QObject *id, bool success, const QString &msg)
 {
-    if(id != this)
+    if (id != this)
         return;
-    if(success) {
+    if (success) {
         inviteQueue.append(user);
         d_session->initChat();
     } else {
@@ -110,7 +110,7 @@ void AppWindow::onLogoutClicked()
 
 void AppWindow::onLogoutComplete(bool success, const QString &msg)
 {
-    if(success) {
+    if (success) {
         LoginDialog *ld = new LoginDialog();
         ld->show();
         close();
@@ -122,15 +122,15 @@ void AppWindow::onLogoutComplete(bool success, const QString &msg)
 void AppWindow::onChatOpened(QSharedPointer<Chat> chat)
 {
     ChatWidget *widget = new ChatWidget(d_session, chat);
-    ui->twChats->addTab(widget,chat->getID());
+    ui->twChats->addTab(widget, chat->getID());
     ui->twChats->setCurrentWidget(widget);
 }
 
 void AppWindow::onChatOpened(QSharedPointer<Chat> chat, bool success, const QString &msg)
 {
-    if(success) {
+    if (success) {
         onChatOpened(chat);
-        if(!inviteQueue.isEmpty()) {
+        if (!inviteQueue.isEmpty()) {
             chat->invite(inviteQueue.first());
             inviteQueue.removeFirst();
         }
@@ -141,7 +141,7 @@ void AppWindow::onChatOpened(QSharedPointer<Chat> chat, bool success, const QStr
 
 void AppWindow::onSettingsEntryClicked()
 {
-    SettingsDialog *dialog = new SettingsDialog(this,d_session);
+    SettingsDialog *dialog = new SettingsDialog(this, d_session);
     dialog->show();
 }
 
@@ -157,9 +157,9 @@ void AppWindow::onTabCloseRequested(int tab)
 
 void AppWindow::onAddUserReturn(QSharedPointer<const User> user, const QObject *id, bool success, const QString &msg)
 {
-    if(id != ui->lwChats)
+    if (id != ui->lwChats)
         return;
-    if(success) {
+    if (success) {
         user->getName();
         QMessageBox::information(this, "Contact list not implemented yet", "You can't add contacts here yet. Sorry.");
     } else {

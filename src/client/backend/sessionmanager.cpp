@@ -160,7 +160,7 @@ out:
     emit registerCompleted(success, msg);
 }
 
-void SessionManager::testConnection (const QString &serverName)
+void SessionManager::testConnection(const QString &serverName)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
     QtConcurrent::run(&instance, &SessionManager::runTestConnection,
@@ -192,7 +192,7 @@ void SessionManager::runTestConnection(const QString &serverName)
     }
 
 out:
-    emit testConnectionCompleted (success, msg);
+    emit testConnectionCompleted(success, msg);
 }
 
 /** the instance must be defined somewhere */

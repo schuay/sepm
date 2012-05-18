@@ -2,58 +2,58 @@
 
 using namespace sdc;
 
-ByteSeq sdcHelper::bStringToByteSeq( const char* arr, long len )
+ByteSeq sdcHelper::bStringToByteSeq(const char *arr, long len)
 {
     std::vector<Ice::Byte> vec;
-    for( int i = 0; i < len; i++ ) {
-        vec.push_back( arr[i] );
+    for (int i = 0; i < len; i++) {
+        vec.push_back(arr[i]);
     }
     return vec;
 }
 
-QByteArray sdcHelper::byteSeqToByteArray( const ByteSeq& bytes )
+QByteArray sdcHelper::byteSeqToByteArray(const ByteSeq &bytes)
 {
     QByteArray arr;
-    arr.resize( bytes.size() );
-    for( unsigned int i = 0; i < bytes.size(); i++ )
-        arr[i] = bytes.at( i );
+    arr.resize(bytes.size());
+    for (unsigned int i = 0; i < bytes.size(); i++)
+        arr[i] = bytes.at(i);
     return arr;
 }
 
-std::string sdcHelper::getBinaryString( const ByteSeq& bytes )
+std::string sdcHelper::getBinaryString(const ByteSeq &bytes)
 {
     std::string ret;
     std::vector<Ice::Byte>::const_iterator it;
-    for( it = bytes.begin(); it < bytes.end(); it++ ) {
-        ret.append( 1, *it );
+    for (it = bytes.begin(); it < bytes.end(); it++) {
+        ret.append(1, *it);
     }
     return ret;
 }
 
-ByteSeq sdcHelper::byteArraytoByteSeq( const QByteArray& arr )
+ByteSeq sdcHelper::byteArraytoByteSeq(const QByteArray &arr)
 {
-    return bStringToByteSeq( arr.constData(), arr.size() );
+    return bStringToByteSeq(arr.constData(), arr.size());
 }
 
-std::string sdcHelper::getServerFromID( const std::string& id )
+std::string sdcHelper::getServerFromID(const std::string &id)
 {
-    size_t seperator = id.find( "@" );
-    if( seperator != std::string::npos ) {
-        return id.substr( seperator + 1 );
+    size_t seperator = id.find("@");
+    if (seperator != std::string::npos) {
+        return id.substr(seperator + 1);
     }
     return "";
 }
 
-std::string sdcHelper::getNameFromID( const std::string& id )
+std::string sdcHelper::getNameFromID(const std::string &id)
 {
-    size_t seperator = id.find( "@" );
-    if( seperator != std::string::npos ) {
-        return id.substr( 0, seperator );
+    size_t seperator = id.find("@");
+    if (seperator != std::string::npos) {
+        return id.substr(0, seperator);
     }
     return "";
 }
 
-bool sdcHelper::isValidID( const std::string& id )
+bool sdcHelper::isValidID(const std::string &id)
 {
-    return ( sdcHelper::getNameFromID( id ) == "" || sdcHelper::getServerFromID( id ) == "" ) ? false : true;
+    return (sdcHelper::getNameFromID(id) == "" || sdcHelper::getServerFromID(id) == "") ? false : true;
 }

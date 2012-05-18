@@ -35,7 +35,7 @@
 
 namespace QsLogging
 {
-typedef QVector<Destination*> DestinationList;
+typedef QVector<Destination *> DestinationList;
 
 static const char TraceString[] = "TRACE";
 static const char DebugString[] = "DEBUG";
@@ -47,9 +47,9 @@ static const char FatalString[] = "FATAL";
 // not using Qt::ISODate because we need the milliseconds too
 static const QString fmtDateTime("yyyy-MM-ddThh:mm:ss.zzz");
 
-static const char* LevelToText(Level theLevel)
+static const char *LevelToText(Level theLevel)
 {
-    switch( theLevel ) {
+    switch (theLevel) {
     case TraceLevel:
         return TraceString;
     case DebugLevel:
@@ -92,7 +92,7 @@ Logger::~Logger()
     delete d;
 }
 
-void Logger::addDestination(Destination* destination)
+void Logger::addDestination(Destination *destination)
 {
     assert(destination);
     d->destList.push_back(destination);
@@ -111,14 +111,14 @@ Level Logger::loggingLevel() const
 //! creates the complete log message and passes it to the logger
 void Logger::Helper::writeToLog()
 {
-    const char* const levelName = LevelToText(level);
+    const char *const levelName = LevelToText(level);
     const QString completeMessage(QString("%1 %2 %3")
                                   .arg(levelName, 5)
                                   .arg(QDateTime::currentDateTime().toString(fmtDateTime))
                                   .arg(buffer)
                                  );
 
-    Logger& logger = Logger::instance();
+    Logger &logger = Logger::instance();
     QMutexLocker lock(&logger.d->logMutex);
     logger.write(completeMessage, level);
 }
@@ -127,7 +127,7 @@ Logger::Helper::~Helper()
 {
     try {
         writeToLog();
-    } catch(std::exception& e) {
+    } catch (std::exception &e) {
         // you shouldn't throw exceptions from a sink
         Q_UNUSED(e);
         assert(!"exception in logger helper destructor");
@@ -137,11 +137,11 @@ Logger::Helper::~Helper()
 
 //! Sends the message to all the destinations. The level for this message is passed in case
 //! it's useful for processing in the destination.
-void Logger::write(const QString& message, Level level)
+void Logger::write(const QString &message, Level level)
 {
-    for(DestinationList::iterator it = d->destList.begin(),
+    for (DestinationList::iterator it = d->destList.begin(),
             endIt = d->destList.end(); it != endIt; ++it) {
-        if( !(*it) ) {
+        if (!(*it)) {
             assert(!"null log destination");
             continue;
         }

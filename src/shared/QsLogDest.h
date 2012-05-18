@@ -37,7 +37,7 @@ class Destination
 {
 public:
     virtual ~Destination() {}
-    virtual void write(const QString& message, Level level) = 0;
+    virtual void write(const QString &message, Level level) = 0;
 };
 typedef std::auto_ptr<Destination> DestinationPtr;
 
@@ -46,7 +46,7 @@ typedef std::auto_ptr<Destination> DestinationPtr;
 class DestinationFactory
 {
 public:
-    static DestinationPtr MakeFileDestination(const QString& filePath);
+    static DestinationPtr MakeFileDestination(const QString &filePath);
     static DestinationPtr MakeDebugOutputDestination();
 };
 

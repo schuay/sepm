@@ -24,21 +24,21 @@ LoginDialog::LoginDialog(QWidget *parent) :
     qRegisterMetaType<QSharedPointer<Session> >("QSharedPointer<Session>");
 
     connect(ui->pbTestConnection, SIGNAL(clicked()), this, SLOT(onTestConnectionClicked()));
-    connect(sdcc::SessionManager::getInstance(), SIGNAL(testConnectionCompleted(bool,QString)),
-            this, SLOT(onTestConnectionCompleted(bool,QString)));
+    connect(sdcc::SessionManager::getInstance(), SIGNAL(testConnectionCompleted(bool, QString)),
+            this, SLOT(onTestConnectionCompleted(bool, QString)));
     connect(ui->pbRegister, SIGNAL(clicked()), this, SLOT(onRegisterUserClicked()));
-    connect(sdcc::SessionManager::getInstance(), SIGNAL(registerCompleted(bool,QString)),
-            this, SLOT(onRegisterUserCompleted(bool,QString)));
+    connect(sdcc::SessionManager::getInstance(), SIGNAL(registerCompleted(bool, QString)),
+            this, SLOT(onRegisterUserCompleted(bool, QString)));
     connect(ui->pbServerCert, SIGNAL(clicked()), this, SLOT(onChooseServerCertClicked()));
     connect(ui->pbPublicKey, SIGNAL(clicked()), this, SLOT(onChoosePublicKeyClicked()));
     connect(ui->pbPrivateKey, SIGNAL(clicked()), this, SLOT(onChoosePrivateKeyClicked()));
     connect(ui->pbConnect, SIGNAL(clicked()), this, SLOT(onConnectClicked()));
-    connect(ui->groupBox_2,SIGNAL(toggled(bool)),this,SLOT(onGroupCheckboxClicked(bool)));
+    connect(ui->groupBox_2, SIGNAL(toggled(bool)), this, SLOT(onGroupCheckboxClicked(bool)));
 
     connect(SessionManager::getInstance(),
-            SIGNAL(loginCompleted(QSharedPointer<Session>,bool,QString)),
+            SIGNAL(loginCompleted(QSharedPointer<Session>, bool, QString)),
             this,
-            SLOT(onConnectFinished(QSharedPointer<Session>,bool,QString)));
+            SLOT(onConnectFinished(QSharedPointer<Session>, bool, QString)));
 
     progressBar = new QProgressBar(this);
     progressBar->setTextVisible(false);
@@ -59,41 +59,41 @@ LoginDialog::LoginDialog(QWidget *parent) :
 void LoginDialog::onGroupCheckboxClicked(bool checked)
 {
     QList<QWidget *> ch = ui->groupBox_2->findChildren<QWidget *>();
-    for( int i = 0; i < ch.count(); i++ ) ch[i]->setVisible( checked );
-    ui->groupBox_2->setChecked( checked );
-    ui->groupBox_2->setFlat( ! checked );
+    for (int i = 0; i < ch.count(); i++) ch[i]->setVisible(checked);
+    ui->groupBox_2->setChecked(checked);
+    ui->groupBox_2->setFlat(!checked);
 
-    if(!checked) {
-        ui->groupBox_2->setMaximumSize(60,20);
+    if (!checked) {
+        ui->groupBox_2->setMaximumSize(60, 20);
         this->setMaximumHeight(100);
     } else {
-        ui->groupBox_2->setMaximumSize(16777215,16777215);
+        ui->groupBox_2->setMaximumSize(16777215, 16777215);
         this->setMaximumHeight(480);
     }
 }
 
 void LoginDialog::onChooseServerCertClicked()
 {
-    QString temp=QFileDialog::getOpenFileName(this, "Selectd_session->logout(); server certificate...",ui->leServerCert->text());
-    if(!temp.isNull())
+    QString temp = QFileDialog::getOpenFileName(this, "Selectd_session->logout(); server certificate...", ui->leServerCert->text());
+    if (!temp.isNull())
         ui->leServerCert->setText(temp);
-    settings.setValue(settings.CCertPath,ui->leServerCert->text());
+    settings.setValue(settings.CCertPath, ui->leServerCert->text());
 }
 
 void LoginDialog::onChoosePrivateKeyClicked()
 {
-    QString temp=QFileDialog::getOpenFileName(this, "Select private key...",ui->lePrivateKey->text());
-    if(!temp.isNull())
+    QString temp = QFileDialog::getOpenFileName(this, "Select private key...", ui->lePrivateKey->text());
+    if (!temp.isNull())
         ui->lePrivateKey->setText(temp);
-    settings.setValue(settings.CPrivateKeyPath,ui->lePrivateKey->text());
+    settings.setValue(settings.CPrivateKeyPath, ui->lePrivateKey->text());
 }
 
 void LoginDialog::onChoosePublicKeyClicked()
 {
-    QString temp=QFileDialog::getOpenFileName(this, "Select public key...",ui->lePublicKey->text());
-    if(!temp.isNull())
+    QString temp = QFileDialog::getOpenFileName(this, "Select public key...", ui->lePublicKey->text());
+    if (!temp.isNull())
         ui->lePublicKey->setText(temp);
-    settings.setValue(settings.CPublicKeyPath,ui->lePublicKey->text());
+    settings.setValue(settings.CPublicKeyPath, ui->lePublicKey->text());
 }
 
 void LoginDialog::onTestConnectionClicked()
@@ -167,8 +167,8 @@ void LoginDialog::onConnectClicked()
 void LoginDialog::onConnectFinished(QSharedPointer<Session> session, bool success, const QString &msg)
 {
     removeWorker();
-    if(success) {
-        AppWindow * win = new AppWindow(0, session);
+    if (success) {
+        AppWindow *win = new AppWindow(0, session);
         win->show();
         close();
     } else {
@@ -224,6 +224,6 @@ void LoginDialog::onTestConnectionCompleted(bool success, const QString &msg)
 
 LoginDialog::~LoginDialog()
 {
-    settings.setValue(settings.CUsername,ui->leUsername->text());
+    settings.setValue(settings.CUsername, ui->leUsername->text());
     delete ui;
 }

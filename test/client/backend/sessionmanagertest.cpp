@@ -155,7 +155,7 @@ void SessionManagerTests::testLoginNonexistentUser()
 {
     SessionManager *sessionManager = SessionManager::getInstance();
     QSignalSpy spy(sessionManager,
-                   SIGNAL(loginCompleted(QSharedPointer<Session>,bool,QString)));
+                   SIGNAL(loginCompleted(QSharedPointer<Session>, bool, QString)));
     QVERIFY(spy.isValid());
     QVERIFY(spy.isEmpty());
 
@@ -175,7 +175,7 @@ void SessionManagerTests::testLoginIncorrectCredentials()
 {
     SessionManager *sessionManager = SessionManager::getInstance();
     QSignalSpy spy(sessionManager,
-                   SIGNAL(loginCompleted(QSharedPointer<Session>,bool,QString)));
+                   SIGNAL(loginCompleted(QSharedPointer<Session>, bool, QString)));
     QVERIFY(spy.isValid());
     QVERIFY(spy.isEmpty());
 
@@ -195,7 +195,7 @@ void SessionManagerTests::testLoginCorrectCredentials()
 {
     SessionManager *sessionManager = SessionManager::getInstance();
     QSignalSpy spy(sessionManager,
-                   SIGNAL(loginCompleted(QSharedPointer<Session>,bool,QString)));
+                   SIGNAL(loginCompleted(QSharedPointer<Session>, bool, QString)));
     QVERIFY(spy.isValid());
     QVERIFY(spy.isEmpty());
 
@@ -215,7 +215,7 @@ void SessionManagerTests::testLoginRepeated()
 {
     SessionManager *sessionManager = SessionManager::getInstance();
     QSignalSpy spy(sessionManager,
-                   SIGNAL(loginCompleted(QSharedPointer<Session>,bool,QString)));
+                   SIGNAL(loginCompleted(QSharedPointer<Session>, bool, QString)));
     QVERIFY(spy.isValid());
     QVERIFY(spy.isEmpty());
 

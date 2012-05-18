@@ -36,8 +36,8 @@ namespace QsLogging
 class FileDestination : public Destination
 {
 public:
-    FileDestination(const QString& filePath);
-    virtual void write(const QString& message, Level level);
+    FileDestination(const QString &filePath);
+    virtual void write(const QString &message, Level level);
 
 private:
     QFile mFile;
@@ -45,14 +45,14 @@ private:
 };
 
 
-FileDestination::FileDestination(const QString& filePath)
+FileDestination::FileDestination(const QString &filePath)
 {
     mFile.setFileName(filePath);
     mFile.open(QFile::WriteOnly | QFile::Text); //fixme: should throw on failure
     mOutputStream.setDevice(&mFile);
 }
 
-void FileDestination::write(const QString& message, Level)
+void FileDestination::write(const QString &message, Level)
 {
     mOutputStream << message << endl;
     mOutputStream.flush();
@@ -62,15 +62,15 @@ void FileDestination::write(const QString& message, Level)
 class DebugOutputDestination : public Destination
 {
 public:
-    virtual void write(const QString& message, Level level);
+    virtual void write(const QString &message, Level level);
 };
 
-void DebugOutputDestination::write(const QString& message, Level)
+void DebugOutputDestination::write(const QString &message, Level)
 {
     QsDebugOutput::output(message);
 }
 
-DestinationPtr DestinationFactory::MakeFileDestination(const QString& filePath)
+DestinationPtr DestinationFactory::MakeFileDestination(const QString &filePath)
 {
     return DestinationPtr(new FileDestination(filePath));
 }

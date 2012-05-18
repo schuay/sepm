@@ -20,7 +20,7 @@ public:
      */
     LoginUser(const QString &name, const QString &publicKeyPath,
               const QString &privateKeyPath, const QString &passphrase = "")
-    throw (sdc::SecurityException);
+    throw(sdc::SecurityException);
     LoginUser(const LoginUser &user);
 
     /**
@@ -28,8 +28,8 @@ public:
      * Hence we try to contain it within LoginUser. Noone else should
      * have to know it.
      */
-    const sdc::ByteSeq decrypt(sdc::ByteSeq data) const throw (sdc::SecurityException);
-    const sdc::ByteSeq sign(sdc::ByteSeq data) const throw (sdc::SecurityException);
+    const sdc::ByteSeq decrypt(sdc::ByteSeq data) const throw(sdc::SecurityException);
+    const sdc::ByteSeq sign(sdc::ByteSeq data) const throw(sdc::SecurityException);
 
 private:
     const sdc::ByteSeq privateKey;

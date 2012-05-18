@@ -29,7 +29,7 @@ public:
      * Adds the user with the given salted password hash to the database.
      */
     static void createUser(sdc::User user, sdc::ByteSeq hash)
-    throw (sdc::UserHandlingException);
+    throw(sdc::UserHandlingException);
 
     /**
      * Returns a UserDbProxy instance which can be used to query and manipulate
@@ -37,7 +37,7 @@ public:
      * the user could not be retrieved.
      */
     static QSharedPointer<UserDbProxy> getProxy(const QString &user)
-    throw (sdc::UserHandlingException);
+    throw(sdc::UserHandlingException);
 
     sdc::User getUser() const;
     sdc::ByteSeq getHash() const;
@@ -79,7 +79,7 @@ public:
     static void setPassword(const QString &password);
 
 private:
-    UserDbProxy(const QString &user) throw (sdc::UserHandlingException);
+    UserDbProxy(const QString &user) throw(sdc::UserHandlingException);
     UserDbProxy(const UserDbProxy &);
 
     sdc::User user;

@@ -29,7 +29,7 @@ void ChatTests::init()
 {
     SessionManager *sessionManager = SessionManager::getInstance();
     QSignalSpy spy(sessionManager,
-                   SIGNAL(loginCompleted(QSharedPointer<Session>,bool,QString)));
+                   SIGNAL(loginCompleted(QSharedPointer<Session>, bool, QString)));
     QVERIFY(spy.isValid());
     QVERIFY(spy.isEmpty());
 
@@ -60,7 +60,7 @@ void ChatTests::init()
     chat = arguments2.at(0).value<QSharedPointer<Chat> >();
 
     QSignalSpy spy3(sessionManager,
-                    SIGNAL(loginCompleted(QSharedPointer<Session>,bool,QString)));
+                    SIGNAL(loginCompleted(QSharedPointer<Session>, bool, QString)));
     QVERIFY(spy3.isValid());
     QVERIFY(spy3.isEmpty());
 
@@ -195,15 +195,15 @@ void ChatTests::testTransmitMessage()
 
     waitForResult(spy2);
 
-    QSignalSpy spy3(chat2.data(), SIGNAL(sendCompleted(bool, const QString&)));
+    QSignalSpy spy3(chat2.data(), SIGNAL(sendCompleted(bool, const QString &)));
     QVERIFY(spy3.isValid());
     QVERIFY(spy3.isEmpty());
 
-    QSignalSpy spy4(chat.data(), SIGNAL(messageReceived(QSharedPointer<const User>, const QString&)));
+    QSignalSpy spy4(chat.data(), SIGNAL(messageReceived(QSharedPointer<const User>, const QString &)));
     QVERIFY(spy4.isValid());
     QVERIFY(spy4.isEmpty());
 
-    QSignalSpy spy5(chat2.data(), SIGNAL(messageReceived(QSharedPointer<const User>, const QString&)));
+    QSignalSpy spy5(chat2.data(), SIGNAL(messageReceived(QSharedPointer<const User>, const QString &)));
     QVERIFY(spy5.isValid());
     QVERIFY(spy5.isEmpty());
 
@@ -228,15 +228,15 @@ void ChatTests::testTransmitMessage()
     QSharedPointer<const User> u3 = arguments4.at(0).value<QSharedPointer<const User> >();
     QCOMPARE(u3->getName(), u->getName());
 
-    QSignalSpy spy6(chat.data(), SIGNAL(sendCompleted(bool, const QString&)));
+    QSignalSpy spy6(chat.data(), SIGNAL(sendCompleted(bool, const QString &)));
     QVERIFY(spy6.isValid());
     QVERIFY(spy6.isEmpty());
 
-    QSignalSpy spy7(chat2.data(), SIGNAL(messageReceived(QSharedPointer<const User>, const QString&)));
+    QSignalSpy spy7(chat2.data(), SIGNAL(messageReceived(QSharedPointer<const User>, const QString &)));
     QVERIFY(spy7.isValid());
     QVERIFY(spy7.isEmpty());
 
-    QSignalSpy spy8(chat.data(), SIGNAL(messageReceived(QSharedPointer<const User>, const QString&)));
+    QSignalSpy spy8(chat.data(), SIGNAL(messageReceived(QSharedPointer<const User>, const QString &)));
     QVERIFY(spy8.isValid());
     QVERIFY(spy8.isEmpty());
 
