@@ -113,6 +113,9 @@ void UserDbProxy::createUser(sdc::User user, QByteArray hash, QByteArray salt)
 throw(sdc::UserHandlingException)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
+
+    connection.open();
+
     QSqlQuery query(QSqlDatabase::database(CONNECTION));
     query.prepare("insert into public.user(username, public_key, password_hash, salt) "
                   "select :username, :public_key, :password_hash, :salt;");
