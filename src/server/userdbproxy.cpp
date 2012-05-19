@@ -88,9 +88,14 @@ sdc::User UserDbProxy::getUser() const
     return user;
 }
 
-sdc::ByteSeq UserDbProxy::getHash() const
+QByteArray UserDbProxy::getHash() const
 {
     return hash;
+}
+
+QByteArray UserDbProxy::getSalt() const
+{
+    return salt;
 }
 
 void UserDbProxy::deleteUser()
@@ -102,16 +107,17 @@ void UserDbProxy::deleteUser()
     query.exec();
 }
 
-void UserDbProxy::createUser(sdc::User user, sdc::ByteSeq hash)
+void UserDbProxy::createUser(sdc::User user, QByteArray hash, QByteArray salt)
 throw(sdc::UserHandlingException)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
     QSqlQuery query(QSqlDatabase::database(CONNECTION));
-    query.prepare("insert into public.user(username, public_key, password_hash) "
-                  "select :username, :public_key, :password_hash;");
+    query.prepare("insert into public.user(username, public_key, password_hash, salt) "
+                  "select :username, :public_key, :password_hash, :salt;");
     query.bindValue(":username", QString::fromStdString(user.ID));
     query.bindValue(":public_key", sdc::sdcHelper::byteSeqToByteArray(user.publicKey));
-    query.bindValue(":password_hash", sdc::sdcHelper::byteSeqToByteArray(hash));
+    query.bindValue(":password_hash", hash);
+    query.bindValue(":salt", salt);
 
     bool ok = query.exec();
     if (!ok)
@@ -124,7 +130,7 @@ throw(sdc::UserHandlingException)
     connection.open();
 
     QSqlQuery query(QSqlDatabase::database(CONNECTION));
-    query.prepare("select username, public_key, password_hash "
+    query.prepare("select username, public_key, password_hash, salt "
                   "from public.user where username = :username");
     query.bindValue(":username", username);
     query.exec();
@@ -137,7 +143,8 @@ throw(sdc::UserHandlingException)
 
     user.ID = username.toStdString();
     user.publicKey = sdc::sdcHelper::byteArraytoByteSeq(query.value(1).toByteArray());
-    hash = sdc::sdcHelper::byteArraytoByteSeq(query.value(2).toByteArray());
+    hash = query.value(2).toByteArray();
+    salt = query.value(3).toByteArray();
 }
 
 }

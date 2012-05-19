@@ -6,7 +6,8 @@ create table public.User (
 	id serial primary key,
 	username varchar(64) not null unique,
 	public_key bytea not null,
-	password_hash bytea not null
+	password_hash bytea not null,
+	salt bytea not null
 );
 
 create table public.Chatlog (

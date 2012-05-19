@@ -28,7 +28,7 @@ public:
     /**
      * Adds the user with the given salted password hash to the database.
      */
-    static void createUser(sdc::User user, sdc::ByteSeq hash)
+    static void createUser(sdc::User user, QByteArray hash, QByteArray salt)
     throw(sdc::UserHandlingException);
 
     /**
@@ -40,7 +40,8 @@ public:
     throw(sdc::UserHandlingException);
 
     sdc::User getUser() const;
-    sdc::ByteSeq getHash() const;
+    QByteArray getHash() const;
+    QByteArray getSalt() const;
 
     /**
      * Deletes the user and all related information from the database.
@@ -83,7 +84,9 @@ private:
     UserDbProxy(const UserDbProxy &);
 
     sdc::User user;
-    sdc::ByteSeq hash;
+    QByteArray hash;
+    QByteArray salt;
+
 
     /**
      * Wraps the QSqlDatabase object and closes it automatically on destruction.

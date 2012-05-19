@@ -20,7 +20,8 @@ private slots:
 
 private:
     sdc::User user1;
-    sdc::ByteSeq hash1;
+    QByteArray hash1;
+    QByteArray salt1;
 
     QSqlDatabase db;
 };

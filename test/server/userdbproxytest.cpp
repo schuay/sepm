@@ -22,10 +22,11 @@ void UserDbProxyTests::initTestCase()
     UserDbProxy::setPassword(DB_PASSWORD);
 
     const unsigned char pubkey[] = { 'b', 'l', 'a' };
-    const unsigned char hash[] = { 'b', 'l', 'a' };
+    const char hash[] = { 'b', 'l', 'a' };
     user1.ID = "test1";
     user1.publicKey = sdc::ByteSeq(pubkey, pubkey + sizeof(pubkey));
-    hash1 = sdc::ByteSeq(hash, hash + sizeof(hash));
+    hash1 = QByteArray(hash, sizeof(hash));
+    salt1 = QByteArray(hash, sizeof(hash));
 
     db = QSqlDatabase::addDatabase(DB_DRIVER);
     db.setHostName(DB_HOST);
@@ -37,9 +38,9 @@ void UserDbProxyTests::initTestCase()
 
     QSqlQuery query;
     QVERIFY(query.exec("truncate table public.user cascade;"));
-    QVERIFY(query.exec("insert into public.user(username, public_key, password_hash) select 'test1', 'bla', 'bla';"));
-    QVERIFY(query.exec("insert into public.user(username, public_key, password_hash) select 'test2', 'bla', 'bla';"));
-    QVERIFY(query.exec("insert into public.user(username, public_key, password_hash) select 'test3', 'bla', 'bla';"));
+    QVERIFY(query.exec("insert into public.user(username, public_key, password_hash, salt) select 'test1', 'bla', 'bla', 'bla';"));
+    QVERIFY(query.exec("insert into public.user(username, public_key, password_hash, salt) select 'test2', 'bla', 'bla', 'bla';"));
+    QVERIFY(query.exec("insert into public.user(username, public_key, password_hash, salt) select 'test3', 'bla', 'bla', 'bla';"));
 }
 
 
@@ -76,13 +77,14 @@ void UserDbProxyTests::testDeleteNonexistentUser()
 void UserDbProxyTests::testCreateUser()
 {
     const unsigned char pub[] = "abcd";
-    const unsigned char hash[] = "abcd";
+    const char hash[] = "abcd";
 
     sdc::User u;
     u.ID = "test99";
     u.publicKey = sdc::ByteSeq(pub, pub + sizeof(pub));
 
-    UserDbProxy::createUser(u, sdc::ByteSeq(hash, hash + sizeof(hash)));
+    UserDbProxy::createUser(u, QByteArray(hash, sizeof(hash)),
+                            QByteArray(hash, sizeof(hash)));
 
     QSqlQuery query(db);
     query.exec("select * from public.user where username = 'test99';");
@@ -93,13 +95,14 @@ void UserDbProxyTests::testCreateUser()
 void UserDbProxyTests::testCreateExistingUser()
 {
     const unsigned char pub[] = "abcd";
-    const unsigned char hash[] = "abcd";
+    const char hash[] = "abcd";
 
     sdc::User u;
     u.ID = "test99";
     u.publicKey = sdc::ByteSeq(pub, pub + sizeof(pub));
 
-    QVERIFY_THROW(UserDbProxy::createUser(u, sdc::ByteSeq(hash, hash + sizeof(hash))),
+    QVERIFY_THROW(UserDbProxy::createUser(u, QByteArray(hash, sizeof(hash)),
+                                          QByteArray(hash, sizeof(hash))),
                   sdc::UserHandlingException);
 }
 
@@ -116,6 +119,7 @@ void UserDbProxyTests::testRetrieveUser()
     QCOMPARE(u.ID, user1.ID);
     QCOMPARE(u.publicKey, user1.publicKey);
     QCOMPARE(p->getHash(), hash1);
+    QCOMPARE(p->getSalt(), salt1);
 }
 
 void UserDbProxyTests::testRetrieveNonexistentUser()
