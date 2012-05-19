@@ -5,6 +5,7 @@
 
 #include "QsLog.h"
 #include "QsLogDest.h"
+#include <QtCrypto>
 
 #include <Ice/Ice.h>
 #include <iostream>
@@ -118,6 +119,8 @@ int main(int argc, char **argv)
     QsLogging::DestinationPtr debugDestination(
         QsLogging::DestinationFactory::MakeDebugOutputDestination());
     logger.addDestination(debugDestination.get());
+
+    QCA::init();
 
     // Set Ice properties here
     // they should be read from settings actually

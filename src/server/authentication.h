@@ -1,4 +1,6 @@
 #include "SecureDistributedChat.h"
+#include <QString>
+#include <QByteArray>
 
 namespace sdcs
 {
@@ -6,6 +8,8 @@ namespace sdcs
 class Authentication : public sdc::AuthenticationI
 {
 public:
+    Authentication();
+
     void registerUser(const sdc::User &participant, const std::string &pwd, const Ice::Current &)
     throw(sdc::AuthenticationException);
 
@@ -15,6 +19,10 @@ public:
 
     std::string echo(const std::string &message, const Ice::Current &)
     throw(sdc::SDCException);
+
+    const QByteArray generatePasswordSalt();
+    const QByteArray saltHashPassword(const std::string &password, const QByteArray &salt);
+
 };
 
 }
