@@ -2,8 +2,6 @@
 
 #include "participant.h"
 
-using namespace sdc;
-
 namespace sdcs
 {
 
@@ -11,10 +9,10 @@ class Chat
 {
 public:
     /* appends message to all participant client callbacks. */
-    virtual void appendMessageFrom(User, ByteSeq) {}
-    virtual void inviteUser(const Participant &, ByteSeq) {}
-    virtual void leaveChat(const Participant &) {}
-    virtual ~Chat() {}
+    virtual void appendMessageFrom(sdc::User, sdc::ByteSeq) = 0;
+    virtual void inviteUser(const Participant &, sdc::ByteSeq) = 0;
+    virtual void leaveChat(const Participant &) = 0;
+    virtual ~Chat() = 0;
 
 private:
     QString chatID;
@@ -25,18 +23,18 @@ private:
 class LocalChat : public Chat
 {
 public:
-    void appendMessageFrom(User, ByteSeq) {}
-    void inviteUser(const Participant &, ByteSeq) {}
-    void leaveChat(const Participant &) {}
+    void appendMessageFrom(sdc::User, sdc::ByteSeq);
+    void inviteUser(const Participant &, sdc::ByteSeq);
+    void leaveChat(const Participant &);
 };
 
 /* owned by session, pointer kept in session. destroyed on leave or logout. */
 class RemoteChat : public Chat
 {
 public:
-    void appendMessageFrom(User, ByteSeq) {}
-    void inviteUser(const Participant &, ByteSeq) {}
-    void leaveChat(const Participant &) {}
+    void appendMessageFrom(sdc::User, sdc::ByteSeq);
+    void inviteUser(const Participant &, sdc::ByteSeq);
+    void leaveChat(const Participant &);
 
 private:
     sdc::InterServerIPrx interServer; /* one per remote server */
