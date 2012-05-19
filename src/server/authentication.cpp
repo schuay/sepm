@@ -9,6 +9,9 @@
 namespace sdcs
 {
 
+#define SALT_LEN (128)
+#define SALT_ITERATIONS (1000)
+
 Authentication::Authentication()
 {
     assert(QCA::isSupported("sha1"));
@@ -16,8 +19,7 @@ Authentication::Authentication()
 
 QByteArray Authentication::generatePasswordSalt() const
 {
-    // guaranteed to be random and unique
-    return QString("asdfjklo").toLocal8Bit();
+    return QCA::Random::randomArray(SALT_LEN).toByteArray();
 }
 
 QByteArray Authentication::saltHashPassword(const std::string &password, const QByteArray &salt) const
@@ -25,7 +27,9 @@ QByteArray Authentication::saltHashPassword(const std::string &password, const Q
     QCA::Hash shaHash("sha1");
 
     shaHash.update(password.c_str(), password.size());
-    shaHash.update(salt);
+    for (int i = 0; i < SALT_ITERATIONS; i++) {
+        shaHash.update(salt);
+    }
 
     return shaHash.final().toByteArray();
 }
