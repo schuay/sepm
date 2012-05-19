@@ -1,21 +1,13 @@
 
 #include <QCoreApplication>
-#include <QSharedPointer>
+#include <QtCrypto>
 #include <unistd.h>
+#include <Ice/Ice.h>
 
 #include "QsLog.h"
 #include "QsLogDest.h"
-#include <QtCrypto>
-
-#include <Ice/Ice.h>
-#include <iostream>
-#include "SecureDistributedChat.h"
-
-#include "userdbproxy.h"
 #include "authentication.h"
-
-namespace sdcs
-{
+#include "userdbproxy.h"
 
 static void usage()
 {
@@ -37,7 +29,7 @@ struct Application : virtual public Ice::Application {
         QLOG_TRACE() << __PRETTY_FUNCTION__;
 
         /* Parse command line arguments. They are stripped of any
-        QT or ICE options by now. */
+         * QT or ICE options by now. */
 
         int opt;
         while ((opt = getopt(argc, argv, "d:b:h:u:p:")) != -1) {
@@ -75,6 +67,7 @@ struct Application : virtual public Ice::Application {
         return 0;
     }
 
+private:
     /**
      * Starts the object adapter. There need only be a single adapter for all
      * server tasks. No reference is held after this function, if one is needed,
@@ -84,28 +77,21 @@ struct Application : virtual public Ice::Application {
         QLOG_TRACE() << __PRETTY_FUNCTION__;
 
         /* Note that while the name of the object adapter is not important,
-        the name of the Ice Identity matters - it is the name of the implemented
-         interface bar the trailing 'I' */
+         * the name of the Ice Identity matters - it is the name of the implemented
+         * interface bar the trailing 'I' */
         std::ostringstream oss;
         oss << "ssl -p " << sdc::port;
         Ice::ObjectAdapterPtr adapter =
             communicator()->createObjectAdapterWithEndpoints("SDCServer", oss.str());
-        Ice::ObjectPtr authObj = new Authentication;
+        Ice::ObjectPtr authObj = new sdcs::Authentication;
 
         adapter->add(authObj, communicator()->stringToIdentity("Authentication"));
         adapter->activate();
     }
-
 };
-
-}
 
 int main(int argc, char **argv)
 {
-    /* Temporary debug code. */
-    /*    QSharedPointer<sdcs::UserDbProxy> p = sdcs::UserDbProxy::getProxy("jakob");
-      printf("%s\n", p->getUser().ID.c_str());*/
-
     QCoreApplication a(argc, argv);
 
     /* Init QSettings */
@@ -120,14 +106,11 @@ int main(int argc, char **argv)
         QsLogging::DestinationFactory::MakeDebugOutputDestination());
     logger.addDestination(debugDestination.get());
 
-    QCA::init();
-
-    // Set Ice properties here
-    // they should be read from settings actually
+    /* Init Ice properties. */
     Ice::PropertiesPtr props = Ice::createProperties();
     props->setProperty("Ice.Plugin.IceSSL", "IceSSL:createIceSSL");
     props->setProperty("Ice.Override.Timeout", "5000");
-    props->setProperty("IceSSL.DefaultDir", "misc");
+    props->setProperty("IceSSL.DefaultDir", "misc"); /* TODO: a better way to set this */
     props->setProperty("IceSSL.CertFile", "localhost.crt");
     props->setProperty("IceSSL.KeyFile", "localhost.key");
     props->setProperty("IceSSL.CertAuthFile", "ca.crt");
@@ -136,7 +119,12 @@ int main(int argc, char **argv)
     Ice::InitializationData id;
     id.properties = props;
 
-    sdcs::Application srv;
+    /* Handles initialization and cleanup of QCA resources. */
+    QCA::Initializer qca;
+    Q_UNUSED(qca);
+
+    /* Our application handles the main loop. */
+    Application srv;
 
     return srv.main(argc, argv, id);
 }
