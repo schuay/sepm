@@ -27,7 +27,7 @@ static void usage()
             "-p password    set database password\n");
 }
 
-struct Server : virtual public Ice::Application {
+struct Application : virtual public Ice::Application {
 
     /**
      * Run the server
@@ -136,7 +136,7 @@ int main(int argc, char **argv)
     Ice::InitializationData id;
     id.properties = props;
 
-    sdcs::Server srv;
+    sdcs::Application srv;
 
     return srv.main(argc, argv, id);
 }
