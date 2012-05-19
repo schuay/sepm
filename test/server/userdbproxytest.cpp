@@ -22,11 +22,10 @@ void UserDbProxyTests::initTestCase()
     UserDbProxy::setPassword(DB_PASSWORD);
 
     const unsigned char pubkey[] = { 'b', 'l', 'a' };
-    const char hash[] = { 'b', 'l', 'a' };
     user1.ID = "test1";
     user1.publicKey = sdc::ByteSeq(pubkey, pubkey + sizeof(pubkey));
-    hash1 = QByteArray(hash, sizeof(hash));
-    salt1 = QByteArray(hash, sizeof(hash));
+    hash1 = QByteArray("123");
+    salt1 = QByteArray("456");
 
     db = QSqlDatabase::addDatabase(DB_DRIVER);
     db.setHostName(DB_HOST);
@@ -38,7 +37,7 @@ void UserDbProxyTests::initTestCase()
 
     QSqlQuery query;
     QVERIFY(query.exec("truncate table public.user cascade;"));
-    QVERIFY(query.exec("insert into public.user(username, public_key, password_hash, salt) select 'test1', 'bla', 'bla', 'bla';"));
+    QVERIFY(query.exec("insert into public.user(username, public_key, password_hash, salt) select 'test1', 'bla', '123', '456';"));
     QVERIFY(query.exec("insert into public.user(username, public_key, password_hash, salt) select 'test2', 'bla', 'bla', 'bla';"));
     QVERIFY(query.exec("insert into public.user(username, public_key, password_hash, salt) select 'test3', 'bla', 'bla', 'bla';"));
 }
