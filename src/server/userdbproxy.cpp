@@ -36,6 +36,8 @@ UserDbProxy::Connection::~Connection()
 
 void UserDbProxy::Connection::open()
 {
+    QLOG_TRACE() << __PRETTY_FUNCTION__;
+
     if (db.isOpen())
         return;
 
@@ -120,8 +122,10 @@ throw(sdc::UserHandlingException)
     query.bindValue(":salt", salt);
 
     bool ok = query.exec();
-    if (!ok)
+    if (!ok) {
+        QLOG_ERROR() << query.lastError().text();
         throw sdc::UserHandlingException(query.lastError().text().toStdString());
+    }
 }
 
 UserDbProxy::UserDbProxy(const QString &username)
