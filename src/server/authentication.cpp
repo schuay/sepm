@@ -25,6 +25,7 @@ const QByteArray Authentication::saltHashPassword(const std::string &password, c
 
     shaHash.update(password.c_str(), password.size());
     shaHash.update(salt);
+
     return shaHash.final().toByteArray();
 }
 
@@ -41,16 +42,14 @@ throw(sdc::AuthenticationException)
     QLOG_TRACE() << __PRETTY_FUNCTION__;
 
     try {
-        QSharedPointer<UserDbProxy> proxy = UserDbProxy::getProxy(user);
+        QSharedPointer<UserDbProxy> proxy = UserDbProxy::getProxy(QString::fromStdString(user.ID));
         QByteArray salt = proxy->getSalt();
         QByteArray hash = saltHashPassword(password, salt);
 
-        if (hash == proxy->getHash()) {
-            QLOG_TRACE() << "successful login";
-        } else {
-            QLOG_TRACE() << "authentication failure";
+        if (hash != proxy->getHash()) {
+            QLOG_TRACE() << "Authentication failure";
+            throw sdc::AuthenticationException("Authentication failure");
         }
-
     } catch (const sdc::UserHandlingException &e) {
         throw sdc::AuthenticationException(e.what);
     }
@@ -70,9 +69,7 @@ throw(sdc::AuthenticationException)
     QByteArray hash = saltHashPassword(password, salt);
 
     try {
-
         UserDbProxy::createUser(user, hash, salt);
-
     } catch (const sdc::UserHandlingException &e) {
         throw sdc::AuthenticationException(e.what);
     }
