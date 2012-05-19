@@ -2,7 +2,8 @@
 
 #include "SecureDistributedChat.h"
 
-namespace sdcs {
+namespace sdcs
+{
 
 /* only exists within a chat */
 class Participant
@@ -12,7 +13,7 @@ public:
     virtual void addChatParticipant(const sdc::User &participant) = 0;
     virtual void removeChatParticipant(const sdc::User &participant) = 0;
     virtual void appendMessageToChat(const sdc::User &user, const QString &message) = 0;
-    virtual ~Participant() {};
+    virtual ~Participant() = 0;
 
 protected:
     sdc::User user;
@@ -23,10 +24,10 @@ class LocalParticipant : public Participant
 {
 public:
     LocalParticipant(sdc::User sdcUser, const QString &chatID);
-    virtual void invite(QStringList , sdc::ByteSeq ) {}
-    virtual void addChatParticipant(const sdc::User &) {}
-    virtual void removeChatParticipant(const sdc::User &) {}
-    virtual void appendMessageToChat(const sdc::User &, const QString &) {}
+    virtual void invite(QStringList , sdc::ByteSeq);
+    virtual void addChatParticipant(const sdc::User &);
+    virtual void removeChatParticipant(const sdc::User &);
+    virtual void appendMessageToChat(const sdc::User &, const QString &);
 
 private:
     void echo(const QString &message);
@@ -37,10 +38,10 @@ class RemoteParticipant : public Participant
 {
 public:
     RemoteParticipant(sdc::User sdcUser, const QString &chatID);
-    virtual void invite(QStringList , sdc::ByteSeq ) {}
-    virtual void addChatParticipant(const sdc::User &) {}
-    virtual void removeChatParticipant(const sdc::User &) {}
-    virtual void appendMessageToChat(const sdc::User &, const QString &) {}
+    virtual void invite(QStringList , sdc::ByteSeq);
+    virtual void addChatParticipant(const sdc::User &);
+    virtual void removeChatParticipant(const sdc::User &);
+    virtual void appendMessageToChat(const sdc::User &, const QString &);
 
 private:
     sdc::InterServerIPrx proxy;
