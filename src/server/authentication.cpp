@@ -1,9 +1,10 @@
 #include "authentication.h"
-#include "userdbproxy.h"
 
 #include <QByteArray>
 #include <QtCrypto>
+
 #include "QsLog.h"
+#include "userdbproxy.h"
 
 namespace sdcs
 {
@@ -13,13 +14,13 @@ Authentication::Authentication()
     assert(QCA::isSupported("sha1"));
 }
 
-const QByteArray Authentication::generatePasswordSalt()
+QByteArray Authentication::generatePasswordSalt() const
 {
     // guaranteed to be random and unique
     return QString("asdfjklo").toLocal8Bit();
 }
 
-const QByteArray Authentication::saltHashPassword(const std::string &password, const QByteArray &salt)
+QByteArray Authentication::saltHashPassword(const std::string &password, const QByteArray &salt) const
 {
     QCA::Hash shaHash("sha1");
 
@@ -54,7 +55,7 @@ throw(sdc::AuthenticationException)
         throw sdc::AuthenticationException(e.what);
     }
 
-    // create session object!
+    // TODO: create session object!
 
     return NULL;
 }

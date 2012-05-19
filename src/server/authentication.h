@@ -20,9 +20,9 @@ public:
     std::string echo(const std::string &message, const Ice::Current &)
     throw(sdc::SDCException);
 
-    const QByteArray generatePasswordSalt();
-    const QByteArray saltHashPassword(const std::string &password, const QByteArray &salt);
-
+private:
+    QByteArray generatePasswordSalt() const;
+    QByteArray saltHashPassword(const std::string &password, const QByteArray &salt) const;
 };
 
 }
