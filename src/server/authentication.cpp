@@ -43,7 +43,7 @@ throw(sdc::SDCException)
 }
 
 sdc::SessionIPrx Authentication::login(const sdc::User &user, const std::string &password,
-                                       const Ice::Identity &, const Ice::Current &)
+                                       const Ice::Identity &identity, const Ice::Current &current)
 throw(sdc::AuthenticationException)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
@@ -57,13 +57,22 @@ throw(sdc::AuthenticationException)
             QLOG_TRACE() << "Authentication failure";
             throw sdc::AuthenticationException("Authentication failure");
         }
+
+        /* TODO: check if user is already logged in. */
+
+        sdc::ChatClientCallbackIPrx callback = sdc::ChatClientCallbackIPrx::uncheckedCast(
+                current.con->createProxy(identity));
+
+        Session *session = new Session(user, callback);
+        sessionProxy = sdc::SessionIPrx::uncheckedCast(
+                           current.adapter->addWithUUID(session));
+
+        return sessionProxy;
     } catch (const sdc::UserHandlingException &e) {
         throw sdc::AuthenticationException(e.what);
+    } catch (const Ice::Exception &e) {
+        throw sdc::AuthenticationException(e.what());
     }
-
-    // TODO: create session object!
-
-    return NULL;
 }
 
 void Authentication::registerUser(const sdc::User &user,
