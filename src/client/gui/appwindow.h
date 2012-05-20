@@ -34,7 +34,7 @@ public slots:
     void onSettingsEntryClicked();
     void onTabCloseRequested(int tab);
     void onStartChatEntryClicked();
-    void onInviteUserReturn(QSharedPointer<const User> user, const QObject *id, bool success, const QString &msg);
+    void onInviteClicked();
     void onAddUserReturn(QSharedPointer<const User> user, const QObject *id, bool success, const QString &msg);
 private:
     Ui::AppWindow *ui;

@@ -20,8 +20,6 @@ AppWindow::AppWindow(QWidget *parent, QSharedPointer<Session> session) :
     d_session = session;
     ui->setupUi(this);
     setWindowTitle("SDCC");
-    //  connect(ui->pbInitiateChat, SIGNAL(clicked()), this, SLOT(onInitiateChatClicked()));
-    //  connect(ui->pbInvite, SIGNAL(clicked()), this, SLOT(onInviteClicked()));
     connect(ui->twChats, SIGNAL(tabCloseRequested(int)), this, SLOT(onTabCloseRequested(int)));
     connect(ui->pbOptions, SIGNAL(clicked()),
             this, SLOT(onSettingsButtonClicked()));
@@ -45,14 +43,11 @@ AppWindow::AppWindow(QWidget *parent, QSharedPointer<Session> session) :
             SIGNAL(retrieveUserCompleted(QSharedPointer<const User>, const QObject *, bool, QString)),
             this,
             SLOT(onAddUserReturn(QSharedPointer<const User>, const QObject *, bool, QString)));
-    connect(d_session.data(),
-            SIGNAL(retrieveUserCompleted(QSharedPointer<const User>, const QObject *, bool, QString)),
-            this,
-            SLOT(onInviteUserReturn(QSharedPointer<const User>, const QObject *, bool, QString)));
 
     settingspopupmenu = new QMenu(this);
     settingspopupmenu->addAction("Add Contact", this, SLOT(onAddContactEntryClicked()));
     settingspopupmenu->addAction("Start Chat", this, SLOT(onStartChatEntryClicked()));
+    settingspopupmenu->addAction("Invite", this, SLOT(onInviteClicked()));
     settingspopupmenu->addAction("Options", this, SLOT(onSettingsEntryClicked()));
     settingspopupmenu->addAction("Logout", this, SLOT(onLogoutClicked()));
     ui->pbOptions->setMenu(settingspopupmenu);
@@ -75,32 +70,20 @@ void AppWindow::onAddContactEntryClicked()
                                          tr("User name:"), QLineEdit::Normal,
                                          "", &ok);
     if (ok && !text.isEmpty()) {
-        d_session->retrieveUser(text, ui->lwChats);
+        d_session->retrieveUser(text, this);
     }
 }
 
-void AppWindow::onStartChatEntryClicked()
+void AppWindow::onInviteClicked()
 {
     bool ok;
     QString text = QInputDialog::getText(this, tr("Start Chat with"),
                                          tr("User name:"), QLineEdit::Normal,
                                          "", &ok);
     if (ok && !text.isEmpty()) {
-        d_session->retrieveUser(text, this);
+        d_session->retrieveUser(text, ui->twChats->currentWidget());
     }
 
-}
-
-void AppWindow::onInviteUserReturn(QSharedPointer<const User> user, const QObject *id, bool success, const QString &msg)
-{
-    if (id != this)
-        return;
-    if (success) {
-        inviteQueue.append(user);
-        d_session->initChat();
-    } else {
-        QMessageBox::warning(this, "Couldn't find user", msg);
-    }
 }
 
 void AppWindow::onLogoutClicked()
@@ -157,7 +140,7 @@ void AppWindow::onTabCloseRequested(int tab)
 
 void AppWindow::onAddUserReturn(QSharedPointer<const User> user, const QObject *id, bool success, const QString &msg)
 {
-    if (id != ui->lwChats)
+    if (id != this)
         return;
     if (success) {
         user->getName();
@@ -165,4 +148,8 @@ void AppWindow::onAddUserReturn(QSharedPointer<const User> user, const QObject *
     } else {
         QMessageBox::warning(this, "Couldn't find user", msg);
     }
+}
+
+void AppWindow::onStartChatEntryClicked() {
+    d_session->initChat();
 }
