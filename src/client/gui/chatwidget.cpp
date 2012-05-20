@@ -26,6 +26,7 @@ ChatWidget::ChatWidget(QSharedPointer<Session> session,
     connect(d_chat.data(), SIGNAL(messageReceived(QSharedPointer<const User>, QString)), this,
             SLOT(messageReceived(QSharedPointer<const User>, QString)));
     connect(d_chat.data(), SIGNAL(userJoined(QSharedPointer<const User>)), this, SLOT(userJoined(QSharedPointer<const User>)));
+    connect(d_chat.data(), SIGNAL(userLeft(QSharedPointer<const User>)), this, SLOT(userLeft(QSharedPointer<const User>)));
     connect(d_chat.data(), SIGNAL(leaveChatCompleted(bool, QString)), this, SLOT(leaveChatCompleted(bool, QString)));
     connect(d_chat.data(), SIGNAL(inviteCompleted(bool, QString)), this, SLOT(inviteCompleted(bool, QString)));
     connect(d_chat.data(), SIGNAL(sendCompleted(bool, QString)), this, SLOT(sendCompleted(bool, QString)));
