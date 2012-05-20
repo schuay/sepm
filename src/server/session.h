@@ -1,3 +1,6 @@
+#ifndef SESSION_H
+#define SESSION_H
+
 #include "SecureDistributedChat.h"
 #include <Ice/Ice.h>
 
@@ -71,3 +74,5 @@ private:
 };
 
 }
+
+#endif

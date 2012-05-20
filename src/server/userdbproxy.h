@@ -1,3 +1,6 @@
+#ifndef USERDBPROXY_H
+#define USERDBPROXY_H
+
 #include <QString>
 #include <QSharedPointer>
 #include <QSqlDatabase>
@@ -95,3 +98,5 @@ private:
 };
 
 }
+
+#endif

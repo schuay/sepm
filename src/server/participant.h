@@ -1,3 +1,6 @@
+#ifndef PARTICIPANT_H
+#define PARTICIPANT_H
+
 #include <QStringList>
 
 #include "SecureDistributedChat.h"
@@ -48,3 +51,5 @@ private:
 };
 
 }
+
+#endif

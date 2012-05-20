@@ -1,3 +1,6 @@
+#ifndef CHAT_H
+#define CHAT_H
+
 #include "SecureDistributedChat.h"
 
 #include "participant.h"
@@ -41,3 +44,5 @@ private:
 };
 
 }
+
+#endif

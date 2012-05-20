@@ -1,3 +1,6 @@
+#ifndef AUTHENTICATION_H
+#define AUTHENTICATION_H
+
 #include "SecureDistributedChat.h"
 #include <QString>
 #include <QByteArray>
@@ -26,3 +29,5 @@ private:
 };
 
 }
+
+#endif

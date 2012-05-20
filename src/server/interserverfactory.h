@@ -1,3 +1,6 @@
+#ifndef INTERSERVERFACTORY_H
+#define INTERSERVERFACTORY_H
+
 #include "SecureDistributedChat.h"
 
 namespace sdcs
@@ -10,3 +13,5 @@ public:
 }
 
 }
+
+#endif
