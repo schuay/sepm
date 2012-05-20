@@ -66,7 +66,6 @@ void SettingsDialog::onDeleteAccountClicked()
                                   QMessageBox::Yes | QMessageBox::No);
     if (reply == QMessageBox::Yes) {
         d_session->deleteUser(d_session->getUser());
-        d_session->logout();
     }
 
 }
