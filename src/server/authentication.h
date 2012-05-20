@@ -8,10 +8,12 @@
 namespace sdcs
 {
 
+class Server;
+
 class Authentication : public sdc::AuthenticationI
 {
 public:
-    Authentication();
+    Authentication(Server *server);
 
     void registerUser(const sdc::User &participant, const std::string &pwd, const Ice::Current &)
     throw(sdc::AuthenticationException);
@@ -27,9 +29,7 @@ private:
     QByteArray generatePasswordSalt() const;
     QByteArray saltHashPassword(const std::string &password, const QByteArray &salt) const;
 
-    /* Temporarily store this here until one of the next commits,
-     * where it will move to a QMap in Server. */
-    sdc::SessionIPrx sessionProxy;
+    Server *server;
 };
 
 }

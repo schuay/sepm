@@ -6,6 +6,7 @@
 #include "QsLog.h"
 #include "userdbproxy.h"
 #include "session.h"
+#include "server.h"
 
 namespace sdcs
 {
@@ -13,7 +14,8 @@ namespace sdcs
 #define SALT_LEN (128)
 #define SALT_ITERATIONS (1000)
 
-Authentication::Authentication()
+Authentication::Authentication(Server *server)
+    : server(server)
 {
     assert(QCA::isSupported("sha1"));
 }
@@ -49,7 +51,8 @@ throw(sdc::AuthenticationException)
     QLOG_TRACE() << __PRETTY_FUNCTION__;
 
     try {
-        QSharedPointer<UserDbProxy> proxy = UserDbProxy::getProxy(QString::fromStdString(user.ID));
+        QString userid = QString::fromStdString(user.ID);
+        QSharedPointer<UserDbProxy> proxy = UserDbProxy::getProxy(userid);
         QByteArray salt = proxy->getSalt();
         QByteArray hash = saltHashPassword(password, salt);
 
@@ -58,14 +61,14 @@ throw(sdc::AuthenticationException)
             throw sdc::AuthenticationException("Authentication failure");
         }
 
-        /* TODO: check if user is already logged in. */
-
         sdc::ChatClientCallbackIPrx callback = sdc::ChatClientCallbackIPrx::uncheckedCast(
                 current.con->createProxy(identity));
 
         Session *session = new Session(user, callback);
-        sessionProxy = sdc::SessionIPrx::uncheckedCast(
-                           current.adapter->addWithUUID(session));
+        sdc::SessionIPrx sessionProxy = sdc::SessionIPrx::uncheckedCast(
+                                            current.adapter->addWithUUID(session));
+
+        server->addSession(userid, sessionProxy);
 
         return sessionProxy;
     } catch (const sdc::UserHandlingException &e) {

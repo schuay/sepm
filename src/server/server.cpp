@@ -1,6 +1,7 @@
 #include "server.h"
 
 #include <assert.h>
+#include <QMutexLocker>
 
 namespace sdcs
 {
@@ -22,7 +23,7 @@ Server::Server(Ice::CommunicatorPtr communicator)
         communicator->createObjectAdapterWithEndpoints(
             "SDCServer", QString("ssl -p %1").arg(sdc::port).toStdString());
 
-    auth = new Authentication();
+    auth = new Authentication(this);
     Ice::ObjectPtr authObj = auth;
 
     adapter->add(authObj, communicator->stringToIdentity("Authentication"));
@@ -32,6 +33,17 @@ Server::Server(Ice::CommunicatorPtr communicator)
 Server::~Server()
 {
     communicator->destroy();
+}
+
+void Server::addSession(const QString &user, sdc::SessionIPrx session)
+throw(sdc::AuthenticationException)
+{
+    QMutexLocker locker(&sessionsMutex);
+    if (sessions.contains(user)) {
+        throw sdc::AuthenticationException("Already logged in.");
+    }
+
+    sessions[user] = session;
 }
 
 }
