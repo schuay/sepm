@@ -80,11 +80,25 @@ void SessionPrivate::addChatParticipant(const sdc::User &participant,
     chats[key]->addChatParticipant(usr);
 }
 
-void SessionPrivate::removeChatParticipant(const sdc::User &/*participant*/,
-        const std::string &/*chatID*/,
+void SessionPrivate::removeChatParticipant(const sdc::User &participant,
+        const std::string &chatID,
         const Ice::Current &)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
+
+    QSharedPointer<const User> usr(new User(participant));
+    QString key = QString::fromStdString(chatID);
+
+    QMutexLocker chatLocker(&chatsMutex);
+    if (!chats.contains(key)) {
+        QLOG_ERROR() << QString("Remove participant from nonexistant chat '%1'").arg(key);
+        return;
+    }
+
+    QMutexLocker userLocker(&usersMutex);
+    users[usr->getName()] = usr;
+
+    chats[key]->removeChatParticipant(usr);
 }
 
 void SessionPrivate::appendMessageToChat(const sdc::ByteSeq &message,

@@ -101,6 +101,7 @@ void Chat::receiveMessage(QSharedPointer<const User> participant, const sdc::Byt
                      .arg(participant->getName());
         return;
     }
+    locker.unlock();
 
     try {
         sdc::Security s;
@@ -151,6 +152,19 @@ void Chat::addChatParticipant(QSharedPointer<const User> participant)
     QMutexLocker locker(&usersMutex);
     users[participant->getName()] = participant;
     emit userJoined(participant);
+}
+
+void Chat::removeChatParticipant(QSharedPointer<const User> participant)
+{
+    QMutexLocker locker(&usersMutex);
+    if (!users.contains(participant->getName())) {
+        QLOG_ERROR() << QString("Remove non-participant user '%1' from chat '%2'")
+                     .arg(participant->getName()).arg(chatID);
+        return;
+    }
+
+    users.remove(participant->getName());
+    emit userLeft(participant);
 }
 
 QList<QSharedPointer<const User> > Chat::getUserList()

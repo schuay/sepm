@@ -129,7 +129,7 @@ private:
     void runSend(const QString &msg);
     void receiveMessage(QSharedPointer<const User> participant, const sdc::ByteSeq &encMsg);
     void addChatParticipant(QSharedPointer<const User> participant);
-    void removeChatParticipant(const QString participant);
+    void removeChatParticipant(QSharedPointer<const User> participant);
 };
 
 }
