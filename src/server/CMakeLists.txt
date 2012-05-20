@@ -12,6 +12,7 @@ add_library(serverlib STATIC
         participant.cpp
         session.cpp
         userdbproxy.cpp
+        server.cpp
 )
 
 target_link_libraries(serverlib

@@ -8,6 +8,7 @@
 #include "QsLogDest.h"
 #include "authentication.h"
 #include "userdbproxy.h"
+#include "server.h"
 
 static void usage()
 {
@@ -60,33 +61,13 @@ struct Application : virtual public Ice::Application {
             QLOG_WARN() << argc - optind << "unparsed arguments";
         }
 
-        startObjectAdapter();
+        /* The server handles adapter setup and wraps needed interfaces. */
+        sdcs::Server server(communicator());
+        Q_UNUSED(server);
 
         communicator()->waitForShutdown();
 
         return 0;
-    }
-
-private:
-    /**
-     * Starts the object adapter. There need only be a single adapter for all
-     * server tasks. No reference is held after this function, if one is needed,
-     * this should be changed to store it in a member.
-     */
-    void startObjectAdapter() {
-        QLOG_TRACE() << __PRETTY_FUNCTION__;
-
-        /* Note that while the name of the object adapter is not important,
-         * the name of the Ice Identity matters - it is the name of the implemented
-         * interface bar the trailing 'I' */
-        std::ostringstream oss;
-        oss << "ssl -p " << sdc::port;
-        Ice::ObjectAdapterPtr adapter =
-            communicator()->createObjectAdapterWithEndpoints("SDCServer", oss.str());
-        Ice::ObjectPtr authObj = new sdcs::Authentication;
-
-        adapter->add(authObj, communicator()->stringToIdentity("Authentication"));
-        adapter->activate();
     }
 };
 
