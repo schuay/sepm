@@ -68,6 +68,10 @@ throw(sdc::AuthenticationException)
         sdc::SessionIPrx sessionProxy = sdc::SessionIPrx::uncheckedCast(
                                             current.adapter->addWithUUID(session));
 
+        std::string msg = "hello world";
+        if (callback->echo(msg) != msg)
+            throw sdc::AuthenticationException("Invalid callback");
+
         server->addSession(userid, sessionProxy);
 
         return sessionProxy;

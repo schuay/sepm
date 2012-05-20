@@ -97,6 +97,11 @@ int main(int argc, char **argv)
     props->setProperty("IceSSL.CertAuthFile", "ca.crt");
     props->setProperty("IceSSL.VerifyPeer", "0");
 
+    /* Again, nested calls lead to deadlock issues. This time, the problem
+     * was caused by the echo() call in Authentication::login(). */
+    props->setProperty("Ice.ThreadPool.Client.SizeMax", "5");
+    props->setProperty("Ice.ThreadPool.Server.SizeMax", "5");
+
     Ice::InitializationData id;
     id.properties = props;
 
