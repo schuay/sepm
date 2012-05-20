@@ -2,6 +2,8 @@
 #define CHATWIDGET_H
 
 #include <QWidget>
+#include <QAbstractListModel>
+#include <QMap>
 #include "chat.h"
 #include "session.h"
 
@@ -35,11 +37,12 @@ public slots:
      * Another user joined the chat.
      */
     void userJoined(QSharedPointer<const User> user);
-    // /**
-    //  * A user left the chat.
-    //  */
-    // void userLeft(QSharedPointer<const User> user);
-//
+
+    /**
+     * A user left the chat.
+     */
+    void userLeft(QSharedPointer<const User> user);
+
     /**
      * Response signal for leaveChat.
      */

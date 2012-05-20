@@ -1,7 +1,9 @@
 #include "chatwidget.h"
 #include "ui_chatwidget.h"
+#include "sdcHelper.h"
 #include <iostream>
 #include <QtGui>
+#include <QsLog.h>
 
 ChatWidget::ChatWidget(QSharedPointer<Session> session,
                        QSharedPointer<Chat> chat, QWidget *parent) :
@@ -15,6 +17,10 @@ ChatWidget::ChatWidget(QSharedPointer<Session> session,
     d_chat = chat;
     d_session = session;
 
+    QListIterator<QSharedPointer<const User> > it(d_chat->getUserList());
+    while(it.hasNext()) {
+        userJoined(it.next());
+    }
     connect(ui->leMessage, SIGNAL(returnPressed()), this, SLOT(returnPressed()));
     connect(d_chat.data(), SIGNAL(messageReceived(QSharedPointer<const User>, QString)), this,
             SLOT(messageReceived(QSharedPointer<const User>, QString)));
@@ -56,7 +62,21 @@ void ChatWidget::messageReceived(QSharedPointer<const User> user, const QString 
  */
 void ChatWidget::userJoined(QSharedPointer<const User> user)
 {
-    QListWidgetItem userWidget(user->getName(), ui->lwParticipants);
+    if(ui->lwParticipants->findItems(user->getName(), Qt::MatchExactly).size() == 0) {
+        ui->lwParticipants->addItem(user->getName());
+        ui->lwParticipants->sortItems();
+    } else {
+        QLOG_WARN() << "User " << user->getName() << " joined while already in chat.";
+    }
+}
+
+void ChatWidget::userLeft(QSharedPointer<const User> user) {
+    ui->lwParticipants->removeItemWidget(
+                ui->lwParticipants->findItems(
+                    user->getName(),
+                    Qt::MatchExactly
+                    ).first()
+                );
 }
 
 /**

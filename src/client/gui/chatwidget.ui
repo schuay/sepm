@@ -34,6 +34,9 @@
         </item>
         <item>
          <widget class="QListWidget" name="lwParticipants">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
           <property name="minimumSize">
            <size>
             <width>130</width>
@@ -45,6 +48,9 @@
             <width>130</width>
             <height>16777215</height>
            </size>
+          </property>
+          <property name="selectionMode">
+           <enum>QAbstractItemView::NoSelection</enum>
           </property>
          </widget>
         </item>
