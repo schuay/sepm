@@ -94,6 +94,14 @@ void Chat::runSend(const QString &msg)
 
 void Chat::receiveMessage(QSharedPointer<const User> participant, const sdc::ByteSeq &encMsg)
 {
+    QMutexLocker locker(&usersMutex);
+    if (!users.contains(participant->getName())) {
+        QLOG_ERROR() << QString("Received message for chat '%1' from user '%2', "
+                                "who is not in the chat").arg(chatID)
+                     .arg(participant->getName());
+        return;
+    }
+
     try {
         sdc::Security s;
         sdc::ByteSeq decMsg = s.decryptAES(key, encMsg);
