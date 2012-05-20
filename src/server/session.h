@@ -9,20 +9,15 @@ namespace sdcs
 
 class Session : public sdc::SessionI
 {
-
-signals:
-    /* pseudocode
-      chatCreated(Chatptr, ...);
-      chatDestroyed(Chatptr, ...);
-    */
-
 public:
+    Session(const sdc::User &user, sdc::ChatClientCallbackIPrx callback);
+
     /* destroy self, notify all open chats */
     void logout(const Ice::Current &) throw(sdc::UserHandlingException);
 
     /* local user: db lookup
      * remote: create interserver, forward call, return. */
-    User retrieveUser(const std::string &userID, const Ice::Current &)
+    sdc::User retrieveUser(const std::string &userID, const Ice::Current &)
     throw(sdc::UserHandlingException, sdc::InterServerException);
 
     /* gen ID (protected by sema, uuid@serverurl)
@@ -46,7 +41,7 @@ public:
     throw(sdc::MessageException, sdc::InterServerException);
 
     /* check auth, do db ops, logout (make sure everything is consistent), destroy session */
-    void deleteUser(const User &participant, const Ice::Current &)
+    void deleteUser(const sdc::User &participant, const Ice::Current &)
     throw(sdc::UserHandlingException);
 
 
@@ -68,9 +63,17 @@ public:
     sdc::SecureContainer retrieveContactList(const Ice::Current &)
     throw(sdc::ContactException);
 
+    /*
+    signals:
+      chatCreated(Chatptr, ...);
+      chatDestroyed(Chatptr, ...);
+    */
+
 private:
-    QMap<QString, Chat> chats;
-    LocalParticipant self;
+    const sdc::User user;
+    const sdc::ChatClientCallbackIPrx callback;
+//    QMap<QString, Chat> chats;
+//    LocalParticipant self;
 };
 
 }

@@ -5,6 +5,7 @@
 
 #include "QsLog.h"
 #include "userdbproxy.h"
+#include "session.h"
 
 namespace sdcs
 {
