@@ -135,6 +135,8 @@ void AppWindow::onSettingsButtonClicked()
 
 void AppWindow::onTabCloseRequested(int tab)
 {
+    ChatWidget *cw = dynamic_cast<ChatWidget*>(ui->twChats->widget(tab));
+    cw->leaveChat();
     ui->twChats->removeTab(tab);
 }
 

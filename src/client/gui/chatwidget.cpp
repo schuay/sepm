@@ -10,6 +10,7 @@ ChatWidget::ChatWidget(QSharedPointer<Session> session,
     QWidget(parent),
     ui(new Ui::ChatWidget)
 {
+    setAttribute(Qt::WA_DeleteOnClose, true);
     ui->setupUi(this);
 
     qRegisterMetaType<QSharedPointer<const User> >("QSharedPointer<const User>");
@@ -117,6 +118,11 @@ void ChatWidget::invite(QSharedPointer<const User> user, const QObject *id, bool
     }
 }
 
+void ChatWidget::leaveChat()
+{
+    d_chat->leaveChat();
+}
+
 /**
  * Response signal for send.
  */
@@ -127,7 +133,6 @@ void ChatWidget::sendCompleted(bool success, const QString &msg)
                              "The message didn't reach the other participants.\n" + msg);
     }
 }
-
 
 ChatWidget::~ChatWidget()
 {

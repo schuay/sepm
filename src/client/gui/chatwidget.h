@@ -63,6 +63,8 @@ public slots:
       */
     void invite(QSharedPointer<const User> user, const QObject *id, bool success, const QString &msg);
 
+    void leaveChat();
+
 
 private slots:
     void returnPressed();
