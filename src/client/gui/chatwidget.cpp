@@ -90,7 +90,6 @@ void ChatWidget::leaveChatCompleted(bool success, const QString &msg)
     }
 
     this->close();
-    this->destroy();
 }
 
 /**
