@@ -7,6 +7,7 @@
 #include "settingsdialog.h"
 #include <QListWidgetItem>
 #include <QtGui>
+#include <QsLog.h>
 
 Q_DECLARE_METATYPE(QSharedPointer<Chat>)
 
@@ -76,6 +77,10 @@ void AppWindow::onAddContactEntryClicked()
 
 void AppWindow::onInviteClicked()
 {
+    if (ui->twChats->count() == 0) {
+        QMessageBox::warning(this, "No chat opened", "You can't invite a user without first opening up a chat");
+        return;
+    }
     bool ok;
     QString text = QInputDialog::getText(this, tr("Start Chat with"),
                                          tr("User name:"), QLineEdit::Normal,
