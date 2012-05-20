@@ -43,6 +43,10 @@ class SessionPrivate : public QObject, public sdc::ChatClientCallbackI
 
     void runDeleteUser(QSharedPointer<const User> user);
 
+    void runRetrieveContactList();
+
+    void runSaveContactList(const QStringList &contactlist);
+
     ~SessionPrivate();
 
     QMutex chatsMutex;

@@ -22,7 +22,9 @@ public:
     User(const QString &name, const QString &publicKeyPath) throw(sdc::SecurityException);
     User(const sdc::User &user);
     User(const User &user);
-    const sdc::ByteSeq encrypt(sdc::ByteSeq data) const throw(sdc::SecurityException);
+    const sdc::ByteSeq encrypt(const sdc::ByteSeq data) const throw(sdc::SecurityException);
+    bool verify(const sdc::ByteSeq data, const sdc::ByteSeq signature) const
+    throw(sdc::SecurityException);
     const QString &getName() const;
 
     QSharedPointer<sdc::User> getIceUser() const;

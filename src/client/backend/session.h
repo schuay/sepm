@@ -7,6 +7,7 @@
 #include "chat.h"
 #include "user.h"
 #include "loginuser.h"
+#include "sdcHelper.h"
 
 namespace sdcc
 {
@@ -58,6 +59,16 @@ public:
     void deleteUser(QSharedPointer<const User> user);
 
     /**
+     * Retrieves the contact list from the server.
+     */
+    void retrieveContactList();
+
+    /**
+     * Saves the contact list on the server
+     */
+    void saveContactList(const QStringList &contactlist);
+
+    /**
      * Retrieve the user of this session.
      */
     const QSharedPointer<const User> getUser() const;
@@ -90,6 +101,18 @@ signals:
      * A user has been deleted from the server.
      */
     void deleteUserCompleted(bool success, const QString &msg);
+
+    /**
+     * The contact list has been retrieved from the server.
+     */
+    void retrieveContactListCompleted(const QStringList &list,
+                                      bool success, const QString &msg);
+
+    /**
+     * The contact list has been saved on the server
+     */
+    void saveContactListCompleted(bool success, const QString &msg);
+
 
 
 private:

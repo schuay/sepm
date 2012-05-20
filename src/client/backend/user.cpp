@@ -37,10 +37,17 @@ QSharedPointer<sdc::User> User::getIceUser() const
     return QSharedPointer<sdc::User>(u);
 }
 
-const sdc::ByteSeq User::encrypt(sdc::ByteSeq data) const throw(sdc::SecurityException)
+const sdc::ByteSeq User::encrypt(const sdc::ByteSeq data) const throw(sdc::SecurityException)
 {
     sdc::Security s;
     return s.encryptRSA(publicKey, data);
+}
+
+bool User::verify(const sdc::ByteSeq data, const sdc::ByteSeq signature) const
+throw(sdc::SecurityException)
+{
+    sdc::Security s;
+    return s.verifyRSA(publicKey, data, signature);
 }
 
 }

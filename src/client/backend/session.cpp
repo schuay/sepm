@@ -1,6 +1,5 @@
 #include "session.h"
 #include "session_p.h"
-
 #include <Ice/Ice.h>
 #include <IceUtil/IceUtil.h>
 #include <QtConcurrentRun>
@@ -214,6 +213,70 @@ void SessionPrivate::runDeleteUser(QSharedPointer<const User> user)
     emit q->deleteUserCompleted(success, message);
 }
 
+void SessionPrivate::runRetrieveContactList()
+{
+    Q_Q(Session);
+    bool success = true;
+    QString message;
+    QStringList contactlistdata;
+
+    try {
+
+        sdc::SecureContainer contactlist = session->retrieveContactList();
+
+        QLOG_TRACE() << __PRETTY_FUNCTION__;
+        sdc::ByteSeq decryptedData = user->decrypt(contactlist.data);
+
+        if (!user->verify(decryptedData, contactlist.signature)) {
+            success = false;
+            message = "Invalid signature";
+            goto out;
+        }
+
+        QByteArray b1 = sdc::sdcHelper::byteSeqToByteArray(decryptedData);
+        contactlistdata = QString(b1).split('\n');
+
+    } catch (const sdc::ContactException &e) {
+        success = false;
+        message = e.what.c_str();
+    } catch (const sdc::SecurityException) {
+        success = false;
+        message = "Decryption Failed";
+    }
+
+out:
+    emit q->retrieveContactListCompleted(contactlistdata, success, message);
+}
+
+void SessionPrivate::runSaveContactList(const QStringList &contactlist)
+{
+    Q_Q(Session);
+    bool success = true;
+    QString message;
+
+    try {
+        sdc::SecureContainer contactListContainer;
+
+        QByteArray temp;
+        for (int i = 0; i < contactlist.size(); i++) {
+            temp.append(contactlist[i] + '\n');
+        }
+        temp.chop(1);
+
+        contactListContainer.data = user->encrypt(sdc::sdcHelper::byteArraytoByteSeq(temp));
+        contactListContainer.signature = user->sign(sdc::sdcHelper::byteArraytoByteSeq(temp));
+
+        session->saveContactList(contactListContainer);
+
+    } catch (const sdc::ContactException &e) {
+        success = false;
+        message = e.what.c_str();
+    }
+
+    emit q->saveContactListCompleted(success, message);
+
+}
+
 SessionPrivate::~SessionPrivate()
 {
     if (communicator) {
@@ -319,4 +382,17 @@ void Session::retrieveUser(const QString &username, const QObject *id)
     QtConcurrent::run(d, &SessionPrivate::runRetrieveUser, username, id);
 }
 
+void Session::retrieveContactList()
+{
+    QLOG_TRACE() << __PRETTY_FUNCTION__;
+    Q_D(Session);
+    QtConcurrent::run(d, &SessionPrivate::runRetrieveContactList);
+}
+
+void Session::saveContactList(const QStringList &contactlist)
+{
+    QLOG_TRACE() << __PRETTY_FUNCTION__;
+    Q_D(Session);
+    QtConcurrent::run(d, &SessionPrivate::runSaveContactList, contactlist);
+}
 }
