@@ -38,6 +38,7 @@ QByteArray Authentication::saltHashPassword(const std::string &password, const Q
 std::string Authentication::echo(const std::string &message, const Ice::Current &)
 throw(sdc::SDCException)
 {
+    QLOG_TRACE() << __PRETTY_FUNCTION__;
     return message;
 }
 
