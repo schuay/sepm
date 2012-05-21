@@ -264,15 +264,42 @@ void ChatTests::testTransmitMessage()
 
 void ChatTests::testLeaveChat()
 {
-    QSignalSpy spy(chat.data(), SIGNAL(leaveChatCompleted(bool, QString)));
+    QSignalSpy spy(session2.data(), SIGNAL(invitationReceived(QSharedPointer<Chat>)));
     QVERIFY(spy.isValid());
     QVERIFY(spy.isEmpty());
 
+    QSignalSpy spy4(chat.data(), SIGNAL(userJoined(QSharedPointer<const User>)));
+    QVERIFY(spy4.isValid());
+    QVERIFY(spy4.isEmpty());
+
+    QSharedPointer<const User> u(new User("pinkie_pie@selinux.inso.tuwien.ac.at",
+                                          WORKING_DIR "public.pem"));
+    chat->invite(u);
+    waitForResult(spy);
+    waitForResult(spy4);
+
+    QList<QVariant> arguments = spy.takeFirst();
+    QSharedPointer<Chat> chat2 = arguments.at(0).value<QSharedPointer<Chat> >();
+
+    QSignalSpy spy2(chat.data(), SIGNAL(leaveChatCompleted(bool, QString)));
+    QVERIFY(spy2.isValid());
+    QVERIFY(spy2.isEmpty());
+
+    QSignalSpy spy3(chat2.data(), SIGNAL(userLeft(QSharedPointer<const User>)));
+    QVERIFY(spy3.isValid());
+    QVERIFY(spy3.isEmpty());
+
     chat->leaveChat();
 
-    waitForResult(spy);
+    waitForResult(spy2);
+    waitForResult(spy3);
 
-    QCOMPARE(spy.count(), 1);
-    QList<QVariant> arguments = spy.takeFirst();
-    QVERIFY2(arguments.at(0) == true, arguments.at(1).toString().toStdString().c_str());
+    QCOMPARE(spy2.count(), 1);
+    QList<QVariant> arguments2 = spy2.takeFirst();
+    QVERIFY2(arguments2.at(0) == true, arguments2.at(1).toString().toStdString().c_str());
+
+    QCOMPARE(spy3.count(), 1);
+    QList<QVariant> arguments3 = spy3.takeFirst();
+    QSharedPointer<const User> u2 = arguments3.at(0).value<QSharedPointer<const User> >();
+    QCOMPARE(u2->getName(), QString("fefeb10c@selinux.inso.tuwien.ac.at"));
 }
