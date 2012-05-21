@@ -37,11 +37,10 @@ void Chat::runInvite(QSharedPointer<const User> user)
     QString message;
 
     sdc::User sdcUser = *user->getIceUser().data();
-    sdc::Security s;
 
     try {
         sessionPrx->invite(sdcUser, chatID.toStdString(),
-                           s.encryptRSA(sdcUser.publicKey, key));
+                           user->encrypt(key));
     } catch (const sdc::SecurityException &e) {
         success = false;
         message = e.what();
