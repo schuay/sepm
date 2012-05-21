@@ -78,28 +78,17 @@
        <item row="0" column="0">
         <layout class="QVBoxLayout" name="verticalLayout">
          <item>
-          <layout class="QHBoxLayout" name="horizontalLayout">
-           <property name="topMargin">
-            <number>0</number>
+          <widget class="QToolButton" name="pbOptions">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
            </property>
-           <property name="bottomMargin">
-            <number>0</number>
+           <property name="text">
+            <string>Menu</string>
            </property>
-           <item>
-            <widget class="QToolButton" name="pbOptions">
-             <property name="text">
-              <string>S</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLineEdit" name="lineEdit">
-             <property name="placeholderText">
-              <string>Contact</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
+          </widget>
          </item>
          <item>
           <widget class="QGroupBox" name="groupBox">
