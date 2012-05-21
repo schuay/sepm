@@ -150,3 +150,70 @@ void SessionTests::retrieveUserNonexistent()
     QList<QVariant> arguments = spy.takeFirst();
     QVERIFY2(arguments.at(2) == false, arguments.at(3).toString().toStdString().c_str());
 }
+
+void SessionTests::retrieveContactListNonexistent()
+{
+    SessionManager *sessionManager = SessionManager::getInstance();
+    QSignalSpy spy(sessionManager,
+                   SIGNAL(loginCompleted(QSharedPointer<Session>, bool, QString)));
+    QVERIFY(spy.isValid());
+    QVERIFY(spy.isEmpty());
+
+    QSharedPointer<const LoginUser> u(new LoginUser("fefeb10c@selinux.inso.tuwien.ac.at",
+                                      WORKING_DIR "public.pem", WORKING_DIR "private.pem"));
+    sessionManager->login("selinux.inso.tuwien.ac.at", WORKING_DIR "ca.crt", u,
+                          "password");
+
+    waitForResult(spy);
+    QCOMPARE(spy.count(), 1);
+    QList<QVariant> arguments = spy.takeFirst();
+    QVERIFY2(arguments.at(1) == true, arguments.at(2).toString().toStdString().c_str());
+
+    session = arguments.at(0).value<QSharedPointer<Session> >();
+
+    QSignalSpy spy2(session.data(), SIGNAL(retrieveContactListCompleted(const QStringList,
+                                           bool, const QString)));
+    QVERIFY(spy2.isValid());
+    QVERIFY(spy2.isEmpty());
+
+    session->retrieveContactList();
+    waitForResult(spy2);
+
+    QCOMPARE(spy2.count(), 1);
+    QList<QVariant> arguments2 = spy2.takeFirst();
+    QStringList contactsRet = arguments2.at(0).value<QStringList>();
+
+    QVERIFY(arguments2.at(1) == false);
+}
+
+void SessionTests::saveRetrieveContactList()
+{
+    QStringList contacts = QString("pinkie_pie@selinux.inso.tuwien.ac.at\n"
+                                   "rainbow_dash@selinux.inso.tuwien.ac.at").split('\n');
+
+    QSignalSpy spy(session.data(), SIGNAL(saveContactListCompleted(bool, const QString)));
+    QVERIFY(spy.isValid());
+    QVERIFY(spy.isEmpty());
+
+    session->saveContactList(contacts);
+    waitForResult(spy);
+
+    QCOMPARE(spy.count(), 1);
+    QList<QVariant> arguments = spy.takeFirst();
+    QVERIFY2(arguments.at(0) == true, arguments.at(1).toString().toStdString().c_str());
+
+    QSignalSpy spy2(session.data(), SIGNAL(retrieveContactListCompleted(const QStringList,
+                                           bool, const QString)));
+    QVERIFY(spy2.isValid());
+    QVERIFY(spy2.isEmpty());
+
+    session->retrieveContactList();
+    waitForResult(spy2);
+
+    QCOMPARE(spy2.count(), 1);
+    QList<QVariant> arguments2 = spy2.takeFirst();
+    QStringList contactsRet = arguments2.at(0).value<QStringList>();
+
+    QVERIFY2(arguments2.at(1) == true, arguments2.at(2).toString().toStdString().c_str());
+    QVERIFY(contacts == contactsRet);
+}
