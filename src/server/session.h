@@ -47,13 +47,13 @@ public:
 
     /* --------------------- */
 
-    void saveLog(const std::string &chatID, long timestamp,
+    void saveLog(const std::string &chatID, Ice::Long timestamp,
                  const sdc::SecureContainer &log, const Ice::Current &)
     throw(sdc::LogException);
 
     sdc::Loglist retrieveLoglist(const Ice::Current &) throw(sdc::LogException);
 
-    sdc::SecureContainer retrieveLog(const std::string &chatID, long timestamp,
+    sdc::SecureContainer retrieveLog(const std::string &chatID, Ice::Long timestamp,
                                      const Ice::Current &)
     throw(sdc::LogException);
 

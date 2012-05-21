@@ -35,7 +35,7 @@ throw(sdc::MessageException, sdc::InterServerException) { }
 void Session::deleteUser(const sdc::User &/*participant*/, const Ice::Current &)
 throw(sdc::UserHandlingException) { }
 
-void Session::saveLog(const std::string &/*chatID*/, long /*timestamp*/,
+void Session::saveLog(const std::string &/*chatID*/, Ice::Long /*timestamp*/,
                       const sdc::SecureContainer &/*log*/, const Ice::Current &)
 throw(sdc::LogException) { }
 
@@ -45,8 +45,8 @@ sdc::Loglist Session::retrieveLoglist(const Ice::Current &) throw(sdc::LogExcept
     return l;
 }
 
-sdc::SecureContainer Session::retrieveLog(const std::string &/*chatID*/, long /*timestamp*/,
-        const Ice::Current &)
+sdc::SecureContainer Session::retrieveLog(const std::string &/*chatID*/,
+        Ice::Long /*timestamp*/, const Ice::Current &)
 throw(sdc::LogException)
 {
     sdc::SecureContainer c;
