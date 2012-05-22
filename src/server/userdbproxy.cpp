@@ -18,16 +18,6 @@ namespace sdcs
 /* Initialize static connection member. */
 UserDbProxy::Connection UserDbProxy::connection;
 
-UserDbProxy::Connection::Connection()
-{
-    /* Default values. */
-    driver = "QPSQL";
-    host = "127.0.0.41";
-    database = "grp22";
-    user = "grp22";
-    password = "se20linux901";
-}
-
 UserDbProxy::Connection::~Connection()
 {
     if (db.isOpen())

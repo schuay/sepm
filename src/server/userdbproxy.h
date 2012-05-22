@@ -18,7 +18,6 @@ class UserDbProxy
 {
 private:
     struct Connection {
-        Connection();
         ~Connection();
 
         void open();

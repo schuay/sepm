@@ -23,9 +23,16 @@ public:
         CPublicKeyPath,
         CPrivateKeyPath,
         CUsername,
+        SCertsDir,
         SCertPath,
-        SCertPrivPath,
-        SHostname
+        SKeyPath,
+        SCertAuthPath,
+        SHostname,
+        SDbHost,
+        SDbUser,
+        SDbDatabase,
+        SDbPassword,
+        SDbDriver
     };
 
     /**
@@ -38,6 +45,16 @@ public:
      * When this function completes successfully, the file has been saved.
      */
     static void setValue(SettingsKey key, QVariant value);
+
+    /**
+     * Returns true if the specified key is found in the settings.
+     */
+    static bool isConfigured(SettingsKey key);
+
+    /**
+     * Returns the configuration file name and path.
+     */
+    static QString fileName();
 
 private:
     static QString getKey(SettingsKey key);
