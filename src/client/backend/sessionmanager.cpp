@@ -52,6 +52,15 @@ public:
         else
             props->setProperty("IceSSL.CertAuthFile", serverCertPath.toStdString());
 
+        /* By default ICE will close connections if they are idle for more than
+         * 60 seconds. This is bad because the server can only use the client callback
+         * through the connection the client made to it.
+         * For sessions this HAS to be disabled.
+         *
+         * see http://doc.zeroc.com/display/Ice/Bidirectional+Connections
+         */
+        props->setProperty("Ice.ACM.Client", "0");
+
         Ice::InitializationData id;
         id.properties = props;
 
