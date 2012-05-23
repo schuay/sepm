@@ -36,6 +36,7 @@ public slots:
     void onInviteClicked();
     void onAddUserReturn(QSharedPointer<const User> user, const QObject *id, bool success, const QString &msg);
     void deleteAccount();
+    void onLogoutCompleted(bool success, const QString &msg);
     void onUserDeleted(bool success, const QString &msg);
 private:
     Ui::AppWindow *ui;

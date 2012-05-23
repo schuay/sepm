@@ -56,7 +56,7 @@ AppWindow::AppWindow(QWidget *parent, QSharedPointer<Session> session) :
 
 AppWindow::~AppWindow()
 {
-    if(!d_session->isValid())
+    if(d_session->isValid())
         d_session->logout();
     delete ui;
     delete settingspopupmenu;
@@ -91,7 +91,12 @@ void AppWindow::onInviteClicked()
 
 void AppWindow::onLogoutClicked()
 {
-    close();
+    if(d_session->isValid()) {
+        d_session->logout();
+        LoginDialog *ld = new LoginDialog();
+        ld->show();
+        close();
+    }
 }
 
 void AppWindow::onChatOpened(QSharedPointer<Chat> chat)
@@ -146,6 +151,15 @@ void AppWindow::onAddUserReturn(QSharedPointer<const User> user, const QObject *
 
 void AppWindow::deleteAccount() {
     d_session->deleteUser(d_session->getUser());
+}
+
+void AppWindow::onLogoutCompleted(bool success, const QString &msg)
+{
+    if(success) {
+        close();
+    } else {
+        QMessageBox::warning(this, "Couldn't logout", msg);
+    }
 }
 
 void AppWindow::onUserDeleted(bool success, const QString &msg)
