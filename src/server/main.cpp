@@ -39,6 +39,7 @@ static void usage()
             "-o host        set database host\n"
             "-u user        set database user\n"
             "-p password    set database password\n"
+            "-r cert dir    path to ssl server directory\n"
             "-c cert path   path to ssl server certificate\n"
             "-k key path    path to ssl server key\n"
             "-a ca path     path to ca certificate\n"
@@ -48,7 +49,7 @@ static void usage()
 static void parseArgs(int argc, char **argv, Args &args)
 {
     int opt;
-    while ((opt = getopt(argc, argv, "d:b:o:u:p:c:k:aih")) != -1) {
+    while ((opt = getopt(argc, argv, "r:d:b:o:u:p:c:k:aih")) != -1) {
         switch (opt) {
         case 'd':
             args.dbDriver = optarg;
@@ -70,6 +71,9 @@ static void parseArgs(int argc, char **argv, Args &args)
             break;
         case 'k':
             args.keyPath = optarg;
+            break;
+        case 'r':
+            args.certsDir = optarg;
             break;
         case 'a':
             args.caCertPath = optarg;
