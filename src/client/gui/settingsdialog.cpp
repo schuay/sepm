@@ -36,7 +36,8 @@ void SettingsDialog::okButtonClicked()
 
 void SettingsDialog::onChooseServerCertClicked()
 {
-    QString temp = QFileDialog::getOpenFileName(this, "Selectd_session->logout(); server certificate...", ui->leServerCert->text());
+    QString filter = "CertFiles (*.crt)";
+    QString temp = QFileDialog::getOpenFileName(this, "Select server certificate...", ui->leServerCert->text(), filter, 0);
     if (!temp.isNull())
         ui->leServerCert->setText(temp);
     settings.setValue(settings.CCertPath, ui->leServerCert->text());
@@ -44,7 +45,8 @@ void SettingsDialog::onChooseServerCertClicked()
 
 void SettingsDialog::onChoosePrivateKeyClicked()
 {
-    QString temp = QFileDialog::getOpenFileName(this, "Select private key...", ui->lePrivateKey->text());
+    QString filter = "KeyFiles (*.pem)";
+    QString temp = QFileDialog::getOpenFileName(this, "Select private key...", ui->lePrivateKey->text(), filter, 0);
     if (!temp.isNull())
         ui->lePrivateKey->setText(temp);
     settings.setValue(settings.CPrivateKeyPath, ui->lePrivateKey->text());
@@ -52,7 +54,8 @@ void SettingsDialog::onChoosePrivateKeyClicked()
 
 void SettingsDialog::onChoosePublicKeyClicked()
 {
-    QString temp = QFileDialog::getOpenFileName(this, "Select public key...", ui->lePublicKey->text());
+    QString filter = "KeyFiles (*.pem)";
+    QString temp = QFileDialog::getOpenFileName(this, "Select public key...", ui->lePublicKey->text(), filter, 0);
     if (!temp.isNull())
         ui->lePublicKey->setText(temp);
     settings.setValue(settings.CPublicKeyPath, ui->lePublicKey->text());
