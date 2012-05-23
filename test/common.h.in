@@ -60,5 +60,8 @@ QTest::qWait(500);
 
 #define TERMINATE_SERVER(server) \
 QCOMPARE(server.state(), QProcess::Running); \
-server.terminate();
+server.terminate(); \
+if (!server.waitForFinished(250)) { \
+    server.kill(); \
+}
 #endif
