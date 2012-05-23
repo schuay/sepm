@@ -189,6 +189,14 @@ void SessionPrivate::runLogout()
 
     try {
         session->logout();
+
+        QMutexLocker locker(&chatsMutex);
+        QList<QSharedPointer<Chat> > chatList = chats.values();
+        for (int i = 0; i < chatList.size(); i++) {
+            chatList[i]->leaveChat();
+        }
+
+        chats.clear();
     } catch (const sdc::UserHandlingException &e) {
         success = false;
         message = e.what.c_str();
