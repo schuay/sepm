@@ -1,4 +1,5 @@
 #include <QObject>
+#include <QProcess>
 
 class SessionManagerTests : public QObject
 {
@@ -6,6 +7,8 @@ class SessionManagerTests : public QObject
 
 private slots:
     void initTestCase();
+    void cleanupTestCase();
+
     void testTestConnection();
     void testUserCtorNamePath();
     void testUserCtorSdcUser();
@@ -18,4 +21,7 @@ private slots:
     void testLoginIncorrectCredentials();
     void testLoginCorrectCredentials();
     void testLoginRepeated();
+
+private:
+    QProcess server;
 };

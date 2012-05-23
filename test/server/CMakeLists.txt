@@ -7,9 +7,9 @@ include_directories(
     ${QT_QTSQL_INCLUDE_DIR}
 )
 
-set(WORKING_DIR ${CMAKE_CURRENT_SOURCE_DIR})
+set(WORKING_DIR ${CMAKE_SOURCE_DIR}/test)
 configure_file(
-    ${CMAKE_CURRENT_SOURCE_DIR}/common.h.in
+    ${CMAKE_SOURCE_DIR}/test/common.h.in
     ${CMAKE_CURRENT_BINARY_DIR}/common.h
 )
 

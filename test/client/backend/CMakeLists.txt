@@ -6,10 +6,15 @@ include_directories(
     ${QCA2_INCLUDE_DIR}
 )
 
-set(WORKING_DIR ${CMAKE_CURRENT_SOURCE_DIR})
+# ################################
+# SessionManager test
+# ################################
+
+set(WORKING_DIR ${CMAKE_SOURCE_DIR}/test)
 set(SERVER_URL "selinux.inso.tuwien.ac.at")
+unset(RUN_SERVER)
 configure_file(
-    ${CMAKE_CURRENT_SOURCE_DIR}/common.h.in
+    ${CMAKE_SOURCE_DIR}/test/common.h.in
     ${CMAKE_CURRENT_BINARY_DIR}/common.h
 )
 
@@ -48,6 +53,10 @@ add_test(NAME sessionManagerTest
     COMMAND sessionManagerTest
 )
 
+# ################################
+# Session test
+# ################################
+
 set(sessionTest_QTHEADERS
     sessiontest.h
 )
@@ -83,6 +92,10 @@ add_test(NAME sessionTest
     COMMAND sessionTest
 )
 
+# ################################
+# Chat test
+# ################################
+
 set(chatTest_QTHEADERS
     chattest.h
 )
@@ -116,4 +129,5 @@ add_dependencies(chatTest
 
 add_test(NAME chatTest
     COMMAND chatTest
+
 )

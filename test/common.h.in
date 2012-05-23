@@ -1,0 +1,64 @@
+#include <QtTest/QTest>
+#include <QtTest/QSignalSpy>
+
+#define WORKING_DIR "@WORKING_DIR@/"
+#define SERVER_URL "@SERVER_URL@"
+#define TEMP_SESSION_USER "TEMP_SESSION_USER@selinux.inso.tuwien.ac.at"
+#define SOURCE_DIR "@SOURCE_DIR@"
+#define BINARY_DIR "@BINARY_DIR@"
+#cmakedefine RUN_SERVER
+
+#define DB_DRIVER "QPSQL"
+#define DB_HOST "localhost"
+#define DB_DATABASE "sdcs_test"
+#define DB_USER "sdcs_test"
+#define DB_PASSWORD "sdcs_test"
+
+#define QVERIFY_THROW(expression, ExpectedExceptionType) \
+do \
+{ \
+    bool caught_ = false; \
+    try { expression; } \
+    catch (ExpectedExceptionType const&) { caught_ = true; } \
+    catch (...) {} \
+    if (!QTest::qVerify(caught_, #expression ", " #ExpectedExceptionType, "", __FILE__, __LINE__))\
+       return; \
+} while(0)
+
+/**
+ * Checks every 50 ms if spy has received a result, and returns if it did.
+ * Otherwise, it aborts after 10 seconds.
+ */
+void waitForResult(const QSignalSpy &spy, int count = 1)
+{
+    for (int i = 0; i < 200; i++) {
+        QTest::qWait(50);
+        if (spy.count() >= count)
+            break;
+    }
+}
+
+QString getUsername(const QString &user)
+{
+    return QString("%1@%2").arg(user, SERVER_URL);
+}
+
+#ifdef RUN_SERVER
+#define SPAWN_SERVER(server) \
+QString program = BINARY_DIR "/src/server/server"; \
+QStringList arguments; \
+arguments << "-d" << "QPSQL" \
+          << "-b" << "sdcs_test" \
+          << "-o" << "localhost" \
+          << "-u" << "sdcs_test" \
+          << "-r" << SOURCE_DIR "/misc" \
+          << "-p" << "sdcs_test"; \
+server.setStandardErrorFile(BINARY_DIR "/test.log"); \
+server.start(program, arguments); \
+QVERIFY(server.waitForStarted()); \
+QTest::qWait(500);
+
+#define TERMINATE_SERVER(server) \
+QCOMPARE(server.state(), QProcess::Running); \
+server.terminate();
+#endif

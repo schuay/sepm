@@ -19,6 +19,17 @@ Q_DECLARE_METATYPE(QSharedPointer<Session>)
 void SessionManagerTests::initTestCase()
 {
     qRegisterMetaType<QSharedPointer<Session> >("QSharedPointer<Session>");
+
+#ifdef RUN_SERVER
+    SPAWN_SERVER(server);
+#endif
+}
+
+void SessionManagerTests::cleanupTestCase()
+{
+#ifdef RUN_SERVER
+    TERMINATE_SERVER(server);
+#endif
 }
 
 void SessionManagerTests::testTestConnection()
