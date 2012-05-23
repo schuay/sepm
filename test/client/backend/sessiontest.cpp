@@ -20,6 +20,17 @@ void SessionTests::initTestCase()
     qRegisterMetaType<QSharedPointer<Chat> >("QSharedPointer<Chat>");
     qRegisterMetaType<QSharedPointer<const User> >("QSharedPointer<const User>");
     qRegisterMetaType<const QObject *>("const QObject*");
+
+#ifdef RUN_SERVER
+    SPAWN_SERVER(server);
+#endif
+}
+
+void SessionTests::cleanupTestCase()
+{
+#ifdef RUN_SERVER
+    TERMINATE_SERVER(server);
+#endif
 }
 
 void SessionTests::init()

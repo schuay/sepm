@@ -1,5 +1,6 @@
 #include <QObject>
 #include <QSharedPointer>
+#include <QProcess>
 
 #include "session.h"
 
@@ -11,6 +12,8 @@ class ChatTests : public QObject
 
 private slots:
     void initTestCase();
+    void cleanupTestCase();
+
     void init();
     void testInviteNotLoggedIn();
     void testInviteNonexistent();
@@ -30,4 +33,5 @@ private:
     QSharedPointer<Session> session;
     QSharedPointer<Session> session2;
     QSharedPointer<Chat> chat;
+    QProcess server;
 };
