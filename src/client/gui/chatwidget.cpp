@@ -72,13 +72,21 @@ void ChatWidget::userJoined(QSharedPointer<const User> user)
     }
 }
 
-void ChatWidget::userLeft(QSharedPointer<const User> user) {
-    ui->lwParticipants->removeItemWidget(
-                ui->lwParticipants->findItems(
-                    user->getName(),
-                    Qt::MatchExactly
-                    ).first()
-                );
+void ChatWidget::userLeft(QSharedPointer<const User> user)
+{
+    QListWidgetItem *it = ui->lwParticipants->findItems(
+                              user->getName(),
+                              Qt::MatchExactly
+                          ).first();
+
+    if (it == NULL) {
+        QLOG_ERROR() << QString("User '%1' not in participant list.").arg(user->getName());
+        return;
+    }
+
+    ui->lwParticipants->takeItem(ui->lwParticipants->row(it));
+
+    delete it;
 }
 
 /**
