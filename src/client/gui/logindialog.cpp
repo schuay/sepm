@@ -118,10 +118,11 @@ void LoginDialog::onRegisterUserClicked()
     if (ui->leServer->text().isEmpty()
             || ui->leUsername->text().isEmpty()
             || ui->lePublicKey->text().isEmpty()
+            || ui->lePrivateKey->text().isEmpty()
             || ui->leServerCert->text().isEmpty()
             || ui->lePassword->text().isEmpty()) {
         QMessageBox::warning(this, "Missing arguments",
-                             QString("Please make sure the username, password, public key, "
+                             QString("Please make sure the username, password, public key, private key, "
                                      "server and server certificate fields are filled in."));
         return;
     }
@@ -144,10 +145,11 @@ void LoginDialog::onConnectClicked()
     if (ui->leServer->text().isEmpty()
             || ui->leUsername->text().isEmpty()
             || ui->lePublicKey->text().isEmpty()
+            || ui->lePrivateKey->text().isEmpty()
             || ui->leServerCert->text().isEmpty()
             || ui->lePassword->text().isEmpty()) {
         QMessageBox::warning(this, "Missing arguments",
-                             QString("Please make sure the username, password, public key, "
+                             QString("Please make sure the username, password, public key, private key, "
                                      "server and server certificate fields are filled in."));
         return;
     }
