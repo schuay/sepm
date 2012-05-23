@@ -67,6 +67,7 @@ private:
 
     QSharedPointer<const User> retrieveUser(const QString &username);
     QSharedPointer<const User> getUser(const QString &username);
+    void leaveAllChats(void);
 
 private slots:
     void leaveChatCompletedSlot(bool /* success */, const QString /* &message */);

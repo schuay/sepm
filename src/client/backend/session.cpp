@@ -179,6 +179,15 @@ void SessionPrivate::runInitChat()
     emit q->initChatCompleted(cp, success, message);
 }
 
+void SessionPrivate::leaveAllChats(void)
+{
+    QMutexLocker locker(&chatsMutex);
+    QList<QSharedPointer<Chat> > chatList = chats.values();
+    for (int i = 0; i < chatList.size(); i++) {
+        chatList[i]->leaveChat();
+    }
+}
+
 void SessionPrivate::runLogout()
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
@@ -190,13 +199,7 @@ void SessionPrivate::runLogout()
     try {
         session->logout();
 
-        QMutexLocker locker(&chatsMutex);
-        QList<QSharedPointer<Chat> > chatList = chats.values();
-        for (int i = 0; i < chatList.size(); i++) {
-            chatList[i]->leaveChat();
-        }
-
-        chats.clear();
+        leaveAllChats();
     } catch (const sdc::UserHandlingException &e) {
         success = false;
         message = e.what.c_str();
@@ -220,6 +223,7 @@ void SessionPrivate::runDeleteUser(QSharedPointer<const User> user)
     }
 
     if (user->getName() == this->user->getName()) {
+        leaveAllChats();
         valid = false;
     }
 
