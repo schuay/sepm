@@ -32,7 +32,7 @@ void SessionTests::init()
 
     QSharedPointer<const LoginUser> u(new LoginUser(TEMP_SESSION_USER, WORKING_DIR "public.pem",
                                       WORKING_DIR "private.pem"));
-    sessionManager->login("selinux.inso.tuwien.ac.at", WORKING_DIR "ca.crt", u,
+    sessionManager->login(SERVER_URL, WORKING_DIR "ca.crt", u,
                           "password");
 
     waitForResult(spy);
@@ -83,7 +83,7 @@ void SessionTests::testDeleteUserNonexistent()
     QVERIFY(spy.isEmpty());
 
     session->deleteUser(QSharedPointer<const User>(new User(
-                            "thisuserbetternotexist@selinux.inso.tuwien.ac.at",
+                            getUsername("thisuserbetternotexist"),
                             WORKING_DIR "public.pem")));
     waitForResult(spy);
 
@@ -115,7 +115,7 @@ void SessionTests::testDeleteUserUnauthorized()
     QVERIFY(spy.isValid());
     QVERIFY(spy.isEmpty());
 
-    session->deleteUser(QSharedPointer<const User>(new User("fefeb10c@selinux.inso.tuwien.ac.at",
+    session->deleteUser(QSharedPointer<const User>(new User(getUsername("fefeb10c"),
                         WORKING_DIR "public.pem")));
     waitForResult(spy);
 
@@ -131,7 +131,7 @@ void SessionTests::retrieveUser()
     QVERIFY(spy.isValid());
     QVERIFY(spy.isEmpty());
 
-    session->retrieveUser("fefeb10c@selinux.inso.tuwien.ac.at", this);
+    session->retrieveUser(getUsername("fefeb10c"), this);
     waitForResult(spy);
 
     QCOMPARE(spy.count(), 1);
@@ -139,7 +139,7 @@ void SessionTests::retrieveUser()
     QVERIFY2(arguments.at(2) == true, arguments.at(3).toString().toStdString().c_str());
 
     QSharedPointer<const User> usr = arguments.at(0).value<QSharedPointer<const User> >();
-    QCOMPARE(usr.data()->getName(), QString("fefeb10c@selinux.inso.tuwien.ac.at"));
+    QCOMPARE(usr.data()->getName(), getUsername("fefeb10c"));
 }
 
 void SessionTests::retrieveUserNonexistent()
@@ -149,7 +149,7 @@ void SessionTests::retrieveUserNonexistent()
     QVERIFY(spy.isValid());
     QVERIFY(spy.isEmpty());
 
-    session->retrieveUser("thisuserbetternotexist@selinux.inso.tuwien.ac.at", this);
+    session->retrieveUser(getUsername("thisuserbetternotexist"), this);
     waitForResult(spy);
 
     QCOMPARE(spy.count(), 1);
@@ -165,9 +165,9 @@ void SessionTests::retrieveContactListNonexistent()
     QVERIFY(spy.isValid());
     QVERIFY(spy.isEmpty());
 
-    QSharedPointer<const LoginUser> u(new LoginUser("fefeb10c@selinux.inso.tuwien.ac.at",
+    QSharedPointer<const LoginUser> u(new LoginUser(getUsername("fefeb10c"),
                                       WORKING_DIR "public.pem", WORKING_DIR "private.pem"));
-    sessionManager->login("selinux.inso.tuwien.ac.at", WORKING_DIR "ca.crt", u,
+    sessionManager->login(SERVER_URL, WORKING_DIR "ca.crt", u,
                           "password");
 
     waitForResult(spy);
@@ -194,8 +194,8 @@ void SessionTests::retrieveContactListNonexistent()
 
 void SessionTests::saveRetrieveContactList()
 {
-    QStringList contacts = QString("pinkie_pie@selinux.inso.tuwien.ac.at\n"
-                                   "rainbow_dash@selinux.inso.tuwien.ac.at").split('\n');
+    QStringList contacts = QString("%1\n%2").arg(getUsername("pinkie_pie"),
+                           getUsername("rainbow_dash")).split('\n');
 
     QSignalSpy spy(session.data(), SIGNAL(saveContactListCompleted(bool, const QString)));
     QVERIFY(spy.isValid());

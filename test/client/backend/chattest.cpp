@@ -33,9 +33,9 @@ void ChatTests::init()
     QVERIFY(spy.isValid());
     QVERIFY(spy.isEmpty());
 
-    QSharedPointer<const LoginUser> u(new LoginUser("fefeb10c@selinux.inso.tuwien.ac.at",
+    QSharedPointer<const LoginUser> u(new LoginUser(getUsername("fefeb10c"),
                                       WORKING_DIR "public.pem", WORKING_DIR "private.pem"));
-    sessionManager->login("selinux.inso.tuwien.ac.at", WORKING_DIR "ca.crt", u,
+    sessionManager->login(SERVER_URL, WORKING_DIR "ca.crt", u,
                           "password");
 
     waitForResult(spy);
@@ -64,9 +64,9 @@ void ChatTests::init()
     QVERIFY(spy3.isValid());
     QVERIFY(spy3.isEmpty());
 
-    QSharedPointer<const LoginUser> u2(new LoginUser("pinkie_pie@selinux.inso.tuwien.ac.at",
+    QSharedPointer<const LoginUser> u2(new LoginUser(getUsername("pinkie_pie"),
                                        WORKING_DIR "public.pem", WORKING_DIR "private.pem"));
-    sessionManager->login("selinux.inso.tuwien.ac.at", WORKING_DIR "ca.crt", u2,
+    sessionManager->login(SERVER_URL, WORKING_DIR "ca.crt", u2,
                           "password");
 
     waitForResult(spy3);
@@ -83,7 +83,7 @@ void ChatTests::testInviteNotLoggedIn()
     QVERIFY(spy.isValid());
     QVERIFY(spy.isEmpty());
 
-    QSharedPointer<const User> u(new User("registeredbutneverlogsin@selinux.inso.tuwien.ac.at",
+    QSharedPointer<const User> u(new User(getUsername("registeredbutneverlogsin"),
                                           WORKING_DIR "public.pem"));
     chat->invite(u);
     waitForResult(spy);
@@ -99,7 +99,7 @@ void ChatTests::testInviteNonexistent()
     QVERIFY(spy.isValid());
     QVERIFY(spy.isEmpty());
 
-    QSharedPointer<const User> u(new User("thisuserbetternotexist@selinux.inso.tuwien.ac.at",
+    QSharedPointer<const User> u(new User(getUsername("thisuserbetternotexist"),
                                           WORKING_DIR "public.pem"));
     chat->invite(u);
     waitForResult(spy);
@@ -123,7 +123,7 @@ void ChatTests::testInvite()
     QVERIFY(spy4.isValid());
     QVERIFY(spy4.isEmpty());
 
-    QSharedPointer<const User> u(new User("pinkie_pie@selinux.inso.tuwien.ac.at",
+    QSharedPointer<const User> u(new User(getUsername("pinkie_pie"),
                                           WORKING_DIR "public.pem"));
     chat->invite(u);
     waitForResult(spy2);
@@ -143,7 +143,7 @@ void ChatTests::testInvite()
     QCOMPARE(spy4.count(), 1);
     QList<QVariant> arguments4 = spy4.takeFirst();
     QSharedPointer<const User> u2 = arguments4.at(0).value<QSharedPointer<const User> >();
-    QCOMPARE(u2->getName(), QString("pinkie_pie@selinux.inso.tuwien.ac.at"));
+    QCOMPARE(u2->getName(), QString(getUsername("pinkie_pie")));
 
     QList<QSharedPointer<const User> > chat1Usr = chat->getUserList();
     QList<QSharedPointer<const User> > chat2Usr = chat2->getUserList();
@@ -151,11 +151,11 @@ void ChatTests::testInvite()
     QCOMPARE(chat1Usr.size(), 2);
     QCOMPARE(chat2Usr.size(), 2);
 
-    QCOMPARE(chat1Usr[0]->getName(), QString("fefeb10c@selinux.inso.tuwien.ac.at"));
-    QCOMPARE(chat1Usr[1]->getName(), QString("pinkie_pie@selinux.inso.tuwien.ac.at"));
+    QCOMPARE(chat1Usr[0]->getName(), QString(getUsername("fefeb10c")));
+    QCOMPARE(chat1Usr[1]->getName(), QString(getUsername("pinkie_pie")));
 
-    QCOMPARE(chat2Usr[0]->getName(), QString("fefeb10c@selinux.inso.tuwien.ac.at"));
-    QCOMPARE(chat2Usr[1]->getName(), QString("pinkie_pie@selinux.inso.tuwien.ac.at"));
+    QCOMPARE(chat2Usr[0]->getName(), QString(getUsername("fefeb10c")));
+    QCOMPARE(chat2Usr[1]->getName(), QString(getUsername("pinkie_pie")));
 }
 
 void ChatTests::testEchoMessage()
@@ -185,7 +185,7 @@ void ChatTests::testTransmitMessage()
     QVERIFY(spy2.isValid());
     QVERIFY(spy2.isEmpty());
 
-    QSharedPointer<const User> u(new User("pinkie_pie@selinux.inso.tuwien.ac.at",
+    QSharedPointer<const User> u(new User(getUsername("pinkie_pie"),
                                           WORKING_DIR "public.pem"));
     chat->invite(u);
     waitForResult(spy);
@@ -252,14 +252,14 @@ void ChatTests::testTransmitMessage()
     QList<QVariant> arguments6 = spy7.takeFirst();
     QCOMPARE(arguments6.at(1).toString(), QString("Khaaan!!!"));
     QSharedPointer<const User> u4 = arguments6.at(0).value<QSharedPointer<const User> >();
-    QCOMPARE(u4->getName(), QString("fefeb10c@selinux.inso.tuwien.ac.at"));
+    QCOMPARE(u4->getName(), QString(getUsername("fefeb10c")));
 
     waitForResult(spy8);
 
     QList<QVariant> arguments7 = spy8.takeFirst();
     QCOMPARE(arguments7.at(1).toString(), QString("Khaaan!!!"));
     QSharedPointer<const User> u5 = arguments7.at(0).value<QSharedPointer<const User> >();
-    QCOMPARE(u5->getName(), QString("fefeb10c@selinux.inso.tuwien.ac.at"));
+    QCOMPARE(u5->getName(), QString(getUsername("fefeb10c")));
 }
 
 void ChatTests::testLeaveChat()
@@ -272,7 +272,7 @@ void ChatTests::testLeaveChat()
     QVERIFY(spy4.isValid());
     QVERIFY(spy4.isEmpty());
 
-    QSharedPointer<const User> u(new User("pinkie_pie@selinux.inso.tuwien.ac.at",
+    QSharedPointer<const User> u(new User(getUsername("pinkie_pie"),
                                           WORKING_DIR "public.pem"));
     chat->invite(u);
     waitForResult(spy);
@@ -301,5 +301,5 @@ void ChatTests::testLeaveChat()
     QCOMPARE(spy3.count(), 1);
     QList<QVariant> arguments3 = spy3.takeFirst();
     QSharedPointer<const User> u2 = arguments3.at(0).value<QSharedPointer<const User> >();
-    QCOMPARE(u2->getName(), QString("fefeb10c@selinux.inso.tuwien.ac.at"));
+    QCOMPARE(u2->getName(), QString(getUsername("fefeb10c")));
 }

@@ -2,12 +2,13 @@
 #include <QtTest/QSignalSpy>
 
 #define WORKING_DIR "@WORKING_DIR@/"
+#define SERVER_URL "@SERVER_URL@"
 #define TEMP_SESSION_USER "TEMP_SESSION_USER@selinux.inso.tuwien.ac.at"
 
 /**
- *  * Checks every 50 ms if spy has received a result, and returns if it did.
- *   * Otherwise, it aborts after 10 seconds.
- *    */
+ * Checks every 50 ms if spy has received a result, and returns if it did.
+ * Otherwise, it aborts after 10 seconds.
+ */
 static void waitForResult(const QSignalSpy &spy, int count = 1)
 {
     for (int i = 0; i < 200; i++) {
@@ -15,4 +16,9 @@ static void waitForResult(const QSignalSpy &spy, int count = 1)
         if (spy.count() >= count)
             break;
     }
+}
+
+static QString getUsername(const QString &user)
+{
+    return QString("%1@%2").arg(user, SERVER_URL);
 }

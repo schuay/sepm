@@ -7,6 +7,7 @@ include_directories(
 )
 
 set(WORKING_DIR ${CMAKE_CURRENT_SOURCE_DIR})
+set(SERVER_URL "selinux.inso.tuwien.ac.at")
 configure_file(
     ${CMAKE_CURRENT_SOURCE_DIR}/common.h.in
     ${CMAKE_CURRENT_BINARY_DIR}/common.h

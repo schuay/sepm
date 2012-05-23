@@ -29,7 +29,7 @@ void SessionManagerTests::testTestConnection()
     QVERIFY(spy.isValid());
     QVERIFY(spy.isEmpty());
 
-    sessionManager->testConnection("selinux.inso.tuwien.ac.at");
+    sessionManager->testConnection(SERVER_URL);
 
     waitForResult(spy);
 
@@ -97,7 +97,7 @@ void SessionManagerTests::testRegisterUserNew()
     QVERIFY(spy.isEmpty());
 
     QSharedPointer<const User> u(new User(TEMP_SESSION_USER, WORKING_DIR "public.pem"));
-    sessionManager->registerUser("selinux.inso.tuwien.ac.at", WORKING_DIR "ca.crt", u,
+    sessionManager->registerUser(SERVER_URL, WORKING_DIR "ca.crt", u,
                                  "password");
 
     waitForResult(spy);
@@ -119,10 +119,9 @@ void SessionManagerTests::testRegisterUserRandom()
                                      QTime::currentTime().toString(
                                          "hh:mm:ss.zzz").toAscii(),
                                      QCryptographicHash::Sha1).toHex());
-    QSharedPointer<const User> u(new User(QString("%1@selinux.inso.tuwien.ac.at").arg(
-            randomName.left(10)), WORKING_DIR "public.pem"));
-    sessionManager->registerUser("selinux.inso.tuwien.ac.at", WORKING_DIR "ca.crt", u,
-                                 "password");
+    QSharedPointer<const User> u(new User(getUsername(randomName.left(10)),
+                                          WORKING_DIR "public.pem"));
+    sessionManager->registerUser(SERVER_URL, WORKING_DIR "ca.crt", u, "password");
 
     waitForResult(spy);
 
@@ -139,9 +138,9 @@ void SessionManagerTests::testRegisterUserAgain()
     QVERIFY(spy.isValid());
     QVERIFY(spy.isEmpty());
 
-    QSharedPointer<const User> u(new User("registeredbutneverlogsin@selinux.inso.tuwien.ac.at",
+    QSharedPointer<const User> u(new User(getUsername("registeredbutneverlogsin"),
                                           WORKING_DIR "public.pem"));
-    sessionManager->registerUser("selinux.inso.tuwien.ac.at", WORKING_DIR "ca.crt", u,
+    sessionManager->registerUser(SERVER_URL, WORKING_DIR "ca.crt", u,
                                  "password");
 
     waitForResult(spy);
@@ -159,9 +158,9 @@ void SessionManagerTests::testLoginNonexistentUser()
     QVERIFY(spy.isValid());
     QVERIFY(spy.isEmpty());
 
-    QSharedPointer<const LoginUser> u(new LoginUser("thisuserbetternotexist@selinux.inso.tuwien.ac.at",
+    QSharedPointer<const LoginUser> u(new LoginUser(getUsername("thisuserbetternotexist"),
                                       WORKING_DIR "public.pem", WORKING_DIR "private.pem"));
-    sessionManager->login("selinux.inso.tuwien.ac.at", WORKING_DIR "ca.crt", u,
+    sessionManager->login(SERVER_URL, WORKING_DIR "ca.crt", u,
                           "password");
 
     waitForResult(spy);
@@ -179,9 +178,9 @@ void SessionManagerTests::testLoginIncorrectCredentials()
     QVERIFY(spy.isValid());
     QVERIFY(spy.isEmpty());
 
-    QSharedPointer<const LoginUser> u(new LoginUser("fefeb10c@selinux.inso.tuwien.ac.at",
+    QSharedPointer<const LoginUser> u(new LoginUser(getUsername("fefeb10c"),
                                       WORKING_DIR "public.pem", WORKING_DIR "private.pem"));
-    sessionManager->login("selinux.inso.tuwien.ac.at", WORKING_DIR "ca.crt", u,
+    sessionManager->login(SERVER_URL, WORKING_DIR "ca.crt", u,
                           "wrongpassword");
 
     waitForResult(spy);
@@ -199,9 +198,9 @@ void SessionManagerTests::testLoginCorrectCredentials()
     QVERIFY(spy.isValid());
     QVERIFY(spy.isEmpty());
 
-    QSharedPointer<const LoginUser> u(new LoginUser("fefeb10c@selinux.inso.tuwien.ac.at",
+    QSharedPointer<const LoginUser> u(new LoginUser(getUsername("fefeb10c"),
                                       WORKING_DIR "public.pem", WORKING_DIR "private.pem"));
-    sessionManager->login("selinux.inso.tuwien.ac.at", WORKING_DIR "ca.crt", u,
+    sessionManager->login(SERVER_URL, WORKING_DIR "ca.crt", u,
                           "password");
 
     waitForResult(spy);
@@ -219,11 +218,11 @@ void SessionManagerTests::testLoginRepeated()
     QVERIFY(spy.isValid());
     QVERIFY(spy.isEmpty());
 
-    QSharedPointer<const LoginUser> u(new LoginUser("fefeb10c@selinux.inso.tuwien.ac.at",
+    QSharedPointer<const LoginUser> u(new LoginUser(getUsername("fefeb10c"),
                                       WORKING_DIR "public.pem", WORKING_DIR "private.pem"));
-    sessionManager->login("selinux.inso.tuwien.ac.at", WORKING_DIR "ca.crt", u,
+    sessionManager->login(SERVER_URL, WORKING_DIR "ca.crt", u,
                           "password");
-    sessionManager->login("selinux.inso.tuwien.ac.at", WORKING_DIR "ca.crt", u,
+    sessionManager->login(SERVER_URL, WORKING_DIR "ca.crt", u,
                           "password");
 
     waitForResult(spy, 2);
