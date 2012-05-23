@@ -25,13 +25,9 @@ AppWindow::AppWindow(QWidget *parent, QSharedPointer<Session> session) :
     connect(ui->pbOptions, SIGNAL(clicked()),
             this, SLOT(onSettingsButtonClicked()));
     connect(d_session.data(),
-            SIGNAL(logoutCompleted(bool, QString)),
-            this,
-            SLOT(onLogoutComplete(bool, QString)));
-    connect(d_session.data(),
             SIGNAL(deleteUserCompleted(bool, QString)),
             this,
-            SLOT(onLogoutComplete(bool, QString)));
+            SLOT(onUserDeleted(bool, QString)));
     connect(d_session.data(),
             SIGNAL(initChatCompleted(QSharedPointer<Chat>, bool, QString)),
             this,
@@ -60,6 +56,8 @@ AppWindow::AppWindow(QWidget *parent, QSharedPointer<Session> session) :
 
 AppWindow::~AppWindow()
 {
+    if(!d_session->isValid())
+        d_session->logout();
     delete ui;
     delete settingspopupmenu;
 }
@@ -93,18 +91,7 @@ void AppWindow::onInviteClicked()
 
 void AppWindow::onLogoutClicked()
 {
-    d_session->logout();
-}
-
-void AppWindow::onLogoutComplete(bool success, const QString &msg)
-{
-    if (success) {
-        LoginDialog *ld = new LoginDialog();
-        ld->show();
-        close();
-    } else {
-        QMessageBox::warning(this, "Logout failed", msg);
-    }
+    close();
 }
 
 void AppWindow::onChatOpened(QSharedPointer<Chat> chat)
@@ -129,7 +116,7 @@ void AppWindow::onChatOpened(QSharedPointer<Chat> chat, bool success, const QStr
 
 void AppWindow::onSettingsEntryClicked()
 {
-    SettingsDialog *dialog = new SettingsDialog(this, d_session);
+    SettingsDialog *dialog = new SettingsDialog(this);
     dialog->show();
 }
 
@@ -154,6 +141,19 @@ void AppWindow::onAddUserReturn(QSharedPointer<const User> user, const QObject *
         QMessageBox::information(this, "Contact list not implemented yet", "You can't add contacts here yet. Sorry.");
     } else {
         QMessageBox::warning(this, "Couldn't find user", msg);
+    }
+}
+
+void AppWindow::deleteAccount() {
+    d_session->deleteUser(d_session->getUser());
+}
+
+void AppWindow::onUserDeleted(bool success, const QString &msg)
+{
+    if(success) {
+        close();
+    } else {
+        QMessageBox::warning(this, "User couldn't be deleted", msg);
     }
 }
 

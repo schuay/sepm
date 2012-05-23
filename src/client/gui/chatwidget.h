@@ -26,6 +26,8 @@ public:
     explicit ChatWidget(QWidget *parent = 0);
     ~ChatWidget();
 
+signals:
+    void leftChat();
 public slots:
     // void chatClosed();
     /**

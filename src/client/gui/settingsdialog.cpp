@@ -3,14 +3,15 @@
 #include <QFileDialog>
 #include <QMessageBox>
 
+#include "appwindow.h"
+
 using namespace sdcc;
 
-SettingsDialog::SettingsDialog(QWidget *parent, QSharedPointer<Session> session) :
+SettingsDialog::SettingsDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::SettingsDialog)
 {
     ui->setupUi(this);
-    d_session = session;
     setWindowTitle("Settings");
     connect(ui->pbPublicKey, SIGNAL(clicked()), this, SLOT(onChoosePublicKeyClicked()));
     connect(ui->pbPrivateKey, SIGNAL(clicked()), this, SLOT(onChoosePrivateKeyClicked()));
@@ -68,7 +69,8 @@ void SettingsDialog::onDeleteAccountClicked()
                                   "Are you really sure?",
                                   QMessageBox::Yes | QMessageBox::No);
     if (reply == QMessageBox::Yes) {
-        d_session->deleteUser(d_session->getUser());
+        AppWindow *aw = dynamic_cast<AppWindow*>(parent());
+        aw->deleteAccount();
     }
 
 }

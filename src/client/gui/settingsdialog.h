@@ -2,11 +2,8 @@
 #define SETTINGSDIALOG_H
 
 #include <QDialog>
-#include "session.h"
 #include "settings.h"
 #include <QDialog>
-
-using namespace sdcc;
 
 namespace Ui
 {
@@ -18,7 +15,7 @@ class SettingsDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit SettingsDialog(QWidget *parent = 0, QSharedPointer<Session> session = QSharedPointer<Session>());
+    explicit SettingsDialog(QWidget *parent = 0);
     ~SettingsDialog();
 private slots:
     void onChoosePrivateKeyClicked();
@@ -27,7 +24,6 @@ private slots:
     void onDeleteAccountClicked();
     void onChooseServerCertClicked();
 private:
-    QSharedPointer<Session> d_session;
     Ui::SettingsDialog *ui;
     sdc::Settings settings;
 };

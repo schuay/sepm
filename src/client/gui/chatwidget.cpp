@@ -98,7 +98,7 @@ void ChatWidget::leaveChatCompleted(bool success, const QString &msg)
         QMessageBox::warning(this, "Close failed on Server",
                              "The server couldn't close the chat. Please tell the developers of this bug.\n" + msg);
     }
-
+    emit leftChat();
     this->close();
 }
 
