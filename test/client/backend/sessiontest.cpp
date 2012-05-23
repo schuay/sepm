@@ -52,10 +52,13 @@ void SessionTests::init()
     QVERIFY2(arguments.at(1) == true, arguments.at(2).toString().toStdString().c_str());
 
     session = arguments.at(0).value<QSharedPointer<Session> >();
+    QVERIFY(session);
 }
 
 void SessionTests::testInitChat()
 {
+    QVERIFY(session);
+
     QSignalSpy spy(session.data(), SIGNAL(initChatCompleted(QSharedPointer<Chat>, bool,
                                           QString)));
     QVERIFY(spy.isValid());
@@ -73,6 +76,8 @@ void SessionTests::testInitChat()
 
 void SessionTests::testLogout()
 {
+    QVERIFY(session);
+
     QSignalSpy spy(session.data(), SIGNAL(logoutCompleted(bool, QString)));
     QVERIFY(spy.isValid());
     QVERIFY(spy.isEmpty());
@@ -89,6 +94,8 @@ void SessionTests::testLogout()
 
 void SessionTests::testDeleteUserNonexistent()
 {
+    QVERIFY(session);
+
     QSignalSpy spy(session.data(), SIGNAL(deleteUserCompleted(bool, QString)));
     QVERIFY(spy.isValid());
     QVERIFY(spy.isEmpty());
@@ -105,6 +112,8 @@ void SessionTests::testDeleteUserNonexistent()
 
 void SessionTests::testDeleteUser()
 {
+    QVERIFY(session);
+
     QSignalSpy spy(session.data(), SIGNAL(deleteUserCompleted(bool, QString)));
     QVERIFY(spy.isValid());
     QVERIFY(spy.isEmpty());
@@ -122,6 +131,8 @@ void SessionTests::testDeleteUser()
 
 void SessionTests::testDeleteUserUnauthorized()
 {
+    QVERIFY(session);
+
     QSignalSpy spy(session.data(), SIGNAL(deleteUserCompleted(bool, QString)));
     QVERIFY(spy.isValid());
     QVERIFY(spy.isEmpty());
@@ -137,6 +148,8 @@ void SessionTests::testDeleteUserUnauthorized()
 
 void SessionTests::retrieveUser()
 {
+    QVERIFY(session);
+
     QSignalSpy spy(session.data(), SIGNAL(retrieveUserCompleted(QSharedPointer<const User>,
                                           const QObject *, bool, QString)));
     QVERIFY(spy.isValid());
@@ -155,6 +168,8 @@ void SessionTests::retrieveUser()
 
 void SessionTests::retrieveUserNonexistent()
 {
+    QVERIFY(session);
+
     QSignalSpy spy(session.data(), SIGNAL(retrieveUserCompleted(QSharedPointer<const User>,
                                           const QObject *, bool, QString)));
     QVERIFY(spy.isValid());
@@ -170,6 +185,8 @@ void SessionTests::retrieveUserNonexistent()
 
 void SessionTests::retrieveContactListNonexistent()
 {
+    QVERIFY(session);
+
     SessionManager *sessionManager = SessionManager::getInstance();
     QSignalSpy spy(sessionManager,
                    SIGNAL(loginCompleted(QSharedPointer<Session>, bool, QString)));
@@ -205,6 +222,8 @@ void SessionTests::retrieveContactListNonexistent()
 
 void SessionTests::saveRetrieveContactList()
 {
+    QVERIFY(session);
+
     QStringList contacts = QString("%1\n%2").arg(getUsername("pinkie_pie"),
                            getUsername("rainbow_dash")).split('\n');
 

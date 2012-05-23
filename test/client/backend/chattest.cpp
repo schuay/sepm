@@ -90,6 +90,8 @@ void ChatTests::init()
 
 void ChatTests::testInviteNotLoggedIn()
 {
+    QVERIFY(chat);
+
     QSignalSpy spy(chat.data(), SIGNAL(inviteCompleted(bool, QString)));
     QVERIFY(spy.isValid());
     QVERIFY(spy.isEmpty());
@@ -106,6 +108,8 @@ void ChatTests::testInviteNotLoggedIn()
 
 void ChatTests::testInviteNonexistent()
 {
+    QVERIFY(chat);
+
     QSignalSpy spy(chat.data(), SIGNAL(inviteCompleted(bool, QString)));
     QVERIFY(spy.isValid());
     QVERIFY(spy.isEmpty());
@@ -122,6 +126,8 @@ void ChatTests::testInviteNonexistent()
 
 void ChatTests::testInvite()
 {
+    QVERIFY(chat);
+
     QSignalSpy spy2(chat.data(), SIGNAL(inviteCompleted(bool, QString)));
     QVERIFY(spy2.isValid());
     QVERIFY(spy2.isEmpty());
@@ -171,6 +177,8 @@ void ChatTests::testInvite()
 
 void ChatTests::testEchoMessage()
 {
+    QVERIFY(chat);
+
     QSignalSpy spy(chat.data(),
                    SIGNAL(messageReceived(QSharedPointer<const User>, const QString &)));
     QVERIFY(spy.isValid());
@@ -188,6 +196,8 @@ void ChatTests::testEchoMessage()
 
 void ChatTests::testTransmitMessage()
 {
+    QVERIFY(chat);
+
     QSignalSpy spy(session2.data(), SIGNAL(invitationReceived(QSharedPointer<Chat>)));
     QVERIFY(spy.isValid());
     QVERIFY(spy.isEmpty());
@@ -275,6 +285,8 @@ void ChatTests::testTransmitMessage()
 
 void ChatTests::testLeaveChat()
 {
+    QVERIFY(chat);
+
     QSignalSpy spy(session2.data(), SIGNAL(invitationReceived(QSharedPointer<Chat>)));
     QVERIFY(spy.isValid());
     QVERIFY(spy.isEmpty());
