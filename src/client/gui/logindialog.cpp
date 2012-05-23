@@ -65,14 +65,14 @@ void LoginDialog::onGroupCheckboxClicked(bool checked)
 
     if (!checked) {
         ui->groupBox_2->setMaximumSize(60, 20);
-        resize(242, 100);
+        int oldSize = this->geometry().width();
+        resize(oldSize, 100);
         adjustSize();
-        resize(242, 100);
+        resize(oldSize, 100);
     } else {
         ui->groupBox_2->setMaximumSize(16777215, 16777215);
-        resize(242, 480);
-        adjustSize();
-        resize(242, 480);
+        int oldSize = this->geometry().width();
+        resize(oldSize, 480);
     }
 }
 
