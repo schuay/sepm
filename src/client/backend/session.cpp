@@ -202,6 +202,7 @@ void SessionPrivate::runLogout()
         message = e.what.c_str();
     }
 
+    valid = false;
     emit q->logoutCompleted(success, message);
 }
 
@@ -216,6 +217,10 @@ void SessionPrivate::runDeleteUser(QSharedPointer<const User> user)
     } catch (const sdc::UserHandlingException &e) {
         success = false;
         message = e.what.c_str();
+    }
+
+    if (user->getName() == this->user->getName()) {
+        valid = false;
     }
 
     emit q->deleteUserCompleted(success, message);
@@ -360,6 +365,14 @@ Session::Session(QSharedPointer<const LoginUser> user, const QString &pwd,
 
     if (!d->session)
         throw sdc::SDCException("Login failed");
+
+    d->valid = true;
+}
+
+bool Session::isValid() const
+{
+    Q_D(const Session);
+    return d->valid;
 }
 
 void Session::initChat()

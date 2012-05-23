@@ -57,6 +57,8 @@ class SessionPrivate : public QObject, public sdc::ChatClientCallbackI
     Ice::CommunicatorPtr communicator;
     sdc::SessionIPrx session;
 
+    bool valid;
+
     QSharedPointer<const LoginUser> user;
 
 private:

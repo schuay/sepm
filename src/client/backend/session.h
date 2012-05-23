@@ -73,6 +73,12 @@ public:
      */
     const QSharedPointer<const User> getUser() const;
 
+    /**
+     * True if neither logout(), nor deleteUser() with the sessions user has
+     * been called, false otherwise.
+     */
+    bool isValid() const;
+
 signals:
 
     /**
