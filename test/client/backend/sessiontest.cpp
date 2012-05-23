@@ -56,6 +56,8 @@ void SessionTests::testInitChat()
     QCOMPARE(spy.count(), 1);
     QList<QVariant> arguments = spy.takeFirst();
     QVERIFY2(arguments.at(1) == true, arguments.at(2).toString().toStdString().c_str());
+
+    QVERIFY(session->isValid());
 }
 
 void SessionTests::testLogout()
@@ -70,6 +72,8 @@ void SessionTests::testLogout()
     QCOMPARE(spy.count(), 1);
     QList<QVariant> arguments = spy.takeFirst();
     QVERIFY2(arguments.at(0) == true, arguments.at(1).toString().toStdString().c_str());
+
+    QVERIFY(!session->isValid());
 }
 
 void SessionTests::testDeleteUserNonexistent()
@@ -101,6 +105,8 @@ void SessionTests::testDeleteUser()
     QCOMPARE(spy.count(), 1);
     QList<QVariant> arguments = spy.takeFirst();
     QVERIFY2(arguments.at(0) == true, arguments.at(1).toString().toStdString().c_str());
+
+    QVERIFY(!session->isValid());
 }
 
 void SessionTests::testDeleteUserUnauthorized()
