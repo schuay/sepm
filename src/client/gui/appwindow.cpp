@@ -29,6 +29,10 @@ AppWindow::AppWindow(QWidget *parent, QSharedPointer<Session> session) :
             this,
             SLOT(onUserDeleted(bool, QString)));
     connect(d_session.data(),
+            SIGNAL(logoutCompleted(bool, QString)),
+            this,
+            SLOT(onLogoutCompleted(bool, QString)));
+    connect(d_session.data(),
             SIGNAL(initChatCompleted(QSharedPointer<Chat>, bool, QString)),
             this,
             SLOT(onChatOpened(QSharedPointer<Chat>, bool, QString)));
@@ -46,7 +50,7 @@ AppWindow::AppWindow(QWidget *parent, QSharedPointer<Session> session) :
     settingspopupmenu->addAction("Start Chat", this, SLOT(onStartChatEntryClicked()));
     settingspopupmenu->addAction("Invite", this, SLOT(onInviteClicked()));
     settingspopupmenu->addAction("Options", this, SLOT(onSettingsEntryClicked()));
-    settingspopupmenu->addAction("Logout", this, SLOT(onLogoutClicked()));
+    settingspopupmenu->addAction("Logout", this, SLOT(logout()));
     ui->pbOptions->setMenu(settingspopupmenu);
 
     QRect rect = QApplication::desktop()->availableGeometry();
@@ -62,8 +66,18 @@ AppWindow::~AppWindow()
     delete settingspopupmenu;
 }
 
+void AppWindow::closeEvent(QCloseEvent *event)
+{
+    QLOG_TRACE() << __PRETTY_FUNCTION__;
+    if (d_session->isValid()) {
+        event->ignore();
+        logout();
+    }
+}
+
 void AppWindow::onAddContactEntryClicked()
 {
+    QLOG_TRACE() << __PRETTY_FUNCTION__;
     bool ok;
     QString text = QInputDialog::getText(this, tr("Add Contact"),
                                          tr("User name:"), QLineEdit::Normal,
@@ -75,6 +89,7 @@ void AppWindow::onAddContactEntryClicked()
 
 void AppWindow::onInviteClicked()
 {
+    QLOG_TRACE() << __PRETTY_FUNCTION__;
     if (ui->twChats->count() == 0) {
         QMessageBox::warning(this, "No chat opened", "You can't invite a user without first opening up a chat");
         return;
@@ -89,18 +104,17 @@ void AppWindow::onInviteClicked()
 
 }
 
-void AppWindow::onLogoutClicked()
+void AppWindow::logout()
 {
+    QLOG_TRACE() << __PRETTY_FUNCTION__;
     if(d_session->isValid()) {
         d_session->logout();
-        LoginDialog *ld = new LoginDialog();
-        ld->show();
-        close();
     }
 }
 
 void AppWindow::onChatOpened(QSharedPointer<Chat> chat)
 {
+    QLOG_TRACE() << __PRETTY_FUNCTION__;
     ChatWidget *widget = new ChatWidget(d_session, chat);
     ui->twChats->addTab(widget, chat->getID());
     ui->twChats->setCurrentWidget(widget);
@@ -108,6 +122,7 @@ void AppWindow::onChatOpened(QSharedPointer<Chat> chat)
 
 void AppWindow::onChatOpened(QSharedPointer<Chat> chat, bool success, const QString &msg)
 {
+    QLOG_TRACE() << __PRETTY_FUNCTION__;
     if (success) {
         onChatOpened(chat);
         if (!inviteQueue.isEmpty()) {
@@ -121,17 +136,20 @@ void AppWindow::onChatOpened(QSharedPointer<Chat> chat, bool success, const QStr
 
 void AppWindow::onSettingsEntryClicked()
 {
+    QLOG_TRACE() << __PRETTY_FUNCTION__;
     SettingsDialog *dialog = new SettingsDialog(this);
     dialog->show();
 }
 
 void AppWindow::onSettingsButtonClicked()
 {
+    QLOG_TRACE() << __PRETTY_FUNCTION__;
     ui->pbOptions->menu()->exec(QCursor::pos());
 }
 
 void AppWindow::onTabCloseRequested(int tab)
 {
+    QLOG_TRACE() << __PRETTY_FUNCTION__;
     ChatWidget *cw = dynamic_cast<ChatWidget*>(ui->twChats->widget(tab));
     cw->leaveChat();
     ui->twChats->removeTab(tab);
@@ -139,6 +157,7 @@ void AppWindow::onTabCloseRequested(int tab)
 
 void AppWindow::onAddUserReturn(QSharedPointer<const User> user, const QObject *id, bool success, const QString &msg)
 {
+    QLOG_TRACE() << __PRETTY_FUNCTION__;
     if (id != this)
         return;
     if (success) {
@@ -149,13 +168,18 @@ void AppWindow::onAddUserReturn(QSharedPointer<const User> user, const QObject *
     }
 }
 
-void AppWindow::deleteAccount() {
+void AppWindow::deleteAccount()
+{
+    QLOG_TRACE() << __PRETTY_FUNCTION__;
     d_session->deleteUser(d_session->getUser());
 }
 
 void AppWindow::onLogoutCompleted(bool success, const QString &msg)
 {
+    QLOG_TRACE() << __PRETTY_FUNCTION__;
     if(success) {
+        LoginDialog *ld = new LoginDialog();
+        ld->show();
         close();
     } else {
         QMessageBox::warning(this, "Couldn't logout", msg);
@@ -164,13 +188,18 @@ void AppWindow::onLogoutCompleted(bool success, const QString &msg)
 
 void AppWindow::onUserDeleted(bool success, const QString &msg)
 {
+    QLOG_TRACE() << __PRETTY_FUNCTION__;
     if(success) {
+        LoginDialog *ld = new LoginDialog();
+        ld->show();
         close();
     } else {
         QMessageBox::warning(this, "User couldn't be deleted", msg);
     }
 }
 
-void AppWindow::onStartChatEntryClicked() {
+void AppWindow::onStartChatEntryClicked()
+{
+    QLOG_TRACE() << __PRETTY_FUNCTION__;
     d_session->initChat();
 }

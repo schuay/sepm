@@ -25,7 +25,7 @@ public:
     ~AppWindow();
 
 public slots:
-    void onLogoutClicked();
+    void logout();
     void onChatOpened(QSharedPointer<Chat> chat);
     void onChatOpened(QSharedPointer<Chat> chat, bool success, const QString &msg);
     void onSettingsButtonClicked();
@@ -39,6 +39,8 @@ public slots:
     void onLogoutCompleted(bool success, const QString &msg);
     void onUserDeleted(bool success, const QString &msg);
 private:
+    void closeEvent(QCloseEvent *event);
+
     Ui::AppWindow *ui;
     QSharedPointer<Session> d_session;
     ChatWidget *activeChat;

@@ -47,6 +47,7 @@ ChatWidget::ChatWidget(QWidget *parent) :
 
 void ChatWidget::returnPressed()
 {
+    QLOG_TRACE() << __PRETTY_FUNCTION__;
     d_chat->send(ui->leMessage->text());
     ui->leMessage->setText("");
 }
@@ -56,6 +57,7 @@ void ChatWidget::returnPressed()
  */
 void ChatWidget::messageReceived(QSharedPointer<const User> user, const QString &msg)
 {
+    QLOG_TRACE() << __PRETTY_FUNCTION__;
     ui->tbChat->append(user->getName() + QString(": ") + msg);
 }
 
@@ -64,6 +66,7 @@ void ChatWidget::messageReceived(QSharedPointer<const User> user, const QString 
  */
 void ChatWidget::userJoined(QSharedPointer<const User> user)
 {
+    QLOG_TRACE() << __PRETTY_FUNCTION__;
     if(ui->lwParticipants->findItems(user->getName(), Qt::MatchExactly).size() == 0) {
         ui->lwParticipants->addItem(user->getName());
         ui->lwParticipants->sortItems();
@@ -74,6 +77,7 @@ void ChatWidget::userJoined(QSharedPointer<const User> user)
 
 void ChatWidget::userLeft(QSharedPointer<const User> user)
 {
+    QLOG_TRACE() << __PRETTY_FUNCTION__;
     QListWidgetItem *it = ui->lwParticipants->findItems(
                               user->getName(),
                               Qt::MatchExactly
@@ -94,6 +98,7 @@ void ChatWidget::userLeft(QSharedPointer<const User> user)
  */
 void ChatWidget::leaveChatCompleted(bool success, const QString &msg)
 {
+    QLOG_TRACE() << __PRETTY_FUNCTION__;
     if (!success) {
         QMessageBox::warning(this, "Close failed on Server",
                              "The server couldn't close the chat. Please tell the developers of this bug.\n" + msg);
@@ -107,6 +112,7 @@ void ChatWidget::leaveChatCompleted(bool success, const QString &msg)
  */
 void ChatWidget::inviteCompleted(bool success, const QString &msg)
 {
+    QLOG_TRACE() << __PRETTY_FUNCTION__;
     if (!success) {
         QMessageBox::warning(this, "Couldn't invite User",
                              "The server couldn't invite the user you requested into the chat.\n" + msg);
@@ -118,6 +124,7 @@ void ChatWidget::inviteCompleted(bool success, const QString &msg)
   */
 void ChatWidget::invite(QSharedPointer<const User> user, const QObject *id, bool success, const QString &msg)
 {
+    QLOG_TRACE() << __PRETTY_FUNCTION__;
     if (id != this)
         return;
     if (success) {
@@ -129,6 +136,7 @@ void ChatWidget::invite(QSharedPointer<const User> user, const QObject *id, bool
 
 void ChatWidget::leaveChat()
 {
+    QLOG_TRACE() << __PRETTY_FUNCTION__;
     d_chat->leaveChat();
 }
 
@@ -137,6 +145,7 @@ void ChatWidget::leaveChat()
  */
 void ChatWidget::sendCompleted(bool success, const QString &msg)
 {
+    QLOG_TRACE() << __PRETTY_FUNCTION__;
     if (!success) {
         QMessageBox::warning(this, "Failed to Send",
                              "The message didn't reach the other participants.\n" + msg);

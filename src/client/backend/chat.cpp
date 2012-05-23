@@ -129,6 +129,7 @@ void Chat::leaveChat()
 
 void Chat::runLeaveChat()
 {
+    QLOG_TRACE() << __PRETTY_FUNCTION__;
     bool success = true;
     QString message;
 
