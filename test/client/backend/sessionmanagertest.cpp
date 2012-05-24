@@ -141,6 +141,29 @@ void SessionManagerTests::testRegisterUserRandom()
     QVERIFY2(arguments.at(0) == true, arguments.at(1).toString().toStdString().c_str());
 }
 
+void SessionManagerTests::testRegisterUserIncorrectDomain()
+{
+    SessionManager *sessionManager = SessionManager::getInstance();
+    QSignalSpy spy(sessionManager,
+                   SIGNAL(registerCompleted(bool, const QString &)));
+    QVERIFY(spy.isValid());
+    QVERIFY(spy.isEmpty());
+
+    QString randomName = QString(QCryptographicHash::hash(
+                                     QTime::currentTime().toString(
+                                         "hh:mm:ss.zzz").toAscii(),
+                                     QCryptographicHash::Sha1).toHex());
+    QSharedPointer<const User> u(new User(QString("%1@%2").arg(randomName.left(10), "made.up.domain"),
+                                          WORKING_DIR "public.pem"));
+    sessionManager->registerUser(SERVER_URL, CA_CERT, u, "password");
+
+    waitForResult(spy);
+
+    QCOMPARE(spy.count(), 1);
+    QList<QVariant> arguments = spy.takeFirst();
+    QVERIFY2(arguments.at(0) == false, arguments.at(1).toString().toStdString().c_str());
+}
+
 void SessionManagerTests::testRegisterUserAgain()
 {
     SessionManager *sessionManager = SessionManager::getInstance();

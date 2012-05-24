@@ -15,6 +15,7 @@ private slots:
     void testUserGetIceUser();
     void testLoginUser();
     void testRegisterUserNew();
+    void testRegisterUserIncorrectDomain();
     void testRegisterUserRandom();
     void testRegisterUserAgain();
     void testLoginNonexistentUser();
