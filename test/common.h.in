@@ -53,6 +53,7 @@ arguments << "-d" << "QPSQL" \
           << "-o" << "localhost" \
           << "-u" << "sdcs_test" \
           << "-r" << SOURCE_DIR "/misc" \
+          << "-s" << SERVER_URL \
           << "-p" << "sdcs_test"; \
 server.setStandardErrorFile(BINARY_DIR "/test.log"); \
 server.start(program, arguments); \

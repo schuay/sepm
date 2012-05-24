@@ -23,6 +23,7 @@ public:
         CPublicKeyPath,
         CPrivateKeyPath,
         CUsername,
+        CLIENT_END,
         SCertsDir,
         SCertPath,
         SKeyPath,
@@ -32,7 +33,8 @@ public:
         SDbUser,
         SDbDatabase,
         SDbPassword,
-        SDbDriver
+        SDbDriver,
+        SERVER_END
     };
 
     /**

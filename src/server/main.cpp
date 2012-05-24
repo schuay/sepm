@@ -17,6 +17,7 @@ struct Args {
             dbHost,
             dbUser,
             dbPassword,
+            hostName,
             certsDir,
             certPath,
             keyPath,
@@ -34,6 +35,7 @@ static void usage()
 {
     fprintf(stderr,
             "-h             print this message and exit\n"
+            "-s host        set server host name\n"
             "-d driver      set database driver (http://qt-project.org/doc/qt-4.8/sql-driver.html)\n"
             "-b database    set database name\n"
             "-o host        set database host\n"
@@ -49,7 +51,7 @@ static void usage()
 static void parseArgs(int argc, char **argv, Args &args)
 {
     int opt;
-    while ((opt = getopt(argc, argv, "r:d:b:o:u:p:c:k:aih")) != -1) {
+    while ((opt = getopt(argc, argv, "s:r:d:b:o:u:p:c:k:aih")) != -1) {
         switch (opt) {
         case 'd':
             args.dbDriver = optarg;
@@ -74,6 +76,9 @@ static void parseArgs(int argc, char **argv, Args &args)
             break;
         case 'r':
             args.certsDir = optarg;
+            break;
+        case 's':
+            args.hostName = optarg;
             break;
         case 'a':
             args.caCertPath = optarg;
@@ -138,6 +143,11 @@ static void finalizeArgs(Args &args)
         allConfigured &= configured;
     }
 
+    if (args.hostName == "") {
+        args.hostName = getSetting(sdc::Settings::SHostname, configured);
+        allConfigured &= configured;
+    }
+
     if (!allConfigured) {
         fprintf(stderr,
                 "Could not find all the necessary settings.\n"
@@ -156,6 +166,7 @@ static void finalizeArgs(Args &args)
     QLOG_TRACE() << "  certPath: " << args.certPath;
     QLOG_TRACE() << "  keyPath: " << args.keyPath;
     QLOG_TRACE() << "  caCertPath: " << args.caCertPath;
+    QLOG_TRACE() << "  hostname: " << args.hostName;
 }
 
 static QString getSetting(sdc::Settings::SettingsKey key, bool &configured)
@@ -175,7 +186,7 @@ static QString getSetting(sdc::Settings::SettingsKey key, bool &configured)
 static void initSettings()
 {
     sdc::Settings settings;
-    const int numSettings = 9;
+    const int numSettings = sdc::Settings::SERVER_END - sdc::Settings::CLIENT_END;
     int numConfigured = 0;
 
     if (!settings.isConfigured(settings.SCertsDir)) {
@@ -221,6 +232,11 @@ static void initSettings()
     if (!settings.isConfigured(settings.SDbPassword)) {
         numConfigured++;
         settings.setValue(settings.SDbPassword, "se20linux901");
+    }
+
+    if (!settings.isConfigured(settings.SHostname)) {
+        numConfigured++;
+        settings.setValue(settings.SHostname, "localhost");
     }
 
     fprintf(stderr, "Configured %d out of %d settings with default values.\n"
