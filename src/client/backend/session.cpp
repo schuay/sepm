@@ -238,8 +238,10 @@ void SessionPrivate::runRetrieveContactList()
     QStringList contactlistdata;
 
     try {
-
         sdc::SecureContainer contactlist = session->retrieveContactList();
+        if (contactlist.data.size() <= 0) {
+            goto out;
+        }
 
         QLOG_TRACE() << __PRETTY_FUNCTION__;
         sdc::ByteSeq decryptedData = user->decrypt(contactlist.data);
@@ -251,7 +253,9 @@ void SessionPrivate::runRetrieveContactList()
         }
 
         QByteArray b1 = sdc::sdcHelper::byteSeqToByteArray(decryptedData);
-        contactlistdata = QString(b1).split('\n');
+        if (b1.size() > 0) {
+            contactlistdata = QString(b1).split('\n');
+        }
 
     } catch (const sdc::ContactException &e) {
         success = false;
@@ -291,7 +295,6 @@ void SessionPrivate::runSaveContactList(const QStringList &contactlist)
     }
 
     emit q->saveContactListCompleted(success, message);
-
 }
 
 SessionPrivate::~SessionPrivate()
