@@ -49,7 +49,8 @@ public:
      * Deletes the user and all related information from the database.
      * Accesses to this object are invalid after completion of this method.
      */
-    void deleteUser();
+    void deleteUser()
+    throw(sdc::UserHandlingException);
 
     /**
      * Saves the contact list in the database, overwriting any existing contact list.

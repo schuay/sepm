@@ -242,12 +242,38 @@ QByteArray UserDbProxy::getSalt() const
 }
 
 void UserDbProxy::deleteUser()
+throw(sdc::UserHandlingException)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
+
     QSqlQuery query(QSqlDatabase::database(CONNECTION));
+
+    query.prepare("delete from public.chatlog where user_id = :user_id");
+    query.bindValue(":user_id", id);
+
+    bool ok = query.exec();
+    if (!ok) {
+        QLOG_ERROR() << query.lastError().text();
+        throw sdc::UserHandlingException(query.lastError().text().toStdString());
+    }
+
+    query.prepare("delete from public.contactlist where user_id = :user_id");
+    query.bindValue(":user_id", id);
+
+    ok = query.exec();
+    if (!ok) {
+        QLOG_ERROR() << query.lastError().text();
+        throw sdc::UserHandlingException(query.lastError().text().toStdString());
+    }
+
     query.prepare("delete from public.user where username = :username");
     query.bindValue(":username", QString::fromStdString(user.ID));
-    query.exec();
+
+    ok = query.exec();
+    if (!ok) {
+        QLOG_ERROR() << query.lastError().text();
+        throw sdc::UserHandlingException(query.lastError().text().toStdString());
+    }
 }
 
 void UserDbProxy::createUser(sdc::User user, QByteArray hash, QByteArray salt)
