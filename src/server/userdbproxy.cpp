@@ -110,11 +110,34 @@ throw(sdc::LogException)
     return container;
 }
 
-void UserDbProxy::saveLog(const QString &/*chatID*/, long /*timestamp*/, const sdc::SecureContainer &/*container*/)
+void UserDbProxy::saveLog(const QString &chatID, long timestamp, const sdc::SecureContainer &container)
 throw(sdc::LogException)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
-    throw sdc::LogException("Not implemented yet");
+
+    QSqlQuery query(connection.database);
+    query.prepare("delete from public.chatlog where user_id = :user_id;");
+    query.bindValue(":user_id", id);
+
+    bool ok = query.exec();
+    if (!ok) {
+        QLOG_ERROR() << query.lastError().text();
+        throw sdc::LogException(query.lastError().text().toStdString());
+    }
+
+    query.prepare("insert into public.chatlog (user_id, chat_id, time_stamp, encrypted_content, signature) "
+                  "select :user_id, :chat_id, :time_stamp, :encrypted_content, :signature;");
+    query.bindValue(":user_id", id);
+    query.bindValue(":chat_id", chatID);
+    query.bindValue(":time_stamp", qlonglong(timestamp));
+    query.bindValue(":encrypted_content", sdc::sdcHelper::byteSeqToByteArray(container.data));
+    query.bindValue(":signature", sdc::sdcHelper::byteSeqToByteArray(container.signature));
+
+    ok = query.exec();
+    if (!ok) {
+        QLOG_ERROR() << query.lastError().text();
+        throw sdc::LogException(query.lastError().text().toStdString());
+    }
 }
 
 sdc::Loglist UserDbProxy::retrieveLoglist()
