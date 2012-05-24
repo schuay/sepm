@@ -95,7 +95,7 @@ void AppWindow::onInviteClicked()
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
     if (ui->twChats->count() == 0) {
-        QMessageBox::warning(this, "No chat opened", "You can't invite a user without first opening up a chat");
+        QMessageBox::warning(this, "Invite Failed", "To invite a user, please create or join a chat.");
         return;
     }
     bool ok;
@@ -134,7 +134,7 @@ void AppWindow::onChatOpened(QSharedPointer<Chat> chat, bool success, const QStr
             inviteQueue.removeFirst();
         }
     } else {
-        QMessageBox::warning(this, "Chat creation failed", msg);
+        QMessageBox::warning(this, "Chat Creation Failed", msg);
     }
 }
 
@@ -166,9 +166,9 @@ void AppWindow::onAddUserReturn(QSharedPointer<const User> user, const QObject *
         return;
     if (success) {
         user->getName();
-        QMessageBox::information(this, "Contact list not implemented yet", "You can't add contacts here yet. Sorry.");
+        QMessageBox::information(this, "Not Implemented Yet", "You can't add contacts here yet. Sorry.");
     } else {
-        QMessageBox::warning(this, "Couldn't find user", msg);
+        QMessageBox::warning(this, "Add User Failed", msg);
     }
 }
 
@@ -186,7 +186,7 @@ void AppWindow::onLogoutCompleted(bool success, const QString &msg)
         ld->show();
         close();
     } else {
-        QMessageBox::warning(this, "Couldn't logout", msg);
+        QMessageBox::warning(this, "Logout Failed", msg);
     }
 }
 
@@ -198,7 +198,7 @@ void AppWindow::onUserDeleted(bool success, const QString &msg)
         ld->show();
         close();
     } else {
-        QMessageBox::warning(this, "User couldn't be deleted", msg);
+        QMessageBox::warning(this, "User Deletion Failed", msg);
     }
 }
 

@@ -100,8 +100,8 @@ void ChatWidget::leaveChatCompleted(bool success, const QString &msg)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
     if (!success) {
-        QMessageBox::warning(this, "Close failed on Server",
-                             "The server couldn't close the chat. Please tell the developers of this bug.\n" + msg);
+        QMessageBox::warning(this, "Leave Chat Failed",
+                             "The server couldn't close the chat.\n" + msg);
     }
     emit leftChat();
     this->close();
@@ -114,7 +114,7 @@ void ChatWidget::inviteCompleted(bool success, const QString &msg)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
     if (!success) {
-        QMessageBox::warning(this, "Couldn't invite User",
+        QMessageBox::warning(this, "Invite Failed",
                              "The server couldn't invite the user you requested into the chat.\n" + msg);
     }
 }
@@ -130,7 +130,7 @@ void ChatWidget::invite(QSharedPointer<const User> user, const QObject *id, bool
     if (success) {
         d_chat->invite(user);
     } else {
-        QMessageBox::warning(this, "Couldn't find User", msg);
+        QMessageBox::warning(this, "Invite Failed", msg);
     }
 }
 
@@ -147,8 +147,8 @@ void ChatWidget::sendCompleted(bool success, const QString &msg)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
     if (!success) {
-        QMessageBox::warning(this, "Failed to Send",
-                             "The message didn't reach the other participants.\n" + msg);
+        QMessageBox::warning(this, "Send Failed",
+                             "The message did not reach the other participants." + msg);
     }
 }
 

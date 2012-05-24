@@ -79,8 +79,8 @@ void LoginDialog::onGroupCheckboxClicked(bool checked)
 
 void LoginDialog::onChooseServerCertClicked()
 {
-    QString filter = "CertFiles (*.crt)";
-    QString temp = QFileDialog::getOpenFileName(this, "Select server certificate...",
+    QString filter = "Certificate Files (*.crt)";
+    QString temp = QFileDialog::getOpenFileName(this, "Select Server Certificate",
                    ui->leServerCert->text(), filter, 0);
     if (!temp.isNull())
         ui->leServerCert->setText(temp);
@@ -89,8 +89,8 @@ void LoginDialog::onChooseServerCertClicked()
 
 void LoginDialog::onChoosePrivateKeyClicked()
 {
-    QString filter = "KeyFiles (*.pem)";
-    QString temp = QFileDialog::getOpenFileName(this, "Select private key...", ui->lePrivateKey->text(), filter, 0);
+    QString filter = "Key Files (*.pem)";
+    QString temp = QFileDialog::getOpenFileName(this, "Select Private Key", ui->lePrivateKey->text(), filter, 0);
     if (!temp.isNull())
         ui->lePrivateKey->setText(temp);
     settings.setValue(settings.CPrivateKeyPath, ui->lePrivateKey->text());
@@ -98,8 +98,8 @@ void LoginDialog::onChoosePrivateKeyClicked()
 
 void LoginDialog::onChoosePublicKeyClicked()
 {
-    QString filter = "KeyFiles (*.pem)";
-    QString temp = QFileDialog::getOpenFileName(this, "Select public key...", ui->lePublicKey->text(), filter, 0);
+    QString filter = "Key Files (*.pem)";
+    QString temp = QFileDialog::getOpenFileName(this, "Select Public Key", ui->lePublicKey->text(), filter, 0);
     if (!temp.isNull())
         ui->lePublicKey->setText(temp);
     settings.setValue(settings.CPublicKeyPath, ui->lePublicKey->text());
@@ -108,7 +108,7 @@ void LoginDialog::onChoosePublicKeyClicked()
 void LoginDialog::onTestConnectionClicked()
 {
     if (ui->leServer->text().isEmpty()) {
-        QMessageBox::warning(this, "Missing arguments",
+        QMessageBox::warning(this, "Missing Arguments",
                              "Please make sure the server field is filled in.");
         return;
     }
@@ -126,7 +126,7 @@ void LoginDialog::onRegisterUserClicked()
             || ui->lePrivateKey->text().isEmpty()
             || ui->leServerCert->text().isEmpty()
             || ui->lePassword->text().isEmpty()) {
-        QMessageBox::warning(this, "Missing arguments",
+        QMessageBox::warning(this, "Missing Arguments",
                              QString("Please make sure the username, password, public key, private key, "
                                      "server and server certificate fields are filled in."));
         return;
@@ -153,7 +153,7 @@ void LoginDialog::onConnectClicked()
             || ui->lePrivateKey->text().isEmpty()
             || ui->leServerCert->text().isEmpty()
             || ui->lePassword->text().isEmpty()) {
-        QMessageBox::warning(this, "Missing arguments",
+        QMessageBox::warning(this, "Missing Arguments",
                              QString("Please make sure the username, password, public key, private key, "
                                      "server and server certificate fields are filled in."));
         return;
@@ -212,7 +212,7 @@ void LoginDialog::onRegisterUserCompleted(bool success, const QString &msg)
     if (success) {
         statusBar()->showMessage("Success!", 5000);
     } else {
-        QMessageBox::information(this, "User registration failed",
+        QMessageBox::information(this, "User Registration Failed",
                                  QString("User registration failed: %1")
                                  .arg(msg));
     }
@@ -226,7 +226,7 @@ void LoginDialog::onTestConnectionCompleted(bool success, const QString &msg)
     if (success) {
         statusBar()->showMessage("Success!", 5000);
     } else {
-        QMessageBox::information(this, "Connection test failed",
+        QMessageBox::information(this, "Connection Test Failed",
                                  QString("Connection test failed: %1")
                                  .arg(msg));
     }
