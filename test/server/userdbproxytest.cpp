@@ -5,6 +5,7 @@
 
 #include "userdbproxy.h"
 #include "common.h"
+#include "sdcHelper.h"
 
 using namespace sdcs;
 
@@ -41,6 +42,13 @@ void UserDbProxyTests::initTestCase()
     QVERIFY(query.exec("insert into public.user(username, public_key, password_hash, salt) select 'test1', 'bla', '123', '456';"));
     QVERIFY(query.exec("insert into public.user(username, public_key, password_hash, salt) select 'test2', 'bla', 'bla', 'bla';"));
     QVERIFY(query.exec("insert into public.user(username, public_key, password_hash, salt) select 'test3', 'bla', 'bla', 'bla';"));
+    QVERIFY(query.exec("insert into public.contactlist(user_id, encrypted_content, signature)"
+                       "values (2, 'abfg', 'faslkd'),"
+                       "       (3, 'jhas', 'sfalhf');"));
+    QVERIFY(query.exec("insert into public.chatlog(user_id, time_stamp, chat_id, encrypted_content, signature)"
+                       "values (2, 0, 'chat0', 'abaskdj', 'salfkhaf'),"
+                       "       (2, 1, 'chat0', 'sajdhas', 'a;lghqes'),"
+                       "       (3, 0, 'chat0', 'aslfkaf', 'asflkajf');"));
 }
 
 
@@ -125,4 +133,129 @@ void UserDbProxyTests::testRetrieveUser()
 void UserDbProxyTests::testRetrieveNonexistentUser()
 {
     QVERIFY_THROW(UserDbProxy::getProxy("thisuserdoesntexist"), sdc::UserHandlingException);
+}
+
+void UserDbProxyTests::testRetrieveContactList()
+{
+    QSharedPointer<UserDbProxy> p = UserDbProxy::getProxy(QString::fromStdString(user1.ID));
+
+    sdc::SecureContainer container = p->retrieveContactList();
+
+    QCOMPARE(QByteArray("abfg"), sdc::sdcHelper::byteSeqToByteArray(container.data));
+    QCOMPARE(QByteArray("faslkd"), sdc::sdcHelper::byteSeqToByteArray(container.signature));
+}
+
+void UserDbProxyTests::testRetrieveNonexistentContactList()
+{
+    QSharedPointer<UserDbProxy> p = UserDbProxy::getProxy("test3");
+
+    sdc::SecureContainer container = p->retrieveContactList();
+    sdc::SecureContainer empty;
+
+    QCOMPARE(empty.data, container.data);
+    QCOMPARE(empty.signature, container.signature);
+
+}
+
+void UserDbProxyTests::testSaveContactList()
+{
+    QSharedPointer<UserDbProxy> p = UserDbProxy::getProxy(QString::fromStdString(user1.ID));
+
+    sdc::SecureContainer in;
+    in.data = sdc::sdcHelper::byteArraytoByteSeq(QByteArray("918273"));
+    in.signature = sdc::sdcHelper::byteArraytoByteSeq(QByteArray("837192"));
+
+    p->saveContactList(in);
+
+    sdc::SecureContainer out = p->retrieveContactList();
+    QCOMPARE(in.data, out.data);
+    QCOMPARE(in.signature, out.signature);
+}
+
+void UserDbProxyTests::testSaveContactListAgain()
+{
+    QSharedPointer<UserDbProxy> p = UserDbProxy::getProxy(QString::fromStdString(user1.ID));
+
+    sdc::SecureContainer in;
+    in.data = sdc::sdcHelper::byteArraytoByteSeq(QByteArray("124124"));
+    in.signature = sdc::sdcHelper::byteArraytoByteSeq(QByteArray("124124532"));
+
+    p->saveContactList(in);
+
+    sdc::SecureContainer out = p->retrieveContactList();
+    QCOMPARE(in.data, out.data);
+    QCOMPARE(in.signature, out.signature);
+}
+
+void UserDbProxyTests::testRetrieveLoglist()
+{
+    QSharedPointer<UserDbProxy> p = UserDbProxy::getProxy(QString::fromStdString(user1.ID));
+
+    sdc::Loglist list = p->retrieveLoglist();
+
+    QCOMPARE(static_cast<unsigned long>(2), list.size());
+
+    QCOMPARE("chat0", list[0].chatID.c_str());
+    QCOMPARE(static_cast<Ice::Long>(0), list[0].timestamp);
+
+    QCOMPARE("chat0", list[1].chatID.c_str());
+    QCOMPARE(static_cast<Ice::Long>(1), list[1].timestamp);
+}
+
+void UserDbProxyTests::testRetrieveLoglistEmpty()
+{
+    QSharedPointer<UserDbProxy> p = UserDbProxy::getProxy("test3");
+
+    sdc::Loglist list = p->retrieveLoglist();
+
+    QCOMPARE(static_cast<unsigned long>(0), list.size());
+}
+
+void UserDbProxyTests::testRetrieveLog()
+{
+    QSharedPointer<UserDbProxy> p = UserDbProxy::getProxy(QString::fromStdString(user1.ID));
+
+    sdc::SecureContainer out = p->retrieveLog("chat0", 0);
+
+    QCOMPARE(QByteArray("abaskdj"), sdc::sdcHelper::byteSeqToByteArray(out.data));
+    QCOMPARE(QByteArray("salfkhaf"), sdc::sdcHelper::byteSeqToByteArray(out.signature));
+}
+
+void UserDbProxyTests::testRetrieveLogNonexistent()
+{
+    QSharedPointer<UserDbProxy> p = UserDbProxy::getProxy(QString::fromStdString(user1.ID));
+
+    QVERIFY_THROW(sdc::SecureContainer out = p->retrieveLog("chat0", 1234), sdc::LogException);
+}
+
+void UserDbProxyTests::testSaveLog()
+{
+    QSharedPointer<UserDbProxy> p = UserDbProxy::getProxy(QString::fromStdString(user1.ID));
+
+    sdc::SecureContainer in;
+    in.data = sdc::sdcHelper::byteArraytoByteSeq(QByteArray("918273"));
+    in.signature = sdc::sdcHelper::byteArraytoByteSeq(QByteArray("837192"));
+
+    p->saveLog("chat2", 1209124, in);
+
+    sdc::SecureContainer out = p->retrieveLog("chat2", 1209124);
+
+    QCOMPARE(in.data, out.data);
+    QCOMPARE(in.signature, out.signature);
+}
+
+void UserDbProxyTests::testSaveLogDuplicate()
+{
+    QSharedPointer<UserDbProxy> p = UserDbProxy::getProxy(QString::fromStdString(user1.ID));
+
+    sdc::SecureContainer in;
+    in.data = sdc::sdcHelper::byteArraytoByteSeq(QByteArray("1234567"));
+    in.signature = sdc::sdcHelper::byteArraytoByteSeq(QByteArray("276123"));
+
+    p->saveLog("chat2", 1209124, in);
+
+    sdc::SecureContainer out = p->retrieveLog("chat2", 1209124);
+
+    QCOMPARE(in.data, out.data);
+    QCOMPARE(in.signature, out.signature);
 }

@@ -10,12 +10,28 @@ class UserDbProxyTests : public QObject
 private slots:
     void initTestCase();
     void testConnection();
+
     void testRetrieveUser();
     void testRetrieveNonexistentUser();
+
+    void testRetrieveContactList();
+    void testRetrieveNonexistentContactList();
+    void testSaveContactList();
+    void testSaveContactListAgain();
+
+    void testRetrieveLoglist();
+    void testRetrieveLoglistEmpty();
+    void testRetrieveLog();
+    void testRetrieveLogNonexistent();
+    void testSaveLog();
+    void testSaveLogDuplicate();
+
     void testDeleteExistentUser();
     void testDeleteNonexistentUser();
+
     void testCreateUser();
     void testCreateExistingUser();
+
     void cleanupTestCase();
 
 private:
