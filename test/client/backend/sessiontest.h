@@ -22,6 +22,7 @@ private slots:
     void retrieveUserNonexistent();
     void retrieveContactListNonexistent();
     void saveRetrieveContactList();
+    void saveRetrieveEmptyContactList();
     void testDeleteUserNonexistent();
     void testDeleteUserUnauthorized();
     void testDeleteUser(); /* This test must be last since it deletes our user. */
