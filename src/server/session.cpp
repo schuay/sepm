@@ -1,5 +1,6 @@
 #include "session.h"
 
+#include "userdbproxy.h"
 #include "QsLog.h"
 
 namespace sdcs
@@ -16,12 +17,14 @@ void Session::logout(const Ice::Current &) throw(sdc::UserHandlingException)
     QLOG_TRACE() << __PRETTY_FUNCTION__;
 }
 
-sdc::User Session::retrieveUser(const std::string &/*userID*/, const Ice::Current &)
+sdc::User Session::retrieveUser(const std::string &userID, const Ice::Current &)
 throw(sdc::UserHandlingException, sdc::InterServerException)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
-    sdc::User u;
-    return u;
+
+    QSharedPointer<UserDbProxy> proxy = UserDbProxy::getProxy(QString::fromStdString(userID));
+
+    return proxy->getUser();
 }
 
 std::string Session::initChat(const Ice::Current &) throw(sdc::SessionException)
