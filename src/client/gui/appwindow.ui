@@ -78,6 +78,13 @@
        <item row="0" column="0">
         <layout class="QVBoxLayout" name="verticalLayout">
          <item>
+          <widget class="QLabel" name="lUsername">
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item>
           <widget class="QToolButton" name="pbOptions">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">

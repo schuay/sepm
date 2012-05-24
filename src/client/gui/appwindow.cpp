@@ -15,12 +15,16 @@ AppWindow::AppWindow(QWidget *parent, QSharedPointer<Session> session) :
     QMainWindow(parent),
     ui(new Ui::AppWindow)
 {
+    ui->setupUi(this);
+    d_session = session;
     setAttribute(Qt::WA_DeleteOnClose, true);
+    ui->lUsername->setText(d_session->getUser()->getName());
+
+    setWindowTitle("SDCC");
+
     qRegisterMetaType<QSharedPointer<Chat> >("QSharedPointer<Chat>");
     qRegisterMetaType<QSharedPointer<const User> >("QSharedPointer<const User>");
-    d_session = session;
-    ui->setupUi(this);
-    setWindowTitle("SDCC");
+
     connect(ui->twChats, SIGNAL(tabCloseRequested(int)), this, SLOT(onTabCloseRequested(int)));
     connect(ui->pbOptions, SIGNAL(clicked()),
             this, SLOT(onSettingsButtonClicked()));
