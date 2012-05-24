@@ -13,6 +13,7 @@ Session::Session(const sdc::User &user, sdc::ChatClientCallbackIPrx callback, Se
     QLOG_TRACE() << __PRETTY_FUNCTION__;
 }
 
+/* destroy self, notify all open chats */
 void Session::logout(const Ice::Current &) throw(sdc::UserHandlingException)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
@@ -20,6 +21,8 @@ void Session::logout(const Ice::Current &) throw(sdc::UserHandlingException)
     server->removeSession(QString::fromStdString(user.ID));
 }
 
+/* local user: db lookup
+ * remote: create interserver, forward call, return. */
 sdc::User Session::retrieveUser(const std::string &userID, const Ice::Current &)
 throw(sdc::UserHandlingException, sdc::InterServerException)
 {
@@ -30,18 +33,25 @@ throw(sdc::UserHandlingException, sdc::InterServerException)
     return proxy->getUser();
 }
 
+/* gen ID (protected by sema, uuid@serverurl)
+ * create LocalChat, insert in global and own list, add self as participant.
+ * idea: server attaches to chatCreated signal.
+ * */
 std::string Session::initChat(const Ice::Current &) throw(sdc::SessionException)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
     return "";
 }
 
+/* notify chat, remove from local list */
 void Session::leaveChat(const std::string &/*chatID*/, const Ice::Current &)
 throw(sdc::SessionException, sdc::InterServerException)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
 }
 
+/* check consistency (chat exists, chat joined)
+ * create participant (remote or local), call invite. */
 void Session::invite(const sdc::User &/*participant*/, const std::string &/*chatID*/,
                      const sdc::ByteSeq &/*sessionKey*/, const Ice::Current &)
 throw(sdc::UserHandlingException, sdc::InterServerException)
@@ -49,12 +59,14 @@ throw(sdc::UserHandlingException, sdc::InterServerException)
     QLOG_TRACE() << __PRETTY_FUNCTION__;
 }
 
+/* looks up chat and calls appendMessageFrom. */
 void Session::sendMessage(const sdc::ByteSeq &/*message*/, const std::string &/*chatID*/, const Ice::Current &)
 throw(sdc::MessageException, sdc::InterServerException)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
 }
 
+/* check auth, do db ops, logout (make sure everything is consistent), destroy session */
 void Session::deleteUser(const sdc::User &participant, const Ice::Current &)
 throw(sdc::UserHandlingException)
 {
