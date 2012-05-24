@@ -43,7 +43,7 @@ void SessionTests::init()
 
     QSharedPointer<const LoginUser> u(new LoginUser(TEMP_SESSION_USER, WORKING_DIR "public.pem",
                                       WORKING_DIR "private.pem"));
-    sessionManager->login(SERVER_URL, WORKING_DIR "ca.crt", u,
+    sessionManager->login(SERVER_URL, CA_CERT, u,
                           "password");
 
     waitForResult(spy);
@@ -195,7 +195,7 @@ void SessionTests::retrieveContactListNonexistent()
 
     QSharedPointer<const LoginUser> u(new LoginUser(getUsername("fefeb10c"),
                                       WORKING_DIR "public.pem", WORKING_DIR "private.pem"));
-    sessionManager->login(SERVER_URL, WORKING_DIR "ca.crt", u,
+    sessionManager->login(SERVER_URL, CA_CERT, u,
                           "password");
 
     waitForResult(spy);

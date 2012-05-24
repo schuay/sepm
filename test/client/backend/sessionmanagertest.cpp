@@ -108,7 +108,7 @@ void SessionManagerTests::testRegisterUserNew()
     QVERIFY(spy.isEmpty());
 
     QSharedPointer<const User> u(new User(TEMP_SESSION_USER, WORKING_DIR "public.pem"));
-    sessionManager->registerUser(SERVER_URL, WORKING_DIR "ca.crt", u,
+    sessionManager->registerUser(SERVER_URL, CA_CERT, u,
                                  "password");
 
     waitForResult(spy);
@@ -132,7 +132,7 @@ void SessionManagerTests::testRegisterUserRandom()
                                      QCryptographicHash::Sha1).toHex());
     QSharedPointer<const User> u(new User(getUsername(randomName.left(10)),
                                           WORKING_DIR "public.pem"));
-    sessionManager->registerUser(SERVER_URL, WORKING_DIR "ca.crt", u, "password");
+    sessionManager->registerUser(SERVER_URL, CA_CERT, u, "password");
 
     waitForResult(spy);
 
@@ -151,7 +151,7 @@ void SessionManagerTests::testRegisterUserAgain()
 
     QSharedPointer<const User> u(new User(getUsername("registeredbutneverlogsin"),
                                           WORKING_DIR "public.pem"));
-    sessionManager->registerUser(SERVER_URL, WORKING_DIR "ca.crt", u,
+    sessionManager->registerUser(SERVER_URL, CA_CERT, u,
                                  "password");
 
     waitForResult(spy);
@@ -171,7 +171,7 @@ void SessionManagerTests::testLoginNonexistentUser()
 
     QSharedPointer<const LoginUser> u(new LoginUser(getUsername("thisuserbetternotexist"),
                                       WORKING_DIR "public.pem", WORKING_DIR "private.pem"));
-    sessionManager->login(SERVER_URL, WORKING_DIR "ca.crt", u,
+    sessionManager->login(SERVER_URL, CA_CERT, u,
                           "password");
 
     waitForResult(spy);
@@ -191,7 +191,7 @@ void SessionManagerTests::testLoginIncorrectCredentials()
 
     QSharedPointer<const LoginUser> u(new LoginUser(getUsername("fefeb10c"),
                                       WORKING_DIR "public.pem", WORKING_DIR "private.pem"));
-    sessionManager->login(SERVER_URL, WORKING_DIR "ca.crt", u,
+    sessionManager->login(SERVER_URL, CA_CERT, u,
                           "wrongpassword");
 
     waitForResult(spy);
@@ -211,7 +211,7 @@ void SessionManagerTests::testLoginCorrectCredentials()
 
     QSharedPointer<const LoginUser> u(new LoginUser(getUsername("fefeb10c"),
                                       WORKING_DIR "public.pem", WORKING_DIR "private.pem"));
-    sessionManager->login(SERVER_URL, WORKING_DIR "ca.crt", u,
+    sessionManager->login(SERVER_URL, CA_CERT, u,
                           "password");
 
     waitForResult(spy);
@@ -231,9 +231,9 @@ void SessionManagerTests::testLoginRepeated()
 
     QSharedPointer<const LoginUser> u(new LoginUser(getUsername("fefeb10c"),
                                       WORKING_DIR "public.pem", WORKING_DIR "private.pem"));
-    sessionManager->login(SERVER_URL, WORKING_DIR "ca.crt", u,
+    sessionManager->login(SERVER_URL, CA_CERT, u,
                           "password");
-    sessionManager->login(SERVER_URL, WORKING_DIR "ca.crt", u,
+    sessionManager->login(SERVER_URL, CA_CERT, u,
                           "password");
 
     waitForResult(spy, 2);

@@ -46,7 +46,7 @@ void ChatTests::init()
 
     QSharedPointer<const LoginUser> u(new LoginUser(getUsername("fefeb10c"),
                                       WORKING_DIR "public.pem", WORKING_DIR "private.pem"));
-    sessionManager->login(SERVER_URL, WORKING_DIR "ca.crt", u,
+    sessionManager->login(SERVER_URL, CA_CERT, u,
                           "password");
 
     waitForResult(spy);
@@ -77,7 +77,7 @@ void ChatTests::init()
 
     QSharedPointer<const LoginUser> u2(new LoginUser(getUsername("pinkie_pie"),
                                        WORKING_DIR "public.pem", WORKING_DIR "private.pem"));
-    sessionManager->login(SERVER_URL, WORKING_DIR "ca.crt", u2,
+    sessionManager->login(SERVER_URL, CA_CERT, u2,
                           "password");
 
     waitForResult(spy3);

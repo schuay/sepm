@@ -11,6 +11,7 @@ include_directories(
 # ################################
 
 set(WORKING_DIR ${CMAKE_SOURCE_DIR}/test)
+set(CA_CERT ${CMAKE_SOURCE_DIR}/test/ca.crt)
 set(SERVER_URL "selinux.inso.tuwien.ac.at")
 unset(RUN_SERVER)
 configure_file(

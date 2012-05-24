@@ -16,6 +16,7 @@ set(TEST_SOURCE ${CMAKE_SOURCE_DIR}/test/client/backend)
 set(WORKING_DIR ${CMAKE_SOURCE_DIR}/test)
 set(SOURCE_DIR ${CMAKE_SOURCE_DIR})
 set(BINARY_DIR ${CMAKE_BINARY_DIR})
+set(CA_CERT ${CMAKE_SOURCE_DIR}/misc/ca.crt)
 set(SERVER_URL "localhost")
 set(RUN_SERVER ON)
 configure_file(
