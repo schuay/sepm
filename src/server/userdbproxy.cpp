@@ -61,7 +61,32 @@ sdc::SecureContainer UserDbProxy::retrieveContactList()
 throw(sdc::LogException)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
-    throw sdc::LogException("Not implemented yet");
+
+    QSqlQuery query(connection.database);
+    query.prepare("select encrypted_content, signature "
+                  "from public.contactlist where user_id = :user_id;");
+    query.bindValue(":user_id", id);
+
+    bool ok = query.exec();
+    if (!ok) {
+        QLOG_ERROR() << query.lastError().text();
+        throw sdc::LogException(query.lastError().text().toStdString());
+    }
+
+    if (query.size() > 1) {
+        QLOG_ERROR() << "Non-unique contact list query results";
+        throw sdc::LogException("Non-unique contact list query results.");
+    }
+
+    sdc::SecureContainer container;
+
+    if (query.size() == 1) {
+        query.first();
+        container.data = sdc::sdcHelper::byteArraytoByteSeq(query.value(0).toByteArray());
+        container.signature = sdc::sdcHelper::byteArraytoByteSeq(query.value(1).toByteArray());
+    }
+
+    return container;
 }
 
 void UserDbProxy::saveLog(const QString &/*chatID*/, long /*timestamp*/, const sdc::SecureContainer &/*container*/)
