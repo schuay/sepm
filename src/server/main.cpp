@@ -248,6 +248,8 @@ static void initSettings()
 
 struct Application : virtual public Ice::Application {
 
+    Application(const QString &hostname) : hostname(hostname) { }
+
     /**
      * Run the server
      * Returns only when the server is being exited.
@@ -256,13 +258,15 @@ struct Application : virtual public Ice::Application {
         QLOG_TRACE() << __PRETTY_FUNCTION__;
 
         /* The server handles adapter setup and wraps needed interfaces. */
-        sdcs::Server server(communicator());
+        sdcs::Server server(communicator(), hostname);
         Q_UNUSED(server);
 
         communicator()->waitForShutdown();
 
         return 0;
     }
+
+    const QString hostname;
 };
 
 int main(int argc, char **argv)
@@ -326,7 +330,7 @@ int main(int argc, char **argv)
     Q_UNUSED(qca);
 
     /* Our application handles the main loop. */
-    Application srv;
+    Application srv(args.hostName);
 
     return srv.main(argc, argv, id);
 }

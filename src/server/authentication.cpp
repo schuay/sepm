@@ -7,6 +7,7 @@
 #include "userdbproxy.h"
 #include "session.h"
 #include "server.h"
+#include "sdcHelper.h"
 
 namespace sdcs
 {
@@ -87,6 +88,14 @@ void Authentication::registerUser(const sdc::User &user,
 throw(sdc::AuthenticationException)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
+
+    const QString ourHostname = server->getHostname();
+    const QString usrHostname = QString::fromStdString(sdc::sdcHelper::getServerFromID(user.ID));
+    if (ourHostname != usrHostname) {
+        throw sdc::AuthenticationException(QString("Cannot register user %1 on hostname %2.")
+                                           .arg(QString::fromStdString(user.ID)).arg(ourHostname)
+                                           .toStdString());
+    }
 
     QByteArray salt = generatePasswordSalt();
     QByteArray hash = saltHashPassword(password, salt);

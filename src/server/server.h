@@ -13,7 +13,7 @@ namespace sdcs
 class Server
 {
 public:
-    Server(Ice::CommunicatorPtr communicator);
+    Server(Ice::CommunicatorPtr communicator, const QString &hostname);
     virtual ~Server();
 
     /**
@@ -23,11 +23,18 @@ public:
     void addSession(const QString &user, sdc::SessionIPrx session)
     throw(sdc::AuthenticationException);
 
+    /**
+     * Returns the server's hostname.
+     */
+    const QString &getHostname() const;
+
 private:
     Ice::CommunicatorPtr communicator;
     Authentication *auth;
 
     /* TODO: InterServer. */
+
+    const QString hostname;
 
     /**
      * Stores all active sessions by owning username.

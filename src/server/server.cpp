@@ -6,7 +6,8 @@
 namespace sdcs
 {
 
-Server::Server(Ice::CommunicatorPtr communicator)
+Server::Server(Ice::CommunicatorPtr communicator, const QString &hostname)
+    : hostname(hostname)
 {
     assert(communicator);
 
@@ -28,6 +29,11 @@ Server::Server(Ice::CommunicatorPtr communicator)
 
     adapter->add(authObj, communicator->stringToIdentity("Authentication"));
     adapter->activate();
+}
+
+const QString &Server::getHostname() const
+{
+    return hostname;
 }
 
 Server::~Server()
