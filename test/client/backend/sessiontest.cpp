@@ -55,6 +55,18 @@ void SessionTests::init()
     QVERIFY(session);
 }
 
+void SessionTests::cleanup()
+{
+    QVERIFY(session);
+
+    QSignalSpy spy(session.data(), SIGNAL(logoutCompleted(bool, QString)));
+    QVERIFY(spy.isValid());
+    QVERIFY(spy.isEmpty());
+
+    session->logout();
+    waitForResult(spy);
+}
+
 void SessionTests::testInitChat()
 {
     QVERIFY(session);
