@@ -19,7 +19,7 @@ ChatWidget::ChatWidget(QSharedPointer<Session> session,
     d_session = session;
 
     QListIterator<QSharedPointer<const User> > it(d_chat->getUserList());
-    while(it.hasNext()) {
+    while (it.hasNext()) {
         userJoined(it.next());
     }
     connect(ui->leMessage, SIGNAL(returnPressed()), this, SLOT(returnPressed()));
@@ -67,7 +67,7 @@ void ChatWidget::messageReceived(QSharedPointer<const User> user, const QString 
 void ChatWidget::userJoined(QSharedPointer<const User> user)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
-    if(ui->lwParticipants->findItems(user->getName(), Qt::MatchExactly).size() == 0) {
+    if (ui->lwParticipants->findItems(user->getName(), Qt::MatchExactly).size() == 0) {
         ui->lwParticipants->addItem(user->getName());
         ui->lwParticipants->sortItems();
     } else {

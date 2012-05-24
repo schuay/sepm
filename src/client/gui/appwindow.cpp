@@ -64,7 +64,7 @@ AppWindow::AppWindow(QWidget *parent, QSharedPointer<Session> session) :
 
 AppWindow::~AppWindow()
 {
-    if(d_session->isValid())
+    if (d_session->isValid())
         d_session->logout();
     delete ui;
     delete settingspopupmenu;
@@ -111,7 +111,7 @@ void AppWindow::onInviteClicked()
 void AppWindow::logout()
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
-    if(d_session->isValid()) {
+    if (d_session->isValid()) {
         d_session->logout();
     }
 }
@@ -154,7 +154,7 @@ void AppWindow::onSettingsButtonClicked()
 void AppWindow::onTabCloseRequested(int tab)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
-    ChatWidget *cw = dynamic_cast<ChatWidget*>(ui->twChats->widget(tab));
+    ChatWidget *cw = dynamic_cast<ChatWidget *>(ui->twChats->widget(tab));
     cw->leaveChat();
     ui->twChats->removeTab(tab);
 }
@@ -181,7 +181,7 @@ void AppWindow::deleteAccount()
 void AppWindow::onLogoutCompleted(bool success, const QString &msg)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
-    if(success) {
+    if (success) {
         LoginDialog *ld = new LoginDialog();
         ld->show();
         close();
@@ -193,7 +193,7 @@ void AppWindow::onLogoutCompleted(bool success, const QString &msg)
 void AppWindow::onUserDeleted(bool success, const QString &msg)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
-    if(success) {
+    if (success) {
         LoginDialog *ld = new LoginDialog();
         ld->show();
         close();

@@ -69,7 +69,7 @@ void SettingsDialog::onDeleteAccountClicked()
                                   "Are you really sure?",
                                   QMessageBox::Yes | QMessageBox::No);
     if (reply == QMessageBox::Yes) {
-        AppWindow *aw = dynamic_cast<AppWindow*>(parent());
+        AppWindow *aw = dynamic_cast<AppWindow *>(parent());
         aw->deleteAccount();
     }
 
