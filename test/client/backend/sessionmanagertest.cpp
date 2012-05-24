@@ -172,10 +172,8 @@ void SessionManagerTests::testRegisterUserAgain()
     QVERIFY(spy.isValid());
     QVERIFY(spy.isEmpty());
 
-    QSharedPointer<const User> u(new User(getUsername("registeredbutneverlogsin"),
-                                          WORKING_DIR "public.pem"));
-    sessionManager->registerUser(SERVER_URL, CA_CERT, u,
-                                 "password");
+    QSharedPointer<const User> u(new User(TEMP_SESSION_USER, WORKING_DIR "public.pem"));
+    sessionManager->registerUser(SERVER_URL, CA_CERT, u, "password");
 
     waitForResult(spy);
 
@@ -232,7 +230,7 @@ void SessionManagerTests::testLoginCorrectCredentials()
     QVERIFY(spy.isValid());
     QVERIFY(spy.isEmpty());
 
-    QSharedPointer<const LoginUser> u(new LoginUser(getUsername("fefeb10c"),
+    QSharedPointer<const LoginUser> u(new LoginUser(TEMP_SESSION_USER,
                                       WORKING_DIR "public.pem", WORKING_DIR "private.pem"));
     sessionManager->login(SERVER_URL, CA_CERT, u,
                           "password");
@@ -252,7 +250,7 @@ void SessionManagerTests::testLoginRepeated()
     QVERIFY(spy.isValid());
     QVERIFY(spy.isEmpty());
 
-    QSharedPointer<const LoginUser> u(new LoginUser(getUsername("fefeb10c"),
+    QSharedPointer<const LoginUser> u(new LoginUser(TEMP_SESSION_USER,
                                       WORKING_DIR "public.pem", WORKING_DIR "private.pem"));
     sessionManager->login(SERVER_URL, CA_CERT, u,
                           "password");
