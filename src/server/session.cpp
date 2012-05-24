@@ -55,10 +55,17 @@ throw(sdc::MessageException, sdc::InterServerException)
     QLOG_TRACE() << __PRETTY_FUNCTION__;
 }
 
-void Session::deleteUser(const sdc::User &/*participant*/, const Ice::Current &)
+void Session::deleteUser(const sdc::User &participant, const Ice::Current &)
 throw(sdc::UserHandlingException)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
+
+    if (participant != user)
+        throw sdc::UserHandlingException("Unauthorized deletion attempt");
+
+    QSharedPointer<UserDbProxy> proxy = UserDbProxy::getProxy(
+                                            QString::fromStdString(participant.ID));
+    proxy->deleteUser();
 }
 
 void Session::saveLog(const std::string &/*chatID*/, Ice::Long /*timestamp*/,
