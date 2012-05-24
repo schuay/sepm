@@ -48,6 +48,7 @@ LoginDialog::LoginDialog(QWidget *parent) :
     ui->lePublicKey->setText(this->settings.getValue(settings.CPublicKeyPath).toString());
     ui->lePrivateKey->setText(this->settings.getValue(settings.CPrivateKeyPath).toString());
     ui->leUsername->setText(this->settings.getValue(settings.CUsername).toString());
+    ui->leServer->setText(this->settings.getValue(settings.CServer).toString());
 
     ui->groupBox_2->setCheckable(true);
     onGroupCheckboxClicked(ui->leUsername->text().isEmpty());
@@ -235,5 +236,6 @@ void LoginDialog::onTestConnectionCompleted(bool success, const QString &msg)
 LoginDialog::~LoginDialog()
 {
     settings.setValue(settings.CUsername, ui->leUsername->text());
+    settings.setValue(settings.CServer, ui->leServer->text());
     delete ui;
 }

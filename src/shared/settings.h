@@ -23,6 +23,7 @@ public:
         CPublicKeyPath,
         CPrivateKeyPath,
         CUsername,
+        CServer,
         CLIENT_END,
         SCertsDir,
         SCertPath,

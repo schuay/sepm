@@ -16,6 +16,8 @@ QString Settings::getKey(SettingsKey key)
         return "client/privateKeyPath";
     case CUsername:
         return "client/username";
+    case CServer:
+        return "client/server";
     case SCertsDir:
         return "server/certsDir";
     case SCertPath:
