@@ -50,6 +50,41 @@ throw(sdc::UserHandlingException)
     return QSharedPointer<UserDbProxy>(new UserDbProxy(user));
 }
 
+void UserDbProxy::saveContactList(const sdc::SecureContainer &/*container*/)
+throw(sdc::LogException)
+{
+    QLOG_TRACE() << __PRETTY_FUNCTION__;
+    throw sdc::LogException("Not implemented yet");
+}
+
+sdc::SecureContainer UserDbProxy::retrieveContactList()
+throw(sdc::LogException)
+{
+    QLOG_TRACE() << __PRETTY_FUNCTION__;
+    throw sdc::LogException("Not implemented yet");
+}
+
+void UserDbProxy::saveLog(const QString &/*chatID*/, long /*timestamp*/, const sdc::SecureContainer &/*container*/)
+throw(sdc::LogException)
+{
+    QLOG_TRACE() << __PRETTY_FUNCTION__;
+    throw sdc::LogException("Not implemented yet");
+}
+
+sdc::Loglist UserDbProxy::retrieveLoglist()
+throw(sdc::LogException)
+{
+    QLOG_TRACE() << __PRETTY_FUNCTION__;
+    throw sdc::LogException("Not implemented yet");
+}
+
+sdc::SecureContainer UserDbProxy::retrieveLog(const QString &/*chatID*/, long /*timestamp*/)
+throw(sdc::LogException)
+{
+    QLOG_TRACE() << __PRETTY_FUNCTION__;
+    throw sdc::LogException("Not implemented yet");
+}
+
 void UserDbProxy::setHost(const QString &host)
 {
     connection.host = host;

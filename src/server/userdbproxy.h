@@ -52,6 +52,37 @@ public:
     void deleteUser();
 
     /**
+     * Saves the contact list in the database, overwriting any existing contact list.
+     */
+    void saveContactList(const sdc::SecureContainer &container)
+    throw(sdc::LogException);
+
+    /**
+     * Retrieves the contact list. If no contact list is saved, returns an empty container.
+     */
+    sdc::SecureContainer retrieveContactList()
+    throw(sdc::LogException);
+
+    /**
+     * Saves a log in the database with the given chatID and timestamp.
+     * If the log already exists, it is updated with the new contents.
+     */
+    void saveLog(const QString &chatID, long timestamp, const sdc::SecureContainer &container)
+    throw(sdc::LogException);
+
+    /**
+     * Retrieves a list of all stored logs.
+     */
+    sdc::Loglist retrieveLoglist()
+    throw(sdc::LogException);
+
+    /**
+     * Retrieves a specific log. Throws a LogException if it doesn't exist.
+     */
+    sdc::SecureContainer retrieveLog(const QString &chatID, long timestamp)
+    throw(sdc::LogException);
+
+    /**
      * Sets the database hostname. Must be set before the first UserDbProxy instance
      * is created.
      */
