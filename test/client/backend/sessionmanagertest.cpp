@@ -252,16 +252,14 @@ void SessionManagerTests::testLoginRepeated()
 
     QSharedPointer<const LoginUser> u(new LoginUser(TEMP_SESSION_USER,
                                       WORKING_DIR "public.pem", WORKING_DIR "private.pem"));
-    sessionManager->login(SERVER_URL, CA_CERT, u,
-                          "password");
-    sessionManager->login(SERVER_URL, CA_CERT, u,
-                          "password");
+    sessionManager->login(SERVER_URL, CA_CERT, u, "password");
 
-    waitForResult(spy, 2);
+    waitForResult(spy, 1);
 
-    QCOMPARE(spy.count(), 2);
+    QCOMPARE(spy.count(), 1);
     QList<QVariant> arguments = spy.takeFirst();
-    QVERIFY2(arguments.at(1) == true, arguments.at(2).toString().toStdString().c_str());
-    arguments = spy.takeFirst();
-    QVERIFY2(arguments.at(1) == true, arguments.at(2).toString().toStdString().c_str());
+#ifndef RUN_SERVER
+    QEXPECT_FAIL("", "The reference server does not implement multiple logins correctly.", Abort);
+#endif
+    QVERIFY2(arguments.at(1) == false, arguments.at(2).toString().toStdString().c_str());
 }
