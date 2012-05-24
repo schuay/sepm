@@ -3,7 +3,7 @@
 
 #define WORKING_DIR "@WORKING_DIR@/"
 #define SERVER_URL "@SERVER_URL@"
-#define TEMP_SESSION_USER "TEMP_SESSION_USER@selinux.inso.tuwien.ac.at"
+#define TEMP_SESSION_USER "TEMP_SESSION_USER@" SERVER_URL
 #define SOURCE_DIR "@SOURCE_DIR@"
 #define BINARY_DIR "@BINARY_DIR@"
 #define CA_CERT "@CA_CERT@"
