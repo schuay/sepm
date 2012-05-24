@@ -116,6 +116,7 @@ private:
     UserDbProxy(const QString &user) throw(sdc::UserHandlingException);
     UserDbProxy(const UserDbProxy &);
 
+    int id;
     sdc::User user;
     QByteArray hash;
     QByteArray salt;

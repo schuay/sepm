@@ -162,7 +162,7 @@ throw(sdc::UserHandlingException)
     connection.open();
 
     QSqlQuery query(QSqlDatabase::database(CONNECTION));
-    query.prepare("select username, public_key, password_hash, salt "
+    query.prepare("select username, public_key, password_hash, salt, id "
                   "from public.user where username = :username");
     query.bindValue(":username", username);
     query.exec();
@@ -177,6 +177,7 @@ throw(sdc::UserHandlingException)
     user.publicKey = sdc::sdcHelper::byteArraytoByteSeq(query.value(1).toByteArray());
     hash = query.value(2).toByteArray();
     salt = query.value(3).toByteArray();
+    id = query.value(4).toInt();
 }
 
 }
