@@ -67,7 +67,7 @@ throw(sdc::MessageException, sdc::InterServerException)
 }
 
 /* check auth, do db ops, logout (make sure everything is consistent), destroy session */
-void Session::deleteUser(const sdc::User &participant, const Ice::Current &)
+void Session::deleteUser(const sdc::User &participant, const Ice::Current &current)
 throw(sdc::UserHandlingException)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
@@ -78,6 +78,8 @@ throw(sdc::UserHandlingException)
     QSharedPointer<UserDbProxy> proxy = UserDbProxy::getProxy(
                                             QString::fromStdString(participant.ID));
     proxy->deleteUser();
+
+    logout(current);
 }
 
 void Session::saveLog(const std::string &/*chatID*/, Ice::Long /*timestamp*/,
