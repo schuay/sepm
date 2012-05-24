@@ -155,7 +155,9 @@ void SessionTests::retrieveUser()
     QVERIFY(spy.isValid());
     QVERIFY(spy.isEmpty());
 
-    session->retrieveUser(getUsername("fefeb10c"), this);
+    const QString username = TEMP_SESSION_USER;
+
+    session->retrieveUser(username, this);
     waitForResult(spy);
 
     QCOMPARE(spy.count(), 1);
@@ -163,7 +165,7 @@ void SessionTests::retrieveUser()
     QVERIFY2(arguments.at(2) == true, arguments.at(3).toString().toStdString().c_str());
 
     QSharedPointer<const User> usr = arguments.at(0).value<QSharedPointer<const User> >();
-    QCOMPARE(usr.data()->getName(), getUsername("fefeb10c"));
+    QCOMPARE(usr.data()->getName(), username);
 }
 
 void SessionTests::retrieveUserNonexistent()
