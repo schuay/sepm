@@ -24,6 +24,13 @@ public:
     throw(sdc::AuthenticationException);
 
     /**
+     * Removes the session from the session map.
+     * If the map doesn't contain given session, a UserHandlingException is thrown.
+     */
+    void removeSession(const QString &user)
+    throw(sdc::UserHandlingException);
+
+    /**
      * Returns the server's hostname.
      */
     const QString &getHostname() const;

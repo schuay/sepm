@@ -65,7 +65,7 @@ throw(sdc::AuthenticationException)
         sdc::ChatClientCallbackIPrx callback = sdc::ChatClientCallbackIPrx::uncheckedCast(
                 current.con->createProxy(identity));
 
-        Session *session = new Session(user, callback);
+        Session *session = new Session(user, callback, server);
         sdc::SessionIPrx sessionProxy = sdc::SessionIPrx::uncheckedCast(
                                             current.adapter->addWithUUID(session));
 

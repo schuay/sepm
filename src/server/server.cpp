@@ -52,4 +52,15 @@ throw(sdc::AuthenticationException)
     sessions[user] = session;
 }
 
+void Server::removeSession(const QString &user)
+throw(sdc::UserHandlingException)
+{
+    QMutexLocker locker(&sessionsMutex);
+    if (!sessions.contains(user)) {
+        throw sdc::UserHandlingException("Not logged in.");
+    }
+
+    sessions.remove(user);
+}
+
 }

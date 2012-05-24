@@ -2,12 +2,13 @@
 
 #include "userdbproxy.h"
 #include "QsLog.h"
+#include "server.h"
 
 namespace sdcs
 {
 
-Session::Session(const sdc::User &user, sdc::ChatClientCallbackIPrx callback)
-    : user(user), callback(callback)
+Session::Session(const sdc::User &user, sdc::ChatClientCallbackIPrx callback, Server *server)
+    : user(user), callback(callback), server(server)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
 }
@@ -15,6 +16,8 @@ Session::Session(const sdc::User &user, sdc::ChatClientCallbackIPrx callback)
 void Session::logout(const Ice::Current &) throw(sdc::UserHandlingException)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
+
+    server->removeSession(QString::fromStdString(user.ID));
 }
 
 sdc::User Session::retrieveUser(const std::string &userID, const Ice::Current &)
