@@ -121,7 +121,28 @@ sdc::Loglist UserDbProxy::retrieveLoglist()
 throw(sdc::LogException)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
-    throw sdc::LogException("Not implemented yet");
+
+    QSqlQuery query(connection.database);
+    query.prepare("select chat_id, time_stamp "
+                  "from public.chatlog where user_id = :user_id;");
+    query.bindValue(":user_id", id);
+
+    bool ok = query.exec();
+    if (!ok) {
+        QLOG_ERROR() << query.lastError().text();
+        throw sdc::LogException(query.lastError().text().toStdString());
+    }
+
+    sdc::Loglist list;
+
+    while (query.next()) {
+        sdc::ChatlogEntry entry;
+        entry.chatID = query.value(0).toString().toStdString();
+        entry.timestamp = static_cast<Ice::Long>(query.value(1).toLongLong());
+        list.push_back(entry);
+    }
+
+    return list;
 }
 
 sdc::SecureContainer UserDbProxy::retrieveLog(const QString &/*chatID*/, long /*timestamp*/)
