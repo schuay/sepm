@@ -124,6 +124,12 @@ private:
      */
     sdc::ByteSeq key;
 
+    /**
+     * The chat's message log.
+     */
+    QMutex logMutex;
+    sdc::Chatlog log;
+
     void runInvite(QSharedPointer<const User> user);
     void runLeaveChat();
     void runSend(const QString &msg);

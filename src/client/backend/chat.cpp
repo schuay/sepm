@@ -7,6 +7,8 @@
 #include "SecureDistributedChat.h"
 #include "QsLog.h"
 
+#include <Ice/Ice.h>
+
 namespace sdcc
 {
 
@@ -93,32 +95,39 @@ void Chat::runSend(const QString &msg)
 
 void Chat::receiveMessage(QSharedPointer<const User> participant, const sdc::ByteSeq &encMsg)
 {
-    QMutexLocker locker(&usersMutex);
+    QMutexLocker usersLocker(&usersMutex);
     if (!users.contains(participant->getName())) {
         QLOG_ERROR() << QString("Received message for chat '%1' from user '%2', "
                                 "who is not in the chat").arg(chatID)
                      .arg(participant->getName());
         return;
     }
-    locker.unlock();
+    usersLocker.unlock();
 
+    QString msg;
     try {
         sdc::Security s;
         sdc::ByteSeq decMsg = s.decryptAES(key, encMsg);
-        QString msg = QString::fromStdString(sdc::sdcHelper::getBinaryString(decMsg));
+        msg = QString::fromStdString(sdc::sdcHelper::getBinaryString(decMsg));
 
-        QLOG_TRACE() << "Received message:" << msg;
+        QLOG_TRACE() << "Received message: " << msg;
 
-        // TODO: What if we receive invalid UTF8 code points? QString doesn't
-        // give us any information on this. This should only occur if other clients
-        // encode their messages differently though.
-        emit messageReceived(participant, msg);
+        struct sdc::LogMessage logEntry = { participant->getName().toStdString(),
+                   QDateTime::currentDateTimeUtc().toTime_t(),
+                   msg.toStdString()
+        };
+        QMutexLocker logLocker(&logMutex);
+        log.push_back(logEntry);
 
     } catch (const sdc::SecurityException &e) {
         // TODO: Workaround cause I don't know how to report generic errors...
-        emit messageReceived(participant, "<received message but could not decrypt it>");
+        msg = "<received message but could not decrypt it>";
     }
 
+    // TODO: What if we receive invalid UTF8 code points? QString doesn't
+    // give us any information on this. This should only occur if other clients
+    // encode their messages differently though.
+    emit messageReceived(participant, msg);
 }
 
 void Chat::leaveChat()
@@ -134,14 +143,37 @@ void Chat::runLeaveChat()
     QString message;
 
     try {
+        sdc::ByteSeq plainLog;
+
+        Ice::OutputStreamPtr out = Ice::createOutputStream(sessionPrx->ice_getCommunicator());
+        QMutexLocker logLocker(&logMutex);
+        out->write(log);
+        out->finished(plainLog);
+        logLocker.unlock();
+
+        QSharedPointer<const LoginUser> user = session.getUser();
+        sdc::SecureContainer cryptLog;
+
+        cryptLog.data = user->encrypt(plainLog);
+        cryptLog.signature = user->sign(plainLog);
+
+        sessionPrx->saveLog(chatID.toStdString(),
+                            QDateTime::currentDateTimeUtc().toTime_t(), cryptLog);
+
         sessionPrx->leaveChat(chatID.toStdString());
 
+    } catch (const sdc::LogException &e) {
+        success = false;
+        message = e.what.c_str();
     } catch (const sdc::SessionException &e) {
         success = false;
         message = e.what.c_str();
     } catch (const sdc::InterServerException &e) {
         success = false;
         message = e.what.c_str();
+    } catch (const sdc::SecurityException &e) {
+        success = false;
+        message = e.what();
     }
 
     emit leaveChatCompleted(success, message);

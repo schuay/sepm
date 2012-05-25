@@ -71,7 +71,7 @@ public:
     /**
      * Retrieve the user of this session.
      */
-    const QSharedPointer<const User> getUser() const;
+    const QSharedPointer<const LoginUser> getUser() const;
 
     /**
      * True if neither logout(), nor deleteUser() with the sessions user has

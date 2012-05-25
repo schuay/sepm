@@ -336,7 +336,7 @@ void SessionPrivate::leaveChatCompletedSlot(bool /* success */,
     chats.remove(qobject_cast<Chat *>(this->sender())->getID());
 }
 
-const QSharedPointer<const User> Session::getUser() const
+const QSharedPointer<const LoginUser> Session::getUser() const
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
     Q_D(const Session);
