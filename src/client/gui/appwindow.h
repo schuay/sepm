@@ -32,6 +32,7 @@ public slots:
     void onSettingsButtonClicked();
     void onAddContactEntryClicked();
     void onSettingsEntryClicked();
+    void onViewChatLogsEntryClicked();
     void onTabCloseRequested(int tab);
     void onStartChatEntryClicked();
     void onInviteClicked();

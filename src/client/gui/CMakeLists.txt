@@ -11,6 +11,7 @@ set(client_gui_FORMS
         logindialog.ui
         appwindow.ui
         chatwidget.ui
+        chatlogdialog.ui
         settingsdialog.ui
 )
 qt4_wrap_ui(client_gui_FORMS_HEADERS ${client_gui_FORMS})
@@ -19,6 +20,7 @@ set(client_gui_QTHEADERS
         logindialog.h
         appwindow.h
         chatwidget.h
+        chatlogdialog.h
         settingsdialog.h
         usermodel.h
 )
@@ -28,6 +30,7 @@ set(client_gui_SRCS
         logindialog.cpp
         appwindow.cpp
         chatwidget.cpp
+        chatlogdialog.cpp
         settingsdialog.cpp
         usermodel.cpp
 )

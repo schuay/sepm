@@ -5,6 +5,7 @@
 #include "chat.h"
 #include "chatwidget.h"
 #include "settingsdialog.h"
+#include "chatlogdialog.h"
 #include <QListWidgetItem>
 #include <QtGui>
 #include <QsLog.h>
@@ -74,6 +75,7 @@ AppWindow::AppWindow(QWidget *parent, QSharedPointer<Session> session) :
     settingspopupmenu = new QMenu(this);
     settingspopupmenu->addAction("Add Contact", this, SLOT(onAddContactEntryClicked()));
     settingspopupmenu->addAction("Start Chat", this, SLOT(onStartChatEntryClicked()));
+    settingspopupmenu->addAction("View Chatlogs", this, SLOT(onViewChatLogsEntryClicked()));
     settingspopupmenu->addAction("Invite", this, SLOT(onInviteClicked()));
     settingspopupmenu->addAction("Options", this, SLOT(onSettingsEntryClicked()));
     settingspopupmenu->addAction("Logout", this, SLOT(logout()));
@@ -257,4 +259,10 @@ void AppWindow::onStartChatEntryClicked()
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
     d_session->initChat();
+}
+
+void AppWindow::onViewChatLogsEntryClicked()
+{
+    ChatLogDialog *dialog = new ChatLogDialog(this);
+    dialog->show();
 }
