@@ -8,6 +8,7 @@
 #include "user.h"
 #include "loginuser.h"
 #include "sdcHelper.h"
+#include "chatlogentry.h"
 
 namespace sdcc
 {
@@ -64,6 +65,17 @@ public:
     void retrieveContactList();
 
     /**
+     * Retrieves the chatlog list from the server.
+     */
+    void retrieveLoglist();
+
+    /**
+     * Retrieves the log of the specified chat from the server.
+     */
+    void retrieveLog(const QPair<QDateTime, QString> &spec);
+    void retrieveLog(const QDateTime &time, const QString &chat);
+
+    /**
      * Saves the contact list on the server
      */
     void saveContactList(const QStringList &contactlist);
@@ -113,6 +125,18 @@ signals:
      */
     void retrieveContactListCompleted(const QStringList &list,
                                       bool success, const QString &msg);
+
+    /**
+     * The chatlog list has been retrieved from the server.
+     */
+    void retrieveLoglistCompleted(const QList<QPair<QDateTime, QString> > &list,
+                                  bool success, const QString &msg);
+
+    /**
+     * The requested chatlog has been retrieved from the server.
+     */
+    void retrieveLogCompleted(const QList<ChatlogEntry> &list,
+                              bool success, const QString &msg);
 
     /**
      * The contact list has been saved on the server

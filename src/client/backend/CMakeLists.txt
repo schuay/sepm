@@ -6,6 +6,7 @@ include_directories(
 
 set(client_backend_SRCS
     chat.cpp
+    chatlogentry.cpp
     session.cpp
     sessionmanager.cpp
     user.cpp

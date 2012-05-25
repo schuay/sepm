@@ -230,6 +230,78 @@ void SessionPrivate::runDeleteUser(QSharedPointer<const User> user)
     emit q->deleteUserCompleted(success, message);
 }
 
+void SessionPrivate::runRetrieveLoglist()
+{
+    Q_Q(Session);
+    bool success = true;
+    QString message;
+    QList<QPair<QDateTime, QString> > loglistdata;
+
+    try {
+        QLOG_TRACE() << __PRETTY_FUNCTION__;
+
+        sdc::Loglist list = session->retrieveLoglist();
+
+        sdc::Loglist::const_iterator i;
+        for (i = list.begin(); i < list.end(); i++) {
+            loglistdata.append(QPair<QDateTime, QString>(QDateTime::fromTime_t(i->timestamp),
+                               QString::fromStdString(i->chatID)));
+        }
+
+    } catch (const sdc::LogException &e) {
+        success = false;
+        message = e.what.c_str();
+    }
+
+    emit q->retrieveLoglistCompleted(loglistdata, success, message);
+}
+
+void SessionPrivate::runRetrieveLog(const QDateTime &time, const QString &chat)
+{
+    Q_Q(Session);
+    bool success = true;
+    QString message;
+    QList<ChatlogEntry> loglistdata;
+
+    try {
+        sdc::SecureContainer loglist = session->retrieveLog(chat.toStdString(),
+                                       time.toTime_t());
+        if (loglist.data.size() <= 0) {
+            goto out;
+        }
+
+        QLOG_TRACE() << __PRETTY_FUNCTION__;
+        sdc::ByteSeq decryptedData = user->decrypt(loglist.data);
+
+        if (!user->verify(decryptedData, loglist.signature)) {
+            success = false;
+            message = "Invalid signature";
+            goto out;
+        }
+
+        sdc::Chatlog sdcLog;
+        Ice::InputStreamPtr in = Ice::createInputStream(communicator, decryptedData);
+        in->read(sdcLog);
+
+        sdc::Chatlog::const_iterator i;
+        for (i = sdcLog.begin(); i < sdcLog.end(); i++) {
+            loglistdata.append(ChatlogEntry(QString::fromStdString(i->senderID),
+                                            i->timestamp,
+                                            QString::fromStdString(i->message)));
+        }
+
+    } catch (const sdc::LogException &e) {
+        success = false;
+        message = e.what.c_str();
+    } catch (const sdc::SecurityException) {
+        success = false;
+        message = "Decryption Failed";
+    }
+
+out:
+    emit q->retrieveLogCompleted(loglistdata, success, message);
+}
+
 void SessionPrivate::runRetrieveContactList()
 {
     Q_Q(Session);
@@ -329,7 +401,7 @@ QSharedPointer<const User> SessionPrivate::getUser(const QString &username)
 }
 
 void SessionPrivate::leaveChatCompletedSlot(bool /* success */,
-        const QString /* &message */)
+        const QString& /* message */)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
     QMutexLocker locker(&chatsMutex);
@@ -416,6 +488,25 @@ void Session::retrieveUser(const QString &username, const QObject *id)
     QLOG_TRACE() << __PRETTY_FUNCTION__;
     Q_D(Session);
     QtConcurrent::run(d, &SessionPrivate::runRetrieveUser, username, id);
+}
+
+void Session::retrieveLoglist()
+{
+    QLOG_TRACE() << __PRETTY_FUNCTION__;
+    Q_D(Session);
+    QtConcurrent::run(d, &SessionPrivate::runRetrieveLoglist);
+}
+
+void Session::retrieveLog(const QPair<QDateTime, QString> &spec)
+{
+    retrieveLog(spec.first, spec.second);
+}
+
+void Session::retrieveLog(const QDateTime &time, const QString &chat)
+{
+    QLOG_TRACE() << __PRETTY_FUNCTION__;
+    Q_D(Session);
+    QtConcurrent::run(d, &SessionPrivate::runRetrieveLog, time, chat);
 }
 
 void Session::retrieveContactList()

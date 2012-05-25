@@ -45,6 +45,10 @@ class SessionPrivate : public QObject, public sdc::ChatClientCallbackI
 
     void runRetrieveContactList();
 
+    void runRetrieveLoglist();
+
+    void runRetrieveLog(const QDateTime &time, const QString &chat);
+
     void runSaveContactList(const QStringList &contactlist);
 
     ~SessionPrivate();
@@ -70,7 +74,7 @@ private:
     void leaveAllChats(void);
 
 private slots:
-    void leaveChatCompletedSlot(bool /* success */, const QString /* &message */);
+    void leaveChatCompletedSlot(bool success, const QString &message);
 };
 
 }
