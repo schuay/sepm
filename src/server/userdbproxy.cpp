@@ -51,7 +51,7 @@ throw(sdc::UserHandlingException)
 }
 
 void UserDbProxy::saveContactList(const sdc::SecureContainer &container)
-throw(sdc::LogException)
+throw(sdc::ContactException)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
 
@@ -62,7 +62,7 @@ throw(sdc::LogException)
     bool ok = query.exec();
     if (!ok) {
         QLOG_ERROR() << query.lastError().text();
-        throw sdc::LogException(query.lastError().text().toStdString());
+        throw sdc::ContactException(query.lastError().text().toStdString());
     }
 
     query.prepare("insert into public.contactlist (user_id, encrypted_content, signature) "
@@ -74,12 +74,12 @@ throw(sdc::LogException)
     ok = query.exec();
     if (!ok) {
         QLOG_ERROR() << query.lastError().text();
-        throw sdc::LogException(query.lastError().text().toStdString());
+        throw sdc::ContactException(query.lastError().text().toStdString());
     }
 }
 
 sdc::SecureContainer UserDbProxy::retrieveContactList()
-throw(sdc::LogException)
+throw(sdc::ContactException)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
 
@@ -91,12 +91,12 @@ throw(sdc::LogException)
     bool ok = query.exec();
     if (!ok) {
         QLOG_ERROR() << query.lastError().text();
-        throw sdc::LogException(query.lastError().text().toStdString());
+        throw sdc::ContactException(query.lastError().text().toStdString());
     }
 
     if (query.size() > 1) {
         QLOG_ERROR() << "Non-unique contact list query results";
-        throw sdc::LogException("Non-unique contact list query results.");
+        throw sdc::ContactException("Non-unique contact list query results.");
     }
 
     sdc::SecureContainer container;

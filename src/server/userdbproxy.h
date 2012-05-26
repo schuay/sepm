@@ -56,13 +56,13 @@ public:
      * Saves the contact list in the database, overwriting any existing contact list.
      */
     void saveContactList(const sdc::SecureContainer &container)
-    throw(sdc::LogException);
+    throw(sdc::ContactException);
 
     /**
      * Retrieves the contact list. If no contact list is saved, returns an empty container.
      */
     sdc::SecureContainer retrieveContactList()
-    throw(sdc::LogException);
+    throw(sdc::ContactException);
 
     /**
      * Saves a log in the database with the given chatID and timestamp.
