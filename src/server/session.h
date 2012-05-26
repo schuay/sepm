@@ -121,6 +121,11 @@ public:
     sdc::SecureContainer retrieveContactList(const Ice::Current &)
     throw(sdc::ContactException);
 
+    /**
+     * Retrieve the client callback.
+     */
+    sdc::ChatClientCallbackIPrx getCallback() const;
+
 private:
     const sdc::User self;
     const sdc::ChatClientCallbackIPrx callback;

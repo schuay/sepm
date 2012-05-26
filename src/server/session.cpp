@@ -151,4 +151,9 @@ throw(sdc::ContactException)
     return proxy->retrieveContactList();
 }
 
+sdc::ChatClientCallbackIPrx Session::getCallback() const
+{
+    return callback;
+}
+
 }
