@@ -55,7 +55,7 @@ throw(sdc::ContactException)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
 
-    QSqlQuery query(connection.database);
+    QSqlQuery query(connection.db);
     query.prepare("delete from public.contactlist where user_id = :user_id;");
     query.bindValue(":user_id", id);
 
@@ -83,7 +83,7 @@ throw(sdc::ContactException)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
 
-    QSqlQuery query(connection.database);
+    QSqlQuery query(connection.db);
     query.prepare("select encrypted_content, signature "
                   "from public.contactlist where user_id = :user_id;");
     query.bindValue(":user_id", id);
@@ -115,7 +115,7 @@ throw(sdc::LogException)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
 
-    QSqlQuery query(connection.database);
+    QSqlQuery query(connection.db);
     query.prepare("delete from public.chatlog where user_id = :user_id;");
     query.bindValue(":user_id", id);
 
@@ -145,7 +145,7 @@ throw(sdc::LogException)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
 
-    QSqlQuery query(connection.database);
+    QSqlQuery query(connection.db);
     query.prepare("select chat_id, time_stamp "
                   "from public.chatlog where user_id = :user_id;");
     query.bindValue(":user_id", id);
@@ -173,7 +173,7 @@ throw(sdc::LogException)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
 
-    QSqlQuery query(connection.database);
+    QSqlQuery query(connection.db);
     query.prepare("select encrypted_content, signature "
                   "from public.chatlog where "
                   "user_id = :user_id and chat_id = :chat_id and time_stamp = :time_stamp;");
