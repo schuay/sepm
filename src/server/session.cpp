@@ -82,41 +82,55 @@ throw(sdc::UserHandlingException)
     logout(current);
 }
 
-void Session::saveLog(const std::string &/*chatID*/, Ice::Long /*timestamp*/,
-                      const sdc::SecureContainer &/*log*/, const Ice::Current &)
+void Session::saveLog(const std::string &chatID, Ice::Long timestamp,
+                      const sdc::SecureContainer &log, const Ice::Current &)
 throw(sdc::LogException)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
+
+    QSharedPointer<UserDbProxy> proxy = UserDbProxy::getProxy(
+                                            QString::fromStdString(user.ID));
+    proxy->saveLog(QString::fromStdString(chatID), static_cast<long>(timestamp), log);
 }
 
 sdc::Loglist Session::retrieveLoglist(const Ice::Current &) throw(sdc::LogException)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
-    sdc::Loglist l;
-    return l;
+
+    QSharedPointer<UserDbProxy> proxy = UserDbProxy::getProxy(
+                                            QString::fromStdString(user.ID));
+    return proxy->retrieveLoglist();
 }
 
-sdc::SecureContainer Session::retrieveLog(const std::string &/*chatID*/,
-        Ice::Long /*timestamp*/, const Ice::Current &)
+sdc::SecureContainer Session::retrieveLog(const std::string &chatID,
+        Ice::Long timestamp, const Ice::Current &)
 throw(sdc::LogException)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
-    sdc::SecureContainer c;
-    return c;
+
+    QSharedPointer<UserDbProxy> proxy = UserDbProxy::getProxy(
+                                            QString::fromStdString(user.ID));
+    return proxy->retrieveLog(QString::fromStdString(chatID), static_cast<long>(timestamp));
 }
 
-void Session::saveContactList(const sdc::SecureContainer &/*contactList*/, const Ice::Current &)
+void Session::saveContactList(const sdc::SecureContainer &contactList, const Ice::Current &)
 throw(sdc::ContactException)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
+
+    QSharedPointer<UserDbProxy> proxy = UserDbProxy::getProxy(
+                                            QString::fromStdString(user.ID));
+    proxy->saveContactList(contactList);
 }
 
 sdc::SecureContainer Session::retrieveContactList(const Ice::Current &)
 throw(sdc::ContactException)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
-    sdc::SecureContainer c;
-    return c;
+
+    QSharedPointer<UserDbProxy> proxy = UserDbProxy::getProxy(
+                                            QString::fromStdString(user.ID));
+    return proxy->retrieveContactList();
 }
 
 }
