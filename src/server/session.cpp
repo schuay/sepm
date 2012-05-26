@@ -15,20 +15,21 @@ Session::Session(const sdc::User &user, sdc::ChatClientCallbackIPrx callback, Se
     QLOG_TRACE() << __PRETTY_FUNCTION__;
 }
 
-/* destroy self, notify all open chats */
 void Session::logout(const Ice::Current &) throw(sdc::UserHandlingException)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
 
+    /* TODO: leave all open chats. */
+
     server->removeSession(QString::fromStdString(user.ID));
 }
 
-/* local user: db lookup
- * remote: create interserver, forward call, return. */
 sdc::User Session::retrieveUser(const std::string &userID, const Ice::Current &)
 throw(sdc::UserHandlingException, sdc::InterServerException)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
+
+    /* TODO: handle interserver user requests. */
 
     QSharedPointer<UserDbProxy> proxy = UserDbProxy::getProxy(QString::fromStdString(userID));
 
@@ -71,6 +72,8 @@ void Session::invite(const sdc::User &/*participant*/, const std::string &/*chat
 throw(sdc::UserHandlingException, sdc::InterServerException)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
+
+    /* TODO: implementation. */
 }
 
 /* looks up chat and calls appendMessageFrom. */
@@ -78,9 +81,10 @@ void Session::sendMessage(const sdc::ByteSeq &/*message*/, const std::string &/*
 throw(sdc::MessageException, sdc::InterServerException)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
+
+    /* TODO: implementation. */
 }
 
-/* check auth, do db ops, logout (make sure everything is consistent), destroy session */
 void Session::deleteUser(const sdc::User &participant, const Ice::Current &current)
 throw(sdc::UserHandlingException)
 {
