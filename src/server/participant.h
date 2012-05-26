@@ -8,25 +8,30 @@
 namespace sdcs
 {
 
-/* only exists within a chat */
+/**
+ * Represents a user participating in a chat.
+ */
 class Participant
 {
 public:
+    Participant(const sdc::User &user, const QString &chatID);
+    virtual ~Participant();
+
     virtual void invite(QStringList users, sdc::ByteSeq sessionKey) = 0;
     virtual void addChatParticipant(const sdc::User &participant) = 0;
     virtual void removeChatParticipant(const sdc::User &participant) = 0;
     virtual void appendMessageToChat(const sdc::User &user, const QString &message) = 0;
-    virtual ~Participant() = 0;
 
 protected:
-    sdc::User user;
-    QString chatID;
+    const sdc::User self;
+    const QString chatID;
 };
 
 class LocalParticipant : public Participant
 {
 public:
-    LocalParticipant(sdc::User sdcUser, const QString &chatID);
+    LocalParticipant(const sdc::User &user, const QString &chatID);
+
     virtual void invite(QStringList , sdc::ByteSeq);
     virtual void addChatParticipant(const sdc::User &);
     virtual void removeChatParticipant(const sdc::User &);
@@ -40,7 +45,8 @@ private:
 class RemoteParticipant : public Participant
 {
 public:
-    RemoteParticipant(sdc::User sdcUser, const QString &chatID);
+    RemoteParticipant(const sdc::User &user, const QString &chatID);
+
     virtual void invite(QStringList , sdc::ByteSeq);
     virtual void addChatParticipant(const sdc::User &);
     virtual void removeChatParticipant(const sdc::User &);

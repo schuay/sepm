@@ -26,17 +26,17 @@ LocalChat::LocalChat(const QString &chatID)
 {
 }
 
-void LocalChat::appendMessageFrom(sdc::User /*user*/, sdc::ByteSeq /*message*/)
+void LocalChat::appendMessageFrom(const sdc::User &/*user*/, const sdc::ByteSeq &/*message*/)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
 }
 
-void LocalChat::inviteUser(const Participant &/*user*/, sdc::ByteSeq /*sessionKey*/)
+void LocalChat::inviteUser(const sdc::User &/*user*/, const sdc::ByteSeq &/*message*/)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
 }
 
-void LocalChat::leaveChat(const Participant &/*user*/)
+void LocalChat::leaveChat(const QString &/*user*/)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
 }
