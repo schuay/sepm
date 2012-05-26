@@ -48,11 +48,20 @@ std::string Session::initChat(const Ice::Current &) throw(sdc::SessionException)
     return chatID.toStdString();
 }
 
-/* notify chat, remove from local list */
-void Session::leaveChat(const std::string &/*chatID*/, const Ice::Current &)
+void Session::leaveChat(const std::string &chatID, const Ice::Current &)
 throw(sdc::SessionException, sdc::InterServerException)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
+
+    const QString id = QString::fromStdString(chatID);
+
+    /* TODO: notify chat, destroy if empty, interserver chat handling. */
+
+    QMutexLocker locker(&chatsMutex);
+    if (!chats.contains(id))
+        throw sdc::SessionException("Chat does not exist");
+
+    chats.remove(id);
 }
 
 /* check consistency (chat exists, chat joined)
