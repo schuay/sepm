@@ -11,15 +11,23 @@
 
 QTEST_MAIN(SessionTests)
 
+/* The preprocessor knows nothing about templates and complains
+ * if the comma occurs in Q_DECLARE_METATYPE's parameter. */
+#define QPAIR_HACK QList<QPair<QDateTime, QString> >
 
 Q_DECLARE_METATYPE(QSharedPointer<Session>)
 Q_DECLARE_METATYPE(QSharedPointer<const User>)
+Q_DECLARE_METATYPE(QPAIR_HACK)
+Q_DECLARE_METATYPE(QList<ChatlogEntry>)
 void SessionTests::initTestCase()
 {
     qRegisterMetaType<QSharedPointer<Session> >("QSharedPointer<Session>");
     qRegisterMetaType<QSharedPointer<Chat> >("QSharedPointer<Chat>");
     qRegisterMetaType<QSharedPointer<const User> >("QSharedPointer<const User>");
     qRegisterMetaType<const QObject *>("const QObject*");
+    qRegisterMetaType<QList<QPair<QDateTime, QString> > >(
+        "QList<QPair<QDateTime, QString> >");
+    qRegisterMetaType<QList<ChatlogEntry> >("QList<ChatlogEntry>");
 
 #ifdef RUN_SERVER
     SPAWN_SERVER(server);
@@ -198,6 +206,56 @@ void SessionTests::retrieveUserNonexistent()
     QCOMPARE(spy.count(), 1);
     QList<QVariant> arguments = spy.takeFirst();
     QVERIFY2(arguments.at(2) == false, arguments.at(3).toString().toStdString().c_str());
+}
+
+void SessionTests::retrieveEmptyLoglist()
+{
+    QSignalSpy spy(session.data(), SIGNAL(retrieveLoglistCompleted(const
+                                          QList<QPair<QDateTime, QString> >, bool, QString)));
+    QVERIFY(spy.isValid());
+    QVERIFY(spy.isEmpty());
+
+    session->retrieveLoglist();
+
+    waitForResult(spy);
+
+    QList<QVariant> arguments = spy.takeFirst();
+    QVERIFY2(arguments.at(1) == true, arguments.at(2).toString().toStdString().c_str());
+    QList<QPair<QDateTime, QString> > logs = arguments.at(0).value<
+            QList<QPair<QDateTime, QString> > >();
+    QVERIFY(logs.size() == 0);
+}
+
+void SessionTests::retrieveNonEmptyLoglist()
+{
+    QSignalSpy spy(session.data(), SIGNAL(retrieveLoglistCompleted(const
+                                          QList<QPair<QDateTime, QString> >, bool, QString)));
+    QVERIFY(spy.isValid());
+    QVERIFY(spy.isEmpty());
+
+    session->retrieveLoglist();
+
+    waitForResult(spy);
+
+    QList<QVariant> arguments = spy.takeFirst();
+    QVERIFY2(arguments.at(1) == true, arguments.at(2).toString().toStdString().c_str());
+    QList<QPair<QDateTime, QString> > logs = arguments.at(0).value<
+            QList<QPair<QDateTime, QString> > >();
+    QVERIFY(logs.size() == 1);
+
+    QSignalSpy spy2(session.data(), SIGNAL(retrieveLogCompleted(const
+                                           QList<ChatlogEntry>, bool, QString)));
+    QVERIFY(spy2.isValid());
+    QVERIFY(spy2.isEmpty());
+
+    session->retrieveLog(logs[0]);
+
+    waitForResult(spy2);
+
+    QList<QVariant> arguments2 = spy2.takeFirst();
+    QVERIFY2(arguments2.at(1) == true, arguments2.at(2).toString().toStdString().c_str());
+    QList<ChatlogEntry> log = arguments2.at(0).value<QList<ChatlogEntry> >();
+    QVERIFY(log.size() == 0);
 }
 
 void SessionTests::retrieveContactListNonexistent()

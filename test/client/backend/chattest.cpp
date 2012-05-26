@@ -12,11 +12,16 @@
 
 QTEST_MAIN(ChatTests)
 
+/* The preprocessor knows nothing about templates and complains
+ * if the comma occurs in Q_DECLARE_METATYPE's parameter. */
+#define QPAIR_HACK QList<QPair<QDateTime, QString> >
 
 Q_DECLARE_METATYPE(QSharedPointer<Session>)
 Q_DECLARE_METATYPE(QSharedPointer<Chat>)
 Q_DECLARE_METATYPE(QSharedPointer<const User>)
 Q_DECLARE_METATYPE(User)
+Q_DECLARE_METATYPE(QPAIR_HACK)
+Q_DECLARE_METATYPE(QList<ChatlogEntry>)
 
 static void registerUser(const QString &user)
 {
@@ -41,6 +46,9 @@ void ChatTests::initTestCase()
     qRegisterMetaType<QSharedPointer<Chat> >("QSharedPointer<Chat>");
     qRegisterMetaType<QSharedPointer<const User> >("QSharedPointer<const User>");
     qRegisterMetaType<User>("User");
+    qRegisterMetaType<QList<QPair<QDateTime, QString> > >(
+        "QList<QPair<QDateTime, QString> >");
+    qRegisterMetaType<QList<ChatlogEntry> >("QList<ChatlogEntry>");
 
 #ifdef RUN_SERVER
     SPAWN_SERVER(server);
@@ -373,4 +381,49 @@ void ChatTests::testLeaveChat()
     QList<QVariant> arguments3 = spy3.takeFirst();
     QSharedPointer<const User> u2 = arguments3.at(0).value<QSharedPointer<const User> >();
     QCOMPARE(u2->getName(), QString(TEMP_SESSION_USER3));
+}
+
+void ChatTests::testRetrieveLog()
+{
+    testTransmitMessage();
+
+    QSignalSpy spy3(chat.data(), SIGNAL(leaveChatCompleted(bool, QString)));
+    QVERIFY(spy3.isValid());
+    QVERIFY(spy3.isEmpty());
+
+    chat->leaveChat();
+
+    waitForResult(spy3);
+
+    QSignalSpy spy(session.data(), SIGNAL(retrieveLoglistCompleted(const
+                                          QList<QPair<QDateTime, QString> >, bool, QString)));
+    QVERIFY(spy.isValid());
+    QVERIFY(spy.isEmpty());
+
+    session->retrieveLoglist();
+
+    waitForResult(spy);
+
+    QList<QVariant> arguments = spy.takeFirst();
+    QVERIFY2(arguments.at(1) == true, arguments.at(2).toString().toStdString().c_str());
+    QList<QPair<QDateTime, QString> > logs = arguments.at(0).value<
+            QList<QPair<QDateTime, QString> > >();
+    QVERIFY(logs.size() > 0);
+
+    QSignalSpy spy2(session.data(), SIGNAL(retrieveLogCompleted(const
+                                           QList<ChatlogEntry>, bool, QString)));
+    QVERIFY(spy2.isValid());
+    QVERIFY(spy2.isEmpty());
+
+    session->retrieveLog(logs[logs.size()-1]);
+
+    waitForResult(spy2);
+
+    QList<QVariant> arguments2 = spy2.takeFirst();
+    QVERIFY2(arguments2.at(1) == true, arguments2.at(2).toString().toStdString().c_str());
+    QList<ChatlogEntry> log = arguments2.at(0).value<QList<ChatlogEntry> >();
+    QVERIFY(log.size() == 2);
+
+    QCOMPARE(log[0].getMessage(), QString("Cupcakes!!!"));
+    QCOMPARE(log[1].getMessage(), QString("Khaaan!!!"));
 }

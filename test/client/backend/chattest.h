@@ -31,6 +31,8 @@ private slots:
      * void testLogoutRepeated();
      */
 
+    void testRetrieveLog();
+
 private:
     QSharedPointer<Session> session;
     QSharedPointer<Session> session2;

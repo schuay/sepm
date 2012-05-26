@@ -16,7 +16,9 @@ private slots:
 
     void init();
     void cleanup();
+    void retrieveEmptyLoglist();
     void testInitChat();
+    void retrieveNonEmptyLoglist();
     void testLogout();
     void retrieveUser();
     void retrieveUserNonexistent();
