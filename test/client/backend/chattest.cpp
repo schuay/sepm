@@ -17,6 +17,24 @@ Q_DECLARE_METATYPE(QSharedPointer<Session>)
 Q_DECLARE_METATYPE(QSharedPointer<Chat>)
 Q_DECLARE_METATYPE(QSharedPointer<const User>)
 Q_DECLARE_METATYPE(User)
+
+static void registerUser(const QString &user)
+{
+    SessionManager *sessionManager = SessionManager::getInstance();
+    QSignalSpy spy(sessionManager, SIGNAL(registerCompleted(bool, const QString &)));
+    QVERIFY(spy.isValid());
+    QVERIFY(spy.isEmpty());
+
+    QSharedPointer<const User> u(new User(user, WORKING_DIR "public.pem"));
+    sessionManager->registerUser(SERVER_URL, CA_CERT, u, "password");
+
+    waitForResult(spy);
+
+    QCOMPARE(spy.count(), 1);
+
+    /* Don't check results - we don't delete this user, so it will fail. */
+}
+
 void ChatTests::initTestCase()
 {
     qRegisterMetaType<QSharedPointer<Session> >("QSharedPointer<Session>");
@@ -27,6 +45,9 @@ void ChatTests::initTestCase()
 #ifdef RUN_SERVER
     SPAWN_SERVER(server);
 #endif
+
+    registerUser(TEMP_SESSION_USER3);
+    registerUser(TEMP_SESSION_USER2);
 }
 
 void ChatTests::cleanupTestCase()
@@ -38,16 +59,17 @@ void ChatTests::cleanupTestCase()
 
 void ChatTests::init()
 {
+    /* User #1. */
+
     SessionManager *sessionManager = SessionManager::getInstance();
     QSignalSpy spy(sessionManager,
                    SIGNAL(loginCompleted(QSharedPointer<Session>, bool, QString)));
     QVERIFY(spy.isValid());
     QVERIFY(spy.isEmpty());
 
-    QSharedPointer<const LoginUser> u(new LoginUser(getUsername("fefeb10c"),
+    QSharedPointer<const LoginUser> u(new LoginUser(TEMP_SESSION_USER3,
                                       WORKING_DIR "public.pem", WORKING_DIR "private.pem"));
-    sessionManager->login(SERVER_URL, CA_CERT, u,
-                          "password");
+    sessionManager->login(SERVER_URL, CA_CERT, u, "password");
 
     waitForResult(spy);
     QCOMPARE(spy.count(), 1);
@@ -70,15 +92,16 @@ void ChatTests::init()
 
     chat = arguments2.at(0).value<QSharedPointer<Chat> >();
 
+    /* User #2. */
+
     QSignalSpy spy3(sessionManager,
                     SIGNAL(loginCompleted(QSharedPointer<Session>, bool, QString)));
     QVERIFY(spy3.isValid());
     QVERIFY(spy3.isEmpty());
 
-    QSharedPointer<const LoginUser> u2(new LoginUser(getUsername("pinkie_pie"),
+    QSharedPointer<const LoginUser> u2(new LoginUser(TEMP_SESSION_USER2,
                                        WORKING_DIR "public.pem", WORKING_DIR "private.pem"));
-    sessionManager->login(SERVER_URL, CA_CERT, u2,
-                          "password");
+    sessionManager->login(SERVER_URL, CA_CERT, u2, "password");
 
     waitForResult(spy3);
     QCOMPARE(spy3.count(), 1);
@@ -86,6 +109,31 @@ void ChatTests::init()
     QVERIFY2(arguments3.at(1) == true, arguments3.at(2).toString().toStdString().c_str());
 
     session2 = arguments3.at(0).value<QSharedPointer<Session> >();
+}
+
+void ChatTests::cleanup()
+{
+    /* User #1. */
+
+    QVERIFY(session);
+
+    QSignalSpy spy(session.data(), SIGNAL(logoutCompleted(bool, QString)));
+    QVERIFY(spy.isValid());
+    QVERIFY(spy.isEmpty());
+
+    session->logout();
+    waitForResult(spy);
+
+    /* User #2. */
+
+    QVERIFY(session2);
+
+    QSignalSpy spy2(session2.data(), SIGNAL(logoutCompleted(bool, QString)));
+    QVERIFY(spy2.isValid());
+    QVERIFY(spy2.isEmpty());
+
+    session2->logout();
+    waitForResult(spy2);
 }
 
 void ChatTests::testInviteNotLoggedIn()
@@ -140,7 +188,7 @@ void ChatTests::testInvite()
     QVERIFY(spy4.isValid());
     QVERIFY(spy4.isEmpty());
 
-    QSharedPointer<const User> u(new User(getUsername("pinkie_pie"),
+    QSharedPointer<const User> u(new User(TEMP_SESSION_USER2,
                                           WORKING_DIR "public.pem"));
     chat->invite(u);
     waitForResult(spy2);
@@ -160,7 +208,7 @@ void ChatTests::testInvite()
     QCOMPARE(spy4.count(), 1);
     QList<QVariant> arguments4 = spy4.takeFirst();
     QSharedPointer<const User> u2 = arguments4.at(0).value<QSharedPointer<const User> >();
-    QCOMPARE(u2->getName(), QString(getUsername("pinkie_pie")));
+    QCOMPARE(u2->getName(), QString(TEMP_SESSION_USER2));
 
     QList<QSharedPointer<const User> > chat1Usr = chat->getUserList();
     QList<QSharedPointer<const User> > chat2Usr = chat2->getUserList();
@@ -168,11 +216,11 @@ void ChatTests::testInvite()
     QCOMPARE(chat1Usr.size(), 2);
     QCOMPARE(chat2Usr.size(), 2);
 
-    QCOMPARE(chat1Usr[0]->getName(), QString(getUsername("fefeb10c")));
-    QCOMPARE(chat1Usr[1]->getName(), QString(getUsername("pinkie_pie")));
+    QCOMPARE(chat1Usr[0]->getName(), QString(TEMP_SESSION_USER2));
+    QCOMPARE(chat1Usr[1]->getName(), QString(TEMP_SESSION_USER3));
 
-    QCOMPARE(chat2Usr[0]->getName(), QString(getUsername("fefeb10c")));
-    QCOMPARE(chat2Usr[1]->getName(), QString(getUsername("pinkie_pie")));
+    QCOMPARE(chat2Usr[0]->getName(), QString(TEMP_SESSION_USER2));
+    QCOMPARE(chat2Usr[1]->getName(), QString(TEMP_SESSION_USER3));
 }
 
 void ChatTests::testEchoMessage()
@@ -206,7 +254,7 @@ void ChatTests::testTransmitMessage()
     QVERIFY(spy2.isValid());
     QVERIFY(spy2.isEmpty());
 
-    QSharedPointer<const User> u(new User(getUsername("pinkie_pie"),
+    QSharedPointer<const User> u(new User(TEMP_SESSION_USER2,
                                           WORKING_DIR "public.pem"));
     chat->invite(u);
     waitForResult(spy);
@@ -273,14 +321,14 @@ void ChatTests::testTransmitMessage()
     QList<QVariant> arguments6 = spy7.takeFirst();
     QCOMPARE(arguments6.at(1).toString(), QString("Khaaan!!!"));
     QSharedPointer<const User> u4 = arguments6.at(0).value<QSharedPointer<const User> >();
-    QCOMPARE(u4->getName(), QString(getUsername("fefeb10c")));
+    QCOMPARE(u4->getName(), QString(TEMP_SESSION_USER3));
 
     waitForResult(spy8);
 
     QList<QVariant> arguments7 = spy8.takeFirst();
     QCOMPARE(arguments7.at(1).toString(), QString("Khaaan!!!"));
     QSharedPointer<const User> u5 = arguments7.at(0).value<QSharedPointer<const User> >();
-    QCOMPARE(u5->getName(), QString(getUsername("fefeb10c")));
+    QCOMPARE(u5->getName(), QString(TEMP_SESSION_USER3));
 }
 
 void ChatTests::testLeaveChat()
@@ -295,7 +343,7 @@ void ChatTests::testLeaveChat()
     QVERIFY(spy4.isValid());
     QVERIFY(spy4.isEmpty());
 
-    QSharedPointer<const User> u(new User(getUsername("pinkie_pie"),
+    QSharedPointer<const User> u(new User(TEMP_SESSION_USER2,
                                           WORKING_DIR "public.pem"));
     chat->invite(u);
     waitForResult(spy);
@@ -324,5 +372,5 @@ void ChatTests::testLeaveChat()
     QCOMPARE(spy3.count(), 1);
     QList<QVariant> arguments3 = spy3.takeFirst();
     QSharedPointer<const User> u2 = arguments3.at(0).value<QSharedPointer<const User> >();
-    QCOMPARE(u2->getName(), QString(getUsername("fefeb10c")));
+    QCOMPARE(u2->getName(), QString(TEMP_SESSION_USER3));
 }

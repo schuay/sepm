@@ -15,6 +15,8 @@ private slots:
     void cleanupTestCase();
 
     void init();
+    void cleanup();
+
     void testInviteNotLoggedIn();
     void testInviteNonexistent();
     void testInvite();
