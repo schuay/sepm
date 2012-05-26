@@ -33,6 +33,8 @@ LocalChat::LocalChat(const QString &chatID, const sdc::User &user)
 
     QMutexLocker locker(&participantsMutex);
     participants[username] = p;
+
+    p->addChatParticipant(user);
 }
 
 void LocalChat::appendMessageFrom(const sdc::User &/*user*/, const sdc::ByteSeq &/*message*/)
