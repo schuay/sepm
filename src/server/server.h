@@ -4,8 +4,10 @@
 #include <Ice/Ice.h>
 #include <QMap>
 #include <QMutex>
+#include <QSharedPointer>
 
 #include "authentication.h"
+#include "chat.h"
 
 namespace sdcs
 {
@@ -35,6 +37,11 @@ public:
      */
     const QString &getHostname() const;
 
+    /**
+     * Creates a new local chat, adds it to the chats list, and returns a pointer to it.
+     */
+    QSharedPointer<Chat> createLocalChat();
+
 private:
     Ice::CommunicatorPtr communicator;
     Authentication *auth;
@@ -48,6 +55,12 @@ private:
      */
     QMap<QString, sdc::SessionIPrx> sessions;
     QMutex sessionsMutex;
+
+    /**
+     * Stores all active chats by chat ID.
+     */
+    QMap<QString, QSharedPointer<Chat> > chats;
+    QMutex chatsMutex;
 };
 
 }

@@ -1,5 +1,7 @@
 #include "session.h"
 
+#include <QMutexLocker>
+
 #include "userdbproxy.h"
 #include "QsLog.h"
 #include "server.h"
@@ -33,14 +35,17 @@ throw(sdc::UserHandlingException, sdc::InterServerException)
     return proxy->getUser();
 }
 
-/* gen ID (protected by sema, uuid@serverurl)
- * create LocalChat, insert in global and own list, add self as participant.
- * idea: server attaches to chatCreated signal.
- * */
 std::string Session::initChat(const Ice::Current &) throw(sdc::SessionException)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
-    return "";
+
+    QSharedPointer<Chat> p = server->createLocalChat();
+    QString chatID = p->getChatID();
+
+    QMutexLocker locker(&chatsMutex);
+    chats[chatID] = p;
+
+    return chatID.toStdString();
 }
 
 /* notify chat, remove from local list */

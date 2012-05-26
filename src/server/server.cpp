@@ -63,4 +63,24 @@ throw(sdc::UserHandlingException)
     sessions.remove(user);
 }
 
+QSharedPointer<Chat> Server::createLocalChat()
+{
+    QString nameTemplate = QString("chat%1@") + hostname;
+    QString name;
+
+    QMutexLocker locker(&chatsMutex);
+
+    /* Determine first available chat name. */
+    for (int i = 0; ; i++) {
+        name = nameTemplate.arg(i);
+        if (!chats.contains(name))
+            break;
+    }
+
+    QSharedPointer<Chat> p(new LocalChat(name));
+    chats[name] = p;
+
+    return p;
+}
+
 }

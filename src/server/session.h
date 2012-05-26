@@ -1,8 +1,13 @@
 #ifndef SESSION_H
 #define SESSION_H
 
-#include "SecureDistributedChat.h"
 #include <Ice/Ice.h>
+#include <QMap>
+#include <QSharedPointer>
+#include <QMutex>
+
+#include "SecureDistributedChat.h"
+#include "chat.h"
 
 namespace sdcs
 {
@@ -120,8 +125,12 @@ private:
     const sdc::User user;
     const sdc::ChatClientCallbackIPrx callback;
     Server *const server;
-//    QMap<QString, Chat> chats;
-//    LocalParticipant self;
+
+    /**
+     * Stores a list of all active chats the session is participating in by chat ID.
+     */
+    QMap<QString, QSharedPointer<Chat> > chats;
+    QMutex chatsMutex;
 };
 
 }
