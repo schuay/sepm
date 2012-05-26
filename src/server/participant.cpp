@@ -28,25 +28,25 @@ void LocalParticipant::invite(QStringList /*users*/, sdc::ByteSeq /*sessionKey*/
     /* TODO: implementation. */
 }
 
-void LocalParticipant::addChatParticipant(const sdc::User &/*participant*/)
+void LocalParticipant::addChatParticipant(const sdc::User &participant)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
 
-    /* TODO: implementation. */
+    proxy->addChatParticipant(participant, chatID.toStdString());
 }
 
-void LocalParticipant::removeChatParticipant(const sdc::User &/*participant*/)
+void LocalParticipant::removeChatParticipant(const sdc::User &participant)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
 
-    /* TODO: implementation. */
+    proxy->removeChatParticipant(participant, chatID.toStdString());
 }
 
 void LocalParticipant::appendMessageToChat(const sdc::User &user, const sdc::ByteSeq &message)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
 
-    /* TODO: implementation. */
+    proxy->appendMessageToChat(message, chatID.toStdString(), user);
 }
 
 
