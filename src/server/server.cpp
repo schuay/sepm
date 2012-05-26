@@ -3,6 +3,8 @@
 #include <assert.h>
 #include <QMutexLocker>
 
+#include "session.h"
+
 namespace sdcs
 {
 
@@ -96,6 +98,17 @@ QSharedPointer<Chat> Server::createLocalChat(const sdc::User &user)
     chats[name] = p;
 
     return p;
+}
+
+sdc::ChatClientCallbackIPrx Server::getCallback(const QString &user)
+throw(sdc::UserHandlingException)
+{
+    QMutexLocker locker(&sessionsMutex);
+    if (!sessions.contains(user)) {
+        throw sdc::UserHandlingException("User not logged in.");
+    }
+
+    return sessions[user].session->getCallback();
 }
 
 }

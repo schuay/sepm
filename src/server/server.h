@@ -50,6 +50,12 @@ public:
      */
     QSharedPointer<Chat> createLocalChat(const sdc::User &user);
 
+    /**
+     * Retrieve the user client callback. Throws an exception if that client is not active.
+     */
+    sdc::ChatClientCallbackIPrx getCallback(const QString &user)
+    throw(sdc::UserHandlingException);
+
 private:
     Server();
     virtual ~Server();
