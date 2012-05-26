@@ -10,7 +10,7 @@ namespace sdcs
 {
 
 Session::Session(const sdc::User &user, sdc::ChatClientCallbackIPrx callback, Server *server)
-    : user(user), callback(callback), server(server)
+    : self(user), callback(callback), server(server)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
 }
@@ -21,7 +21,7 @@ void Session::logout(const Ice::Current &) throw(sdc::UserHandlingException)
 
     /* TODO: leave all open chats. */
 
-    server->removeSession(QString::fromStdString(user.ID));
+    server->removeSession(QString::fromStdString(self.ID));
 }
 
 sdc::User Session::retrieveUser(const std::string &userID, const Ice::Current &)
@@ -90,7 +90,7 @@ throw(sdc::UserHandlingException)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
 
-    if (participant != user)
+    if (participant != self)
         throw sdc::UserHandlingException("Unauthorized deletion attempt");
 
     QSharedPointer<UserDbProxy> proxy = UserDbProxy::getProxy(
@@ -107,7 +107,7 @@ throw(sdc::LogException)
     QLOG_TRACE() << __PRETTY_FUNCTION__;
 
     QSharedPointer<UserDbProxy> proxy = UserDbProxy::getProxy(
-                                            QString::fromStdString(user.ID));
+                                            QString::fromStdString(self.ID));
     proxy->saveLog(QString::fromStdString(chatID), static_cast<long>(timestamp), log);
 }
 
@@ -116,7 +116,7 @@ sdc::Loglist Session::retrieveLoglist(const Ice::Current &) throw(sdc::LogExcept
     QLOG_TRACE() << __PRETTY_FUNCTION__;
 
     QSharedPointer<UserDbProxy> proxy = UserDbProxy::getProxy(
-                                            QString::fromStdString(user.ID));
+                                            QString::fromStdString(self.ID));
     return proxy->retrieveLoglist();
 }
 
@@ -127,7 +127,7 @@ throw(sdc::LogException)
     QLOG_TRACE() << __PRETTY_FUNCTION__;
 
     QSharedPointer<UserDbProxy> proxy = UserDbProxy::getProxy(
-                                            QString::fromStdString(user.ID));
+                                            QString::fromStdString(self.ID));
     return proxy->retrieveLog(QString::fromStdString(chatID), static_cast<long>(timestamp));
 }
 
@@ -137,7 +137,7 @@ throw(sdc::ContactException)
     QLOG_TRACE() << __PRETTY_FUNCTION__;
 
     QSharedPointer<UserDbProxy> proxy = UserDbProxy::getProxy(
-                                            QString::fromStdString(user.ID));
+                                            QString::fromStdString(self.ID));
     proxy->saveContactList(contactList);
 }
 
@@ -147,7 +147,7 @@ throw(sdc::ContactException)
     QLOG_TRACE() << __PRETTY_FUNCTION__;
 
     QSharedPointer<UserDbProxy> proxy = UserDbProxy::getProxy(
-                                            QString::fromStdString(user.ID));
+                                            QString::fromStdString(self.ID));
     return proxy->retrieveContactList();
 }
 

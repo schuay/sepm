@@ -17,7 +17,7 @@ class Server;
 class Session : public sdc::SessionI
 {
 public:
-    Session(const sdc::User &user, sdc::ChatClientCallbackIPrx callback, Server *server);
+    Session(const sdc::User &self, sdc::ChatClientCallbackIPrx callback, Server *server);
 
     /**
      * Logout the user this session belongs to.
@@ -122,8 +122,9 @@ public:
     throw(sdc::ContactException);
 
 private:
-    const sdc::User user;
+    const sdc::User self;
     const sdc::ChatClientCallbackIPrx callback;
+
     Server *const server;
 
     /**
