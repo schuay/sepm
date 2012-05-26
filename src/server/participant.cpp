@@ -1,6 +1,7 @@
 #include "participant.h"
 
 #include "QsLog.h"
+#include "server.h"
 
 namespace sdcs
 {
@@ -17,6 +18,7 @@ Participant::~Participant()
 LocalParticipant::LocalParticipant(const sdc::User &user, const QString &chatID)
     : Participant(user, chatID)
 {
+    proxy = Server::instance().getCallback(QString::fromStdString(user.ID));
 }
 
 void LocalParticipant::invite(QStringList /*users*/, sdc::ByteSeq /*sessionKey*/)

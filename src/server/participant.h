@@ -39,6 +39,7 @@ public:
 
 private:
     void echo(const QString &message);
+
     sdc::ChatClientCallbackIPrx proxy;
 };
 
