@@ -13,7 +13,7 @@ class Server;
 class Authentication : public sdc::AuthenticationI
 {
 public:
-    Authentication(Server *server);
+    Authentication();
 
     void registerUser(const sdc::User &participant, const std::string &pwd, const Ice::Current &)
     throw(sdc::AuthenticationException);
@@ -28,8 +28,6 @@ public:
 private:
     QByteArray generatePasswordSalt() const;
     QByteArray saltHashPassword(const std::string &password, const QByteArray &salt) const;
-
-    Server *server;
 };
 
 }

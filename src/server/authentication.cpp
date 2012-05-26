@@ -15,8 +15,7 @@ namespace sdcs
 #define SALT_LEN (128)
 #define SALT_ITERATIONS (1000)
 
-Authentication::Authentication(Server *server)
-    : server(server)
+Authentication::Authentication()
 {
     assert(QCA::isSupported("sha1"));
 }
@@ -65,7 +64,7 @@ throw(sdc::AuthenticationException)
         sdc::ChatClientCallbackIPrx callback = sdc::ChatClientCallbackIPrx::uncheckedCast(
                 current.con->createProxy(identity));
 
-        Session *session = new Session(user, callback, server);
+        Session *session = new Session(user, callback);
         sdc::SessionIPrx sessionProxy = sdc::SessionIPrx::uncheckedCast(
                                             current.adapter->addWithUUID(session));
 
@@ -73,7 +72,7 @@ throw(sdc::AuthenticationException)
         if (callback->echo(msg) != msg)
             throw sdc::AuthenticationException("Invalid callback");
 
-        server->addSession(userid, sessionProxy);
+        Server::instance().addSession(userid, sessionProxy);
 
         return sessionProxy;
     } catch (const sdc::UserHandlingException &e) {
@@ -89,7 +88,7 @@ throw(sdc::AuthenticationException)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
 
-    const QString ourHostname = server->getHostname();
+    const QString ourHostname = Server::instance().getHostname();
     const QString usrHostname = QString::fromStdString(sdc::sdcHelper::getServerFromID(user.ID));
     if (ourHostname != usrHostname) {
         throw sdc::AuthenticationException(QString("Cannot register user %1 on hostname %2.")

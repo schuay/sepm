@@ -17,7 +17,7 @@ class Server;
 class Session : public sdc::SessionI
 {
 public:
-    Session(const sdc::User &self, sdc::ChatClientCallbackIPrx callback, Server *server);
+    Session(const sdc::User &self, sdc::ChatClientCallbackIPrx callback);
 
     /**
      * Logout the user this session belongs to.
@@ -124,8 +124,6 @@ public:
 private:
     const sdc::User self;
     const sdc::ChatClientCallbackIPrx callback;
-
-    Server *const server;
 
     /**
      * Stores a list of all active chats the session is participating in by chat ID.

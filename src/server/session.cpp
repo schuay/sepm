@@ -9,8 +9,8 @@
 namespace sdcs
 {
 
-Session::Session(const sdc::User &user, sdc::ChatClientCallbackIPrx callback, Server *server)
-    : self(user), callback(callback), server(server)
+Session::Session(const sdc::User &user, sdc::ChatClientCallbackIPrx callback)
+    : self(user), callback(callback)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
 }
@@ -21,7 +21,7 @@ void Session::logout(const Ice::Current &) throw(sdc::UserHandlingException)
 
     /* TODO: leave all open chats. */
 
-    server->removeSession(QString::fromStdString(self.ID));
+    Server::instance().removeSession(QString::fromStdString(self.ID));
 }
 
 sdc::User Session::retrieveUser(const std::string &userID, const Ice::Current &)
@@ -40,7 +40,7 @@ std::string Session::initChat(const Ice::Current &) throw(sdc::SessionException)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
 
-    QSharedPointer<Chat> p = server->createLocalChat();
+    QSharedPointer<Chat> p = Server::instance().createLocalChat();
     QString chatID = p->getChatID();
 
     QMutexLocker locker(&chatsMutex);

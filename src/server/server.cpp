@@ -30,11 +30,16 @@ void Server::create(Ice::CommunicatorPtr communicator, const QString &hostname)
         server.communicator->createObjectAdapterWithEndpoints(
             "SDCServer", QString("ssl -p %1").arg(sdc::port).toStdString());
 
-    server.auth = new Authentication(&server);
+    server.auth = new Authentication();
     Ice::ObjectPtr authObj = server.auth;
 
     adapter->add(authObj, communicator->stringToIdentity("Authentication"));
     adapter->activate();
+}
+
+Server &Server::instance()
+{
+    return server;
 }
 
 const QString &Server::getHostname() const
