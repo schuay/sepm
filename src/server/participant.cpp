@@ -1,5 +1,7 @@
 #include "participant.h"
 
+#include "QsLog.h"
+
 namespace sdcs
 {
 
@@ -16,5 +18,34 @@ LocalParticipant::LocalParticipant(const sdc::User &user, const QString &chatID)
     : Participant(user, chatID)
 {
 }
+
+void LocalParticipant::invite(QStringList /*users*/, sdc::ByteSeq /*sessionKey*/)
+{
+    QLOG_TRACE() << __PRETTY_FUNCTION__;
+
+    /* TODO: implementation. */
+}
+
+void LocalParticipant::addChatParticipant(const sdc::User &/*participant*/)
+{
+    QLOG_TRACE() << __PRETTY_FUNCTION__;
+
+    /* TODO: implementation. */
+}
+
+void LocalParticipant::removeChatParticipant(const sdc::User &/*participant*/)
+{
+    QLOG_TRACE() << __PRETTY_FUNCTION__;
+
+    /* TODO: implementation. */
+}
+
+void LocalParticipant::appendMessageToChat(const sdc::User &/*user*/, const QString &/*message*/)
+{
+    QLOG_TRACE() << __PRETTY_FUNCTION__;
+
+    /* TODO: implementation. */
+}
+
 
 }

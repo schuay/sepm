@@ -32,10 +32,10 @@ class LocalParticipant : public Participant
 public:
     LocalParticipant(const sdc::User &user, const QString &chatID);
 
-    virtual void invite(QStringList , sdc::ByteSeq);
-    virtual void addChatParticipant(const sdc::User &);
-    virtual void removeChatParticipant(const sdc::User &);
-    virtual void appendMessageToChat(const sdc::User &, const QString &);
+    void invite(QStringList users, sdc::ByteSeq sessionKey);
+    void addChatParticipant(const sdc::User &participant);
+    void removeChatParticipant(const sdc::User &participant);
+    void appendMessageToChat(const sdc::User &user, const QString &message);
 
 private:
     void echo(const QString &message);
@@ -47,10 +47,10 @@ class RemoteParticipant : public Participant
 public:
     RemoteParticipant(const sdc::User &user, const QString &chatID);
 
-    virtual void invite(QStringList , sdc::ByteSeq);
-    virtual void addChatParticipant(const sdc::User &);
-    virtual void removeChatParticipant(const sdc::User &);
-    virtual void appendMessageToChat(const sdc::User &, const QString &);
+    void invite(QStringList users, sdc::ByteSeq sessionKey);
+    void addChatParticipant(const sdc::User &participant);
+    void removeChatParticipant(const sdc::User &participant);
+    void appendMessageToChat(const sdc::User &user, const QString &message);
 
 private:
     sdc::InterServerIPrx proxy;
