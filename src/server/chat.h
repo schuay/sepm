@@ -45,7 +45,7 @@ protected:
 class LocalChat : public Chat
 {
 public:
-    LocalChat(const QString &chatID);
+    LocalChat(const QString &chatID, const sdc::User &user);
 
     void appendMessageFrom(const sdc::User &user, const sdc::ByteSeq &message);
     void inviteUser(const sdc::User &user, const sdc::ByteSeq &message);

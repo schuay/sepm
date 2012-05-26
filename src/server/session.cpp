@@ -40,7 +40,7 @@ std::string Session::initChat(const Ice::Current &) throw(sdc::SessionException)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
 
-    QSharedPointer<Chat> p = Server::instance().createLocalChat();
+    QSharedPointer<Chat> p = Server::instance().createLocalChat(self);
     QString chatID = p->getChatID();
 
     QMutexLocker locker(&chatsMutex);

@@ -1,5 +1,7 @@
 #include "chat.h"
 
+#include <QMutexLocker>
+
 #include "QsLog.h"
 
 namespace sdcs
@@ -21,9 +23,16 @@ QString Chat::getChatID() const
     return chatID;
 }
 
-LocalChat::LocalChat(const QString &chatID)
+LocalChat::LocalChat(const QString &chatID, const sdc::User &user)
     : Chat(chatID)
 {
+    /* Add the user opening the chat to the participants list. */
+
+    QSharedPointer<Participant> p(new LocalParticipant(user, chatID));
+    QString username = QString::fromStdString(user.ID);
+
+    QMutexLocker locker(&participantsMutex);
+    participants[username] = p;
 }
 
 void LocalChat::appendMessageFrom(const sdc::User &/*user*/, const sdc::ByteSeq &/*message*/)

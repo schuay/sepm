@@ -46,8 +46,9 @@ public:
 
     /**
      * Creates a new local chat, adds it to the chats list, and returns a pointer to it.
+     * The user creating the chat is added to its participant list.
      */
-    QSharedPointer<Chat> createLocalChat();
+    QSharedPointer<Chat> createLocalChat(const sdc::User &user);
 
 private:
     Server();

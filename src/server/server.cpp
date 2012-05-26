@@ -78,7 +78,7 @@ throw(sdc::UserHandlingException)
     sessions.remove(user);
 }
 
-QSharedPointer<Chat> Server::createLocalChat()
+QSharedPointer<Chat> Server::createLocalChat(const sdc::User &user)
 {
     QString nameTemplate = QString("chat%1@") + hostname;
     QString name;
@@ -92,7 +92,7 @@ QSharedPointer<Chat> Server::createLocalChat()
             break;
     }
 
-    QSharedPointer<Chat> p(new LocalChat(name));
+    QSharedPointer<Chat> p(new LocalChat(name, user));
     chats[name] = p;
 
     return p;
