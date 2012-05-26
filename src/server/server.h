@@ -29,7 +29,7 @@ public:
      * Adds the session to the session map.
      * If the user already owns an active session, throws an AuthenticationException.
      */
-    void addSession(const QString &user, sdc::SessionIPrx session)
+    void addSession(const QString &user, const SessionContainer &container)
     throw(sdc::AuthenticationException);
 
     /**
@@ -74,7 +74,7 @@ private:
     /**
      * Stores all active sessions by owning username.
      */
-    QMap<QString, sdc::SessionIPrx> sessions;
+    QMap<QString, SessionContainer> sessions;
     QMutex sessionsMutex;
 
     /**

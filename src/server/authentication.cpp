@@ -64,17 +64,18 @@ throw(sdc::AuthenticationException)
         sdc::ChatClientCallbackIPrx callback = sdc::ChatClientCallbackIPrx::uncheckedCast(
                 current.con->createProxy(identity));
 
-        Session *session = new Session(user, callback);
-        sdc::SessionIPrx sessionProxy = sdc::SessionIPrx::uncheckedCast(
-                                            current.adapter->addWithUUID(session));
+        SessionContainer container;
+        container.session = new Session(user, callback);
+        container.proxy = sdc::SessionIPrx::uncheckedCast(
+                              current.adapter->addWithUUID(container.session));
 
         std::string msg = "hello world";
         if (callback->echo(msg) != msg)
             throw sdc::AuthenticationException("Invalid callback");
 
-        Server::instance().addSession(userid, sessionProxy);
+        Server::instance().addSession(userid, container);
 
-        return sessionProxy;
+        return container.proxy;
     } catch (const sdc::UserHandlingException &e) {
         throw sdc::AuthenticationException(e.what);
     } catch (const Ice::Exception &e) {

@@ -9,6 +9,12 @@ namespace sdcs
 {
 
 class Server;
+class Session;
+
+struct SessionContainer {
+    Session *session;
+    sdc::SessionIPrx proxy;
+};
 
 class Authentication : public sdc::AuthenticationI
 {

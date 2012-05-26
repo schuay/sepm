@@ -56,7 +56,7 @@ Server::~Server()
     communicator->destroy();
 }
 
-void Server::addSession(const QString &user, sdc::SessionIPrx session)
+void Server::addSession(const QString &user, const SessionContainer &container)
 throw(sdc::AuthenticationException)
 {
     QMutexLocker locker(&sessionsMutex);
@@ -64,7 +64,7 @@ throw(sdc::AuthenticationException)
         throw sdc::AuthenticationException("Already logged in.");
     }
 
-    sessions[user] = session;
+    sessions[user] = container;
 }
 
 void Server::removeSession(const QString &user)
