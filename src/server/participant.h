@@ -20,7 +20,7 @@ public:
     virtual void invite(QStringList users, sdc::ByteSeq sessionKey) = 0;
     virtual void addChatParticipant(const sdc::User &participant) = 0;
     virtual void removeChatParticipant(const sdc::User &participant) = 0;
-    virtual void appendMessageToChat(const sdc::User &user, const QString &message) = 0;
+    virtual void appendMessageToChat(const sdc::User &user, const sdc::ByteSeq &message) = 0;
 
 protected:
     const sdc::User self;
@@ -35,7 +35,7 @@ public:
     void invite(QStringList users, sdc::ByteSeq sessionKey);
     void addChatParticipant(const sdc::User &participant);
     void removeChatParticipant(const sdc::User &participant);
-    void appendMessageToChat(const sdc::User &user, const QString &message);
+    void appendMessageToChat(const sdc::User &user, const sdc::ByteSeq &message);
 
 private:
     void echo(const QString &message);
@@ -51,7 +51,7 @@ public:
     void invite(QStringList users, sdc::ByteSeq sessionKey);
     void addChatParticipant(const sdc::User &participant);
     void removeChatParticipant(const sdc::User &participant);
-    void appendMessageToChat(const sdc::User &user, const QString &message);
+    void appendMessageToChat(const sdc::User &user, const sdc::ByteSeq &message);
 
 private:
     sdc::InterServerIPrx proxy;

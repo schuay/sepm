@@ -42,7 +42,7 @@ void LocalParticipant::removeChatParticipant(const sdc::User &/*participant*/)
     /* TODO: implementation. */
 }
 
-void LocalParticipant::appendMessageToChat(const sdc::User &/*user*/, const QString &/*message*/)
+void LocalParticipant::appendMessageToChat(const sdc::User &user, const sdc::ByteSeq &message)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
 
