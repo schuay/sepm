@@ -80,7 +80,7 @@ throw(sdc::UserHandlingException)
     sessions.remove(user);
 }
 
-QSharedPointer<Chat> Server::createLocalChat(const sdc::User &user)
+QSharedPointer<Chat> Server::createLocalChat(const sdc::User &user, sdc::ChatClientCallbackIPrx callback)
 {
     QString nameTemplate = QString("chat%1@") + hostname;
     QString name;
@@ -93,22 +93,27 @@ QSharedPointer<Chat> Server::createLocalChat(const sdc::User &user)
         if (!chats.contains(name))
             break;
     }
+    QSharedPointer<Chat> p(new LocalChat(name, user, callback));
 
-    QSharedPointer<Chat> p(new LocalChat(name, user));
     chats[name] = p;
 
     return p;
 }
 
-sdc::ChatClientCallbackIPrx Server::getCallback(const QString &user)
+sdc::ChatClientCallbackIPrx Server::addChatTo(const QString &user, const QString &chatID)
 throw(sdc::UserHandlingException)
 {
-    QMutexLocker locker(&sessionsMutex);
+    QMutexLocker sessionsLocker(&sessionsMutex);
     if (!sessions.contains(user)) {
         throw sdc::UserHandlingException("User not logged in.");
     }
 
-    return sessions[user].session->getCallback();
+    QMutexLocker chatsLocker(&chatsMutex);
+    if (!chats.contains(chatID)) {
+        throw sdc::UserHandlingException("Chat does not exist.");
+    }
+
+    return sessions[user].session->addChat(chats[chatID]);
 }
 
 }

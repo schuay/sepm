@@ -48,12 +48,12 @@ public:
      * Creates a new local chat, adds it to the chats list, and returns a pointer to it.
      * The user creating the chat is added to its participant list.
      */
-    QSharedPointer<Chat> createLocalChat(const sdc::User &user);
+    QSharedPointer<Chat> createLocalChat(const sdc::User &user, sdc::ChatClientCallbackIPrx callback);
 
     /**
      * Retrieve the user client callback. Throws an exception if that client is not active.
      */
-    sdc::ChatClientCallbackIPrx getCallback(const QString &user)
+    sdc::ChatClientCallbackIPrx addChatTo(const QString &user, const QString &chatID)
     throw(sdc::UserHandlingException);
 
 private:

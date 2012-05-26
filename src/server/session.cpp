@@ -40,7 +40,7 @@ std::string Session::initChat(const Ice::Current &) throw(sdc::SessionException)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
 
-    QSharedPointer<Chat> p = Server::instance().createLocalChat(self);
+    QSharedPointer<Chat> p = Server::instance().createLocalChat(self, callback);
     QString chatID = p->getChatID();
 
     QMutexLocker locker(&chatsMutex);
@@ -65,15 +65,19 @@ throw(sdc::SessionException, sdc::InterServerException)
     chats.remove(id);
 }
 
-/* check consistency (chat exists, chat joined)
- * create participant (remote or local), call invite. */
-void Session::invite(const sdc::User &/*participant*/, const std::string &/*chatID*/,
-                     const sdc::ByteSeq &/*sessionKey*/, const Ice::Current &)
+void Session::invite(const sdc::User &participant, const std::string &chatID,
+                     const sdc::ByteSeq &sessionKey, const Ice::Current &)
 throw(sdc::UserHandlingException, sdc::InterServerException)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
 
-    /* TODO: implementation. */
+    const QString id = QString::fromStdString(chatID);
+
+    QMutexLocker locker(&chatsMutex);
+    if (!chats.contains(id))
+        throw sdc::SessionException("Chat does not exist");
+
+    chats[id]->inviteUser(participant, sessionKey);
 }
 
 void Session::sendMessage(const sdc::ByteSeq &message, const std::string &chatID, const Ice::Current &)
@@ -156,8 +160,14 @@ throw(sdc::ContactException)
     return proxy->retrieveContactList();
 }
 
-sdc::ChatClientCallbackIPrx Session::getCallback() const
+sdc::ChatClientCallbackIPrx Session::addChat(QSharedPointer<Chat> chat)
 {
+    QMutexLocker locker(&chatsMutex);
+    if (chats.contains(chat->getChatID())) {
+        throw sdc::UserHandlingException("User is already in chat.");
+    }
+    chats[chat->getChatID()] = chat;
+
     return callback;
 }
 

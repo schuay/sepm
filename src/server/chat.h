@@ -35,6 +35,12 @@ public:
     QString getChatID() const;
 
 protected:
+    /**
+     * Notifies all participants that user has joined.
+     * The participantsMutex must be unlocked when called.
+     */
+    void notifyAll(const sdc::User &joined);
+
     const QString chatID;
 
     QMap<QString, QSharedPointer<Participant> > participants;
@@ -45,10 +51,10 @@ protected:
 class LocalChat : public Chat
 {
 public:
-    LocalChat(const QString &chatID, const sdc::User &user);
+    LocalChat(const QString &chatID, const sdc::User &user, sdc::ChatClientCallbackIPrx callback);
 
     void appendMessageFrom(const sdc::User &user, const sdc::ByteSeq &message);
-    void inviteUser(const sdc::User &user, const sdc::ByteSeq &message);
+    void inviteUser(const sdc::User &user, const sdc::ByteSeq &sessionKey);
     void leaveChat(const QString &user);
 };
 
@@ -59,7 +65,7 @@ public:
     RemoteChat(const QString &chatID);
 
     void appendMessageFrom(const sdc::User &user, const sdc::ByteSeq &message);
-    void inviteUser(const sdc::User &user, const sdc::ByteSeq &message);
+    void inviteUser(const sdc::User &user, const sdc::ByteSeq &sessionKey);
     void leaveChat(const QString &user);
 
 private:

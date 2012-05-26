@@ -15,17 +15,30 @@ Participant::~Participant()
 {
 }
 
+
+LocalParticipant::LocalParticipant(const sdc::User &user, sdc::ChatClientCallbackIPrx callback,
+                                   const QString &chatID)
+    : Participant(user, chatID)
+{
+    proxy = callback;
+}
+
 LocalParticipant::LocalParticipant(const sdc::User &user, const QString &chatID)
     : Participant(user, chatID)
 {
-    proxy = Server::instance().getCallback(QString::fromStdString(user.ID));
+    proxy = Server::instance().addChatTo(QString::fromStdString(user.ID), chatID);
 }
 
-void LocalParticipant::invite(QStringList /*users*/, sdc::ByteSeq /*sessionKey*/)
+void LocalParticipant::invite(const QStringList &users, const sdc::ByteSeq &sessionKey)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
 
-    /* TODO: implementation. */
+    sdc::StringSeq seq;
+    for (int i = 0; i < users.size(); i++) {
+        seq.push_back(users[i].toStdString());
+    }
+
+    proxy->initChat(seq, chatID.toStdString(), sessionKey);
 }
 
 void LocalParticipant::addChatParticipant(const sdc::User &participant)
