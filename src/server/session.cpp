@@ -76,13 +76,18 @@ throw(sdc::UserHandlingException, sdc::InterServerException)
     /* TODO: implementation. */
 }
 
-/* looks up chat and calls appendMessageFrom. */
-void Session::sendMessage(const sdc::ByteSeq &/*message*/, const std::string &/*chatID*/, const Ice::Current &)
+void Session::sendMessage(const sdc::ByteSeq &message, const std::string &chatID, const Ice::Current &)
 throw(sdc::MessageException, sdc::InterServerException)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
 
-    /* TODO: implementation. */
+    const QString id = QString::fromStdString(chatID);
+
+    QMutexLocker locker(&chatsMutex);
+    if (!chats.contains(id))
+        throw sdc::MessageException("Chat does not exist");
+
+    chats[id]->appendMessageFrom(self, message);
 }
 
 void Session::deleteUser(const sdc::User &participant, const Ice::Current &current)

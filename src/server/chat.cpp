@@ -37,9 +37,18 @@ LocalChat::LocalChat(const QString &chatID, const sdc::User &user)
     p->addChatParticipant(user);
 }
 
-void LocalChat::appendMessageFrom(const sdc::User &/*user*/, const sdc::ByteSeq &/*message*/)
+void LocalChat::appendMessageFrom(const sdc::User &user, const sdc::ByteSeq &message)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
+
+    QMutexLocker locker(&participantsMutex);
+    QList<QSharedPointer<Participant> > keys = participants.values();
+    locker.unlock();
+
+    for (int i = 0; i < keys.size(); i++) {
+        QSharedPointer<Participant> p = keys[i];
+        p->appendMessageToChat(user, message);
+    }
 }
 
 void LocalChat::inviteUser(const sdc::User &/*user*/, const sdc::ByteSeq &/*message*/)
