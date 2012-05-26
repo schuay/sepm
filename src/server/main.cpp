@@ -294,11 +294,11 @@ int main(int argc, char **argv)
     finalizeArgs(args);
 
     /* Set DB options */
-    sdcs::UserDbProxy::setDriver(args.dbDriver);
-    sdcs::UserDbProxy::setHost(args.dbHost);
-    sdcs::UserDbProxy::setDatabase(args.dbDatabase);
-    sdcs::UserDbProxy::setUser(args.dbUser);
-    sdcs::UserDbProxy::setPassword(args.dbPassword);
+    sdcs::UserDbProxy::setDBDriver(args.dbDriver);
+    sdcs::UserDbProxy::setDBHost(args.dbHost);
+    sdcs::UserDbProxy::setDBName(args.dbDatabase);
+    sdcs::UserDbProxy::setDBUser(args.dbUser);
+    sdcs::UserDbProxy::setDBPassword(args.dbPassword);
 
     /* Init Ice properties. */
     Ice::PropertiesPtr props = Ice::createProperties();

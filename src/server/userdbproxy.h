@@ -23,7 +23,7 @@ private:
         void open();
 
         QSqlDatabase db;
-        QString driver, host, database, user, password;
+        QString driver, host, dbName, user, password;
     };
 
 public:
@@ -87,31 +87,31 @@ public:
      * Sets the database hostname. Must be set before the first UserDbProxy instance
      * is created.
      */
-    static void setHost(const QString &host);
+    static void setDBHost(const QString &host);
 
     /**
      * Sets the database driver. Must be set before the first UserDbProxy instance
      * is created.
      */
-    static void setDriver(const QString &driver);
+    static void setDBDriver(const QString &driver);
 
     /**
      * Sets the database. Must be set before the first UserDbProxy instance
      * is created.
      */
-    static void setDatabase(const QString &database);
+    static void setDBName(const QString &database);
 
     /**
      * Sets the database user. Must be set before the first UserDbProxy instance
      * is created.
      */
-    static void setUser(const QString &user);
+    static void setDBUser(const QString &user);
 
     /**
      * Sets the database password. Must be set before the first UserDbProxy instance
      * is created.
      */
-    static void setPassword(const QString &password);
+    static void setDBPassword(const QString &password);
 
 private:
     UserDbProxy(const QString &user) throw(sdc::UserHandlingException);

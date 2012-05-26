@@ -33,7 +33,7 @@ void UserDbProxy::Connection::open()
 
     db = QSqlDatabase::addDatabase(driver, CONNECTION);
     db.setHostName(host);
-    db.setDatabaseName(database);
+    db.setDatabaseName(dbName);
     db.setUserName(user);
     db.setPassword(password);
 
@@ -201,27 +201,27 @@ throw(sdc::LogException)
     return container;
 }
 
-void UserDbProxy::setHost(const QString &host)
+void UserDbProxy::setDBHost(const QString &host)
 {
     connection.host = host;
 }
 
-void UserDbProxy::setDriver(const QString &driver)
+void UserDbProxy::setDBDriver(const QString &driver)
 {
     connection.driver = driver;
 }
 
-void UserDbProxy::setDatabase(const QString &database)
+void UserDbProxy::setDBName(const QString &database)
 {
-    connection.database = database;
+    connection.dbName = database;
 }
 
-void UserDbProxy::setUser(const QString &user)
+void UserDbProxy::setDBUser(const QString &user)
 {
     connection.user = user;
 }
 
-void UserDbProxy::setPassword(const QString &password)
+void UserDbProxy::setDBPassword(const QString &password)
 {
     connection.password = password;
 }

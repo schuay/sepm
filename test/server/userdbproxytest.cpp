@@ -16,11 +16,11 @@ void UserDbProxyTests::initTestCase()
 {
     qRegisterMetaType<QSharedPointer<UserDbProxy> >("QSharedPointer<UserDbProxy>");
 
-    UserDbProxy::setDriver(DB_DRIVER);
-    UserDbProxy::setHost(DB_HOST);
-    UserDbProxy::setDatabase(DB_DATABASE);
-    UserDbProxy::setUser(DB_USER);
-    UserDbProxy::setPassword(DB_PASSWORD);
+    UserDbProxy::setDBDriver(DB_DRIVER);
+    UserDbProxy::setDBHost(DB_HOST);
+    UserDbProxy::setDBName(DB_DATABASE);
+    UserDbProxy::setDBUser(DB_USER);
+    UserDbProxy::setDBPassword(DB_PASSWORD);
 
     const unsigned char pubkey[] = { 'b', 'l', 'a' };
     user1.ID = "test1";
