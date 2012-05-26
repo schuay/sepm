@@ -258,8 +258,7 @@ struct Application : virtual public Ice::Application {
         QLOG_TRACE() << __PRETTY_FUNCTION__;
 
         /* The server handles adapter setup and wraps needed interfaces. */
-        sdcs::Server server(communicator(), hostname);
-        Q_UNUSED(server);
+        sdcs::Server::create(communicator(), hostname);
 
         communicator()->waitForShutdown();
 

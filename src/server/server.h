@@ -15,8 +15,15 @@ namespace sdcs
 class Server
 {
 public:
-    Server(Ice::CommunicatorPtr communicator, const QString &hostname);
-    virtual ~Server();
+    /**
+     * Creates a server instance using the specified communicator and hostname.
+     */
+    static void create(Ice::CommunicatorPtr communicator, const QString &hostname);
+
+    /**
+     * Returns a pointer to the server instance.
+     */
+    static Server &instance();
 
     /**
      * Adds the session to the session map.
@@ -43,12 +50,25 @@ public:
     QSharedPointer<Chat> createLocalChat();
 
 private:
+    Server();
+    virtual ~Server();
+
+    /**
+     * The singleton instance.
+     */
+    static Server server;
+
+    /**
+     * True if the instance has been initialized.
+     */
+    bool initialized;
+
     Ice::CommunicatorPtr communicator;
     Authentication *auth;
 
     /* TODO: InterServer. */
 
-    const QString hostname;
+    QString hostname;
 
     /**
      * Stores all active sessions by owning username.

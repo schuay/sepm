@@ -6,12 +6,18 @@
 namespace sdcs
 {
 
-Server::Server(Ice::CommunicatorPtr communicator, const QString &hostname)
-    : hostname(hostname)
+/**
+ * Define the server singleton instance.
+ */
+Server Server::server;
+
+void Server::create(Ice::CommunicatorPtr communicator, const QString &hostname)
 {
     assert(communicator);
+    assert(!server.initialized);
 
-    this->communicator = communicator;
+    server.hostname = hostname;
+    server.communicator = communicator;
 
     /* Initialize the ice adapter.
      *
@@ -21,11 +27,11 @@ Server::Server(Ice::CommunicatorPtr communicator, const QString &hostname)
      */
 
     Ice::ObjectAdapterPtr adapter =
-        communicator->createObjectAdapterWithEndpoints(
+        server.communicator->createObjectAdapterWithEndpoints(
             "SDCServer", QString("ssl -p %1").arg(sdc::port).toStdString());
 
-    auth = new Authentication(this);
-    Ice::ObjectPtr authObj = auth;
+    server.auth = new Authentication(&server);
+    Ice::ObjectPtr authObj = server.auth;
 
     adapter->add(authObj, communicator->stringToIdentity("Authentication"));
     adapter->activate();
@@ -34,6 +40,10 @@ Server::Server(Ice::CommunicatorPtr communicator, const QString &hostname)
 const QString &Server::getHostname() const
 {
     return hostname;
+}
+
+Server::Server() : initialized(false)
+{
 }
 
 Server::~Server()
