@@ -59,6 +59,9 @@ void SessionTests::cleanup()
 {
     QVERIFY(session);
 
+    if (!session->isValid())
+        return;
+
     QSignalSpy spy(session.data(), SIGNAL(logoutCompleted(bool, QString)));
     QVERIFY(spy.isValid());
     QVERIFY(spy.isEmpty());
