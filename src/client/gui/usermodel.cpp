@@ -3,6 +3,7 @@
 #include "session.h"
 #include <QStringListIterator>
 #include <QsLog.h>
+#include <QMessageBox>
 
 namespace sdcc
 {
@@ -129,11 +130,14 @@ const QStringList UserModel::toUserList() const
     return QStringList(d_users.keys());
 }
 
-void UserModel::onUserRetrieved(QSharedPointer<const User> user, const QObject *id, bool success, const QString &)
+void UserModel::onUserRetrieved(QSharedPointer<const User> user, const QObject *id, bool success, const QString &msg)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
-    if (success && id == this) {
+    if (id != this) return;
+    if (success) {
         addUser(user);
+    } else {
+        QMessageBox::warning(0, "Couldn't add user to contact list", msg);
     }
 }
 

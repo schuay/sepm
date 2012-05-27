@@ -33,7 +33,7 @@ public:
 signals:
 
 public slots:
-    void onUserRetrieved(QSharedPointer<const User> user, const QObject *id, bool success, const QString &);
+    void onUserRetrieved(QSharedPointer<const User> user, const QObject *id, bool success, const QString &msg);
 
 private:
     QMap<QString, QSharedPointer<const User> > d_users;
