@@ -128,10 +128,15 @@ void ChatWidget::invite(QSharedPointer<const User> user, const QObject *id, bool
     if (id != this)
         return;
     if (success) {
-        d_chat->invite(user);
+        invite(user);
     } else {
         QMessageBox::warning(this, "Invite Failed", msg);
     }
+}
+
+void ChatWidget::invite(QSharedPointer<const User> user)
+{
+    d_chat->invite(user);
 }
 
 void ChatWidget::leaveChat()
