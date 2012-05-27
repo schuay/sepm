@@ -274,6 +274,8 @@ int main(int argc, char **argv)
     QCoreApplication::setOrganizationName("group22");
     QCoreApplication::setApplicationName("sdcs");
 
+    sdc::Settings::init();
+
     /* Parse command line arguments. */
     Args args;
     parseArgs(argc, argv, args);

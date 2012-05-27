@@ -5,6 +5,19 @@
 namespace sdc
 {
 
+/* Define the static instance. */
+QSharedPointer<QSettings> Settings::settings;
+
+void Settings::init()
+{
+    settings = QSharedPointer<QSettings>(new QSettings());
+}
+
+void Settings::init(const QString &filename)
+{
+    settings = QSharedPointer<QSettings>(new QSettings(filename, QSettings::NativeFormat));
+}
+
 QString Settings::getKey(SettingsKey key)
 {
     switch (key) {
@@ -46,27 +59,23 @@ QString Settings::getKey(SettingsKey key)
 
 void Settings::setValue(SettingsKey key, QVariant value)
 {
-    QSettings settings;
-    settings.setValue(getKey(key), value);
-    settings.sync();
+    settings->setValue(getKey(key), value);
+    settings->sync();
 }
 
 QVariant Settings::getValue(SettingsKey key)
 {
-    QSettings settings;
-    return settings.value(getKey(key));
+    return settings->value(getKey(key));
 }
 
 bool Settings::isConfigured(SettingsKey key)
 {
-    QSettings settings;
-    return settings.contains(getKey(key));
+    return settings->contains(getKey(key));
 }
 
 QString Settings::fileName()
 {
-    QSettings settings;
-    return settings.fileName();
+    return settings->fileName();
 }
 
 }

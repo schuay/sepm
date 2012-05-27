@@ -3,6 +3,7 @@
 
 #include <QString>
 #include <QSettings>
+#include <QSharedPointer>
 
 namespace sdc
 {
@@ -39,6 +40,16 @@ public:
     };
 
     /**
+     * Initializes the instance from QApplication settings.
+     */
+    static void init();
+
+    /**
+     * Initializes the instance from filename;
+     */
+    static void init(const QString &filename);
+
+    /**
      * Reads the settings file and returns the requested value.
      */
     static QVariant getValue(SettingsKey key);
@@ -61,6 +72,12 @@ public:
 
 private:
     static QString getKey(SettingsKey key);
+
+    /**
+     * The settings object used for all other methods.
+     * Must be initialized by calling init() before usage.
+     */
+    static QSharedPointer<QSettings> settings;
 };
 
 }

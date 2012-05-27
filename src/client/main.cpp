@@ -12,6 +12,8 @@ int main(int argc, char **argv)
     QCoreApplication::setOrganizationName("group22");
     QCoreApplication::setApplicationName("sdc");
 
+    sdc::Settings::init();
+
     /* Init logger */
     QsLogging::Logger &logger = QsLogging::Logger::instance();
     logger.setLoggingLevel(QsLogging::TraceLevel);
