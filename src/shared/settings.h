@@ -25,7 +25,6 @@ public:
         CPrivateKeyPath,
         CUsername,
         CServer,
-        CLIENT_END,
         SCertsDir,
         SCertPath,
         SKeyPath,
@@ -36,7 +35,7 @@ public:
         SDbDatabase,
         SDbPassword,
         SDbDriver,
-        SERVER_END
+        SettingsKeyEnd
     };
 
     /**
@@ -48,6 +47,13 @@ public:
      * Initializes the instance from filename;
      */
     static void init(const QString &filename);
+
+    /**
+     * Creates the settings file and initializes it with default values.
+     * If the file already exists, adds keys that don't exist in the file
+     * with default values.
+     */
+    static void create();
 
     /**
      * Reads the settings file and returns the requested value.

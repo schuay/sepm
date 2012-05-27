@@ -42,6 +42,14 @@ void Settings::fillConfiguration()
     configuration[SDbDriver] = Setting("server/dbDriver", "QPSQL");
 }
 
+void Settings::create()
+{
+    for (int i = 0; i < static_cast<int>(SettingsKeyEnd); i++) {
+        SettingsKey key = static_cast<SettingsKey>(i);
+        setValue(key, getValue(key));
+    }
+}
+
 void Settings::setValue(SettingsKey key, QVariant value)
 {
     settings->setValue(configuration[key].key, value);

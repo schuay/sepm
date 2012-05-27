@@ -186,7 +186,7 @@ static QString getSetting(sdc::Settings::SettingsKey key, bool &configured)
 static void initSettings()
 {
     sdc::Settings settings;
-    const int numSettings = sdc::Settings::SERVER_END - sdc::Settings::CLIENT_END;
+    const int numSettings = 9;
     int numConfigured = 0;
 
     if (!settings.isConfigured(settings.SCertsDir)) {
