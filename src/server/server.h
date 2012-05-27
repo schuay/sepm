@@ -16,9 +16,9 @@ class Server
 {
 public:
     /**
-     * Creates a server instance using the specified communicator and hostname.
+     * Creates a server instance using the specified communicator.
      */
-    static void create(Ice::CommunicatorPtr communicator, const QString &hostname);
+    static void create(Ice::CommunicatorPtr communicator);
 
     /**
      * Returns a pointer to the server instance.

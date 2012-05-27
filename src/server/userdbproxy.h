@@ -23,7 +23,6 @@ private:
         void open();
 
         QSqlDatabase db;
-        QString driver, host, dbName, user, password;
     };
 
 public:
@@ -82,36 +81,6 @@ public:
      */
     sdc::SecureContainer retrieveLog(const QString &chatID, long timestamp)
     throw(sdc::LogException);
-
-    /**
-     * Sets the database hostname. Must be set before the first UserDbProxy instance
-     * is created.
-     */
-    static void setDBHost(const QString &host);
-
-    /**
-     * Sets the database driver. Must be set before the first UserDbProxy instance
-     * is created.
-     */
-    static void setDBDriver(const QString &driver);
-
-    /**
-     * Sets the database. Must be set before the first UserDbProxy instance
-     * is created.
-     */
-    static void setDBName(const QString &database);
-
-    /**
-     * Sets the database user. Must be set before the first UserDbProxy instance
-     * is created.
-     */
-    static void setDBUser(const QString &user);
-
-    /**
-     * Sets the database password. Must be set before the first UserDbProxy instance
-     * is created.
-     */
-    static void setDBPassword(const QString &password);
 
 private:
     UserDbProxy(const QString &user) throw(sdc::UserHandlingException);

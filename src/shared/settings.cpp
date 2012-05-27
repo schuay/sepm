@@ -2,6 +2,8 @@
 
 #include <assert.h>
 
+#include "QsLog.h"
+
 namespace sdc
 {
 
@@ -11,12 +13,17 @@ QMap<Settings::SettingsKey, Settings::Setting> Settings::configuration;
 
 void Settings::init()
 {
+    QLOG_TRACE() << __PRETTY_FUNCTION__;
+
     settings = QSharedPointer<QSettings>(new QSettings());
     fillConfiguration();
 }
 
 void Settings::init(const QString &filename)
 {
+    QLOG_TRACE() << __PRETTY_FUNCTION__;
+    QLOG_TRACE() << "Reading settings from" << filename;
+
     settings = QSharedPointer<QSettings>(new QSettings(filename, QSettings::NativeFormat));
     fillConfiguration();
 }
@@ -59,16 +66,6 @@ void Settings::setValue(SettingsKey key, QVariant value)
 QVariant Settings::getValue(SettingsKey key)
 {
     return settings->value(configuration[key].key, configuration[key].defaultValue);
-}
-
-bool Settings::isConfigured(SettingsKey key)
-{
-    return settings->contains(configuration[key].key);
-}
-
-QString Settings::fileName()
-{
-    return settings->fileName();
 }
 
 }

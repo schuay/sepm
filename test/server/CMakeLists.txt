@@ -8,9 +8,15 @@ include_directories(
 )
 
 set(WORKING_DIR ${CMAKE_SOURCE_DIR}/test)
+set(SOURCE_DIR ${CMAKE_SOURCE_DIR})
+set(BINARY_DIR ${CMAKE_BINARY_DIR})
 configure_file(
     ${CMAKE_SOURCE_DIR}/test/common.h.in
     ${CMAKE_CURRENT_BINARY_DIR}/common.h
+)
+configure_file(
+    ${CMAKE_SOURCE_DIR}/test/sdcs.conf.in
+    ${CMAKE_BINARY_DIR}/test/sdcs.conf
 )
 
 set(userDbProxyTest_QTHEADERS

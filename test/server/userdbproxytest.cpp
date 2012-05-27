@@ -6,6 +6,7 @@
 #include "userdbproxy.h"
 #include "common.h"
 #include "sdcHelper.h"
+#include "settings.h"
 
 using namespace sdcs;
 
@@ -16,11 +17,7 @@ void UserDbProxyTests::initTestCase()
 {
     qRegisterMetaType<QSharedPointer<UserDbProxy> >("QSharedPointer<UserDbProxy>");
 
-    UserDbProxy::setDBDriver(DB_DRIVER);
-    UserDbProxy::setDBHost(DB_HOST);
-    UserDbProxy::setDBName(DB_DATABASE);
-    UserDbProxy::setDBUser(DB_USER);
-    UserDbProxy::setDBPassword(DB_PASSWORD);
+    sdc::Settings::init(BINARY_DIR "/test/sdcs.conf");
 
     const unsigned char pubkey[] = { 'b', 'l', 'a' };
     user1.ID = "test1";
@@ -28,11 +25,11 @@ void UserDbProxyTests::initTestCase()
     hash1 = QByteArray("123");
     salt1 = QByteArray("456");
 
-    db = QSqlDatabase::addDatabase(DB_DRIVER);
-    db.setHostName(DB_HOST);
-    db.setDatabaseName(DB_DATABASE);
-    db.setUserName(DB_USER);
-    db.setPassword(DB_PASSWORD);
+    db = QSqlDatabase::addDatabase(sdc::Settings::getValue(sdc::Settings::SDbDriver).toString());
+    db.setHostName(sdc::Settings::getValue(sdc::Settings::SDbHost).toString());
+    db.setDatabaseName(sdc::Settings::getValue(sdc::Settings::SDbDatabase).toString());
+    db.setUserName(sdc::Settings::getValue(sdc::Settings::SDbUser).toString());
+    db.setPassword(sdc::Settings::getValue(sdc::Settings::SDbPassword).toString());
 
     QVERIFY(db.open());
 

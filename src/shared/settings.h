@@ -66,16 +66,6 @@ public:
      */
     static void setValue(SettingsKey key, QVariant value);
 
-    /**
-     * Returns true if the specified key is found in the settings.
-     */
-    static bool isConfigured(SettingsKey key);
-
-    /**
-     * Returns the configuration file name and path.
-     */
-    static QString fileName();
-
 private:
     struct Setting {
         Setting() { }

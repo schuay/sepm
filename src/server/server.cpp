@@ -4,6 +4,7 @@
 #include <QMutexLocker>
 
 #include "session.h"
+#include "settings.h"
 
 namespace sdcs
 {
@@ -13,12 +14,12 @@ namespace sdcs
  */
 Server Server::server;
 
-void Server::create(Ice::CommunicatorPtr communicator, const QString &hostname)
+void Server::create(Ice::CommunicatorPtr communicator)
 {
     assert(communicator);
     assert(!server.initialized);
 
-    server.hostname = hostname;
+    server.hostname = sdc::Settings::getValue(sdc::Settings::SHostname).toString();
     server.communicator = communicator;
 
     /* Initialize the ice adapter.
@@ -55,7 +56,8 @@ Server::Server() : initialized(false)
 
 Server::~Server()
 {
-    communicator->destroy();
+    if (communicator)
+        communicator->destroy();
 }
 
 void Server::addSession(const QString &user, const SessionContainer &container)

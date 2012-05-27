@@ -50,13 +50,7 @@ QString getUsername(const QString &user)
 #define SPAWN_SERVER(server) \
 QString program = BINARY_DIR "/src/server/server"; \
 QStringList arguments; \
-arguments << "-d" << "QPSQL" \
-          << "-b" << "sdcs_test" \
-          << "-o" << "localhost" \
-          << "-u" << "sdcs_test" \
-          << "-r" << SOURCE_DIR "/misc" \
-          << "-s" << SERVER_URL \
-          << "-p" << "sdcs_test"; \
+arguments << "-f" << BINARY_DIR "/test/sdcs.conf"; \
 server.setStandardErrorFile(BINARY_DIR "/test.log"); \
 server.start(program, arguments); \
 QVERIFY(server.waitForStarted()); \

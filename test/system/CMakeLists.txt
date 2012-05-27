@@ -23,6 +23,10 @@ configure_file(
     ${CMAKE_SOURCE_DIR}/test/common.h.in
     ${CMAKE_CURRENT_BINARY_DIR}/common.h
 )
+configure_file(
+    ${CMAKE_SOURCE_DIR}/test/sdcs.conf.in
+    ${CMAKE_BINARY_DIR}/test/sdcs.conf
+)
 
 set(localSessionManagerTest_QTHEADERS
     ${TEST_SOURCE}/sessionmanagertest.h

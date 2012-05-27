@@ -9,6 +9,7 @@
 
 #include "QsLog.h"
 #include "sdcHelper.h"
+#include "settings.h"
 
 namespace sdcs
 {
@@ -31,11 +32,11 @@ void UserDbProxy::Connection::open()
     if (db.isOpen())
         return;
 
-    db = QSqlDatabase::addDatabase(driver, CONNECTION);
-    db.setHostName(host);
-    db.setDatabaseName(dbName);
-    db.setUserName(user);
-    db.setPassword(password);
+    db = QSqlDatabase::addDatabase(sdc::Settings::getValue(sdc::Settings::SDbDriver).toString(), CONNECTION);
+    db.setHostName(sdc::Settings::getValue(sdc::Settings::SDbHost).toString());
+    db.setDatabaseName(sdc::Settings::getValue(sdc::Settings::SDbDatabase).toString());
+    db.setUserName(sdc::Settings::getValue(sdc::Settings::SDbUser).toString());
+    db.setPassword(sdc::Settings::getValue(sdc::Settings::SDbPassword).toString());
 
     bool ok = db.open();
     if (!ok) {
@@ -199,31 +200,6 @@ throw(sdc::LogException)
     container.signature = sdc::sdcHelper::byteArraytoByteSeq(query.value(1).toByteArray());
 
     return container;
-}
-
-void UserDbProxy::setDBHost(const QString &host)
-{
-    connection.host = host;
-}
-
-void UserDbProxy::setDBDriver(const QString &driver)
-{
-    connection.driver = driver;
-}
-
-void UserDbProxy::setDBName(const QString &database)
-{
-    connection.dbName = database;
-}
-
-void UserDbProxy::setDBUser(const QString &user)
-{
-    connection.user = user;
-}
-
-void UserDbProxy::setDBPassword(const QString &password)
-{
-    connection.password = password;
 }
 
 sdc::User UserDbProxy::getUser() const
