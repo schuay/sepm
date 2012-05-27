@@ -19,7 +19,10 @@ void Session::logout(const Ice::Current &) throw(sdc::UserHandlingException)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
 
-    /* TODO: leave all open chats. */
+    QMutexLocker locker(&chatsMutex);
+    QList<QSharedPointer<Chat> > values = chats.values();
+    for (int i = 0; i < values.size(); i++)
+        values[i]->leaveChat(self);
 
     Server::instance().removeSession(QString::fromStdString(self.ID));
 }
