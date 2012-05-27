@@ -3,6 +3,7 @@
 #include <QMutexLocker>
 
 #include "QsLog.h"
+#include "server.h"
 
 namespace sdcs
 {
@@ -104,7 +105,8 @@ void LocalChat::leaveChat(const sdc::User &user)
 
     notifyLeave(user);
 
-    /* TODO: destroy empty chats. */
+    if (participants.empty())
+        Server::instance().removeChat(chatID);
 }
 
 }

@@ -116,4 +116,14 @@ throw(sdc::UserHandlingException)
     return sessions[user].session->addChat(chats[chatID]);
 }
 
+void Server::removeChat(const QString &chatID)
+{
+    QMutexLocker chatsLocker(&chatsMutex);
+    if (!chats.contains(chatID)) {
+        throw sdc::UserHandlingException("Chat does not exist.");
+    }
+
+    chats.remove(chatID);
+}
+
 }

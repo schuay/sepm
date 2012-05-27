@@ -56,6 +56,11 @@ public:
     sdc::ChatClientCallbackIPrx addChatTo(const QString &user, const QString &chatID)
     throw(sdc::UserHandlingException);
 
+    /**
+     * Removes the chat with chatID from the list of active chats.
+     */
+    void removeChat(const QString &chatID);
+
 private:
     Server();
     virtual ~Server();
