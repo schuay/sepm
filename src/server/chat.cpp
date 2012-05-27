@@ -89,7 +89,7 @@ void LocalChat::inviteUser(const sdc::User &user, const sdc::ByteSeq &sessionKey
     notifyJoin(user);
 }
 
-void LocalChat::leaveChat(const QString &/*user*/)
+void LocalChat::leaveChat(const sdc::User &/*user*/)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
 }

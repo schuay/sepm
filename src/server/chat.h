@@ -30,7 +30,7 @@ public:
     /**
      * Removes user from the chat and notifies all remaining participants.
      */
-    virtual void leaveChat(const QString &user) = 0;
+    virtual void leaveChat(const sdc::User &user) = 0;
 
     QString getChatID() const;
 
@@ -61,7 +61,7 @@ public:
 
     void appendMessageFrom(const sdc::User &user, const sdc::ByteSeq &message);
     void inviteUser(const sdc::User &user, const sdc::ByteSeq &sessionKey);
-    void leaveChat(const QString &user);
+    void leaveChat(const sdc::User &user);
 };
 
 /* owned by session, pointer kept in session. destroyed on leave or logout. */
@@ -72,7 +72,7 @@ public:
 
     void appendMessageFrom(const sdc::User &user, const sdc::ByteSeq &message);
     void inviteUser(const sdc::User &user, const sdc::ByteSeq &sessionKey);
-    void leaveChat(const QString &user);
+    void leaveChat(const sdc::User &user);
 
 private:
     sdc::InterServerIPrx interServer; /* one per remote server */
