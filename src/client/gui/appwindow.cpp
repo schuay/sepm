@@ -17,6 +17,7 @@ AppWindow::AppWindow(QWidget *parent, QSharedPointer<Session> session) :
 {
     ui->setupUi(this);
     d_session = session;
+    contactList = new UserModel(d_session);
     setAttribute(Qt::WA_DeleteOnClose, true);
     ui->lUsername->setText(d_session->getUser()->getName());
 
@@ -45,10 +46,24 @@ AppWindow::AppWindow(QWidget *parent, QSharedPointer<Session> session) :
             this,
             SLOT(onChatOpened(QSharedPointer<Chat>)));
     connect(d_session.data(),
-            SIGNAL(retrieveUserCompleted(QSharedPointer<const User>, const QObject *, bool, QString)),
+            SIGNAL(retrieveContactListCompleted(const QStringList, bool, QString)),
             this,
-            SLOT(onAddUserReturn(QSharedPointer<const User>, const QObject *, bool, QString)));
+            SLOT(onContactListReceived(const QStringList, bool, QString)));
+    connect(d_session.data(),
+            SIGNAL(saveContactListCompleted(bool, QString)),
+            this,
+            SLOT(onLogoutReady()));
+    connect(ui->lvContacts,
+            SIGNAL(customContextMenuRequested(QPoint)),
+            this,
+            SLOT(contextMenuRequested(QPoint)));
+    connect(ui->lvContacts,
+            SIGNAL(activated(QModelIndex)),
+            this,
+            SLOT(onContactInvite(QModelIndex)));
 
+    ui->lvContacts->setModel(contactList);
+    d_session->retrieveContactList();
     settingspopupmenu = new QMenu(this);
     settingspopupmenu->addAction("Add Contact", this, SLOT(onAddContactEntryClicked()));
     settingspopupmenu->addAction("Start Chat", this, SLOT(onStartChatEntryClicked()));
@@ -57,9 +72,14 @@ AppWindow::AppWindow(QWidget *parent, QSharedPointer<Session> session) :
     settingspopupmenu->addAction("Logout", this, SLOT(logout()));
     ui->pbOptions->setMenu(settingspopupmenu);
 
+    contactListMenu = new QMenu(this);
+    contactListMenu->addAction("Delete");
+    contactListMenu->addAction("Invite");
+
+    ui->lvContacts->setContextMenuPolicy(Qt::CustomContextMenu);
+
     QRect rect = QApplication::desktop()->availableGeometry();
     this->move(rect.center() - this->rect().center());
-
 }
 
 AppWindow::~AppWindow()
@@ -68,14 +88,15 @@ AppWindow::~AppWindow()
         d_session->logout();
     delete ui;
     delete settingspopupmenu;
+    delete contactList;
 }
 
 void AppWindow::closeEvent(QCloseEvent *event)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
     if (d_session->isValid()) {
-        event->ignore();
         logout();
+        event->ignore();
     }
 }
 
@@ -87,7 +108,7 @@ void AppWindow::onAddContactEntryClicked()
                                          tr("User name:"), QLineEdit::Normal,
                                          "", &ok);
     if (ok && !text.isEmpty()) {
-        d_session->retrieveUser(text, this);
+        d_session->retrieveUser(text, contactList);
     }
 }
 
@@ -112,7 +133,7 @@ void AppWindow::logout()
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
     if (d_session->isValid()) {
-        d_session->logout();
+        d_session->saveContactList(contactList->toUserList());
     }
 }
 
@@ -159,19 +180,6 @@ void AppWindow::onTabCloseRequested(int tab)
     ui->twChats->removeTab(tab);
 }
 
-void AppWindow::onAddUserReturn(QSharedPointer<const User> user, const QObject *id, bool success, const QString &msg)
-{
-    QLOG_TRACE() << __PRETTY_FUNCTION__;
-    if (id != this)
-        return;
-    if (success) {
-        user->getName();
-        QMessageBox::information(this, "Not Implemented Yet", "You can't add contacts here yet. Sorry.");
-    } else {
-        QMessageBox::warning(this, "Add User Failed", msg);
-    }
-}
-
 void AppWindow::deleteAccount()
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
@@ -200,6 +208,44 @@ void AppWindow::onUserDeleted(bool success, const QString &msg)
     } else {
         QMessageBox::warning(this, "User Deletion Failed", msg);
     }
+}
+
+void AppWindow::onContactListReceived(const QStringList &list, bool success, const QString &msg)
+{
+    QLOG_TRACE() << __PRETTY_FUNCTION__;
+    if (success) {
+        QLOG_DEBUG() << list;
+        contactList->fromNameList(list);
+    } else
+        QMessageBox::warning(this, "Contact list couldn't be loaded", msg);
+}
+
+void AppWindow::onLogoutReady()
+{
+    if (d_session->isValid()) {
+        d_session->logout();
+    }
+}
+
+void AppWindow::contextMenuRequested(const QPoint &point)
+{
+    QPoint mousePoint = ui->lvContacts->mapToGlobal(point);
+    QModelIndex index = ui->lvContacts->indexAt(point);
+    QAction *action = contactListMenu->exec(mousePoint);
+    if (action == 0) return;
+    if (action->text() == "Delete") {
+        contactList->removeUser(index);
+    }
+    if (action->text() == "Invite") {
+        onContactInvite(index);
+    }
+}
+
+void AppWindow::onContactInvite(const QModelIndex &index)
+{
+    ChatWidget *cw = dynamic_cast<ChatWidget *>(ui->twChats->currentWidget());
+    if (cw == 0) return;
+    cw->invite(contactList->getUser(index));
 }
 
 void AppWindow::onStartChatEntryClicked()

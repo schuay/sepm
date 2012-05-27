@@ -6,6 +6,7 @@
 
 #include "chat.h"
 #include "chatwidget.h"
+#include "usermodel.h"
 #include <QtGui>
 
 using namespace sdcc;
@@ -34,10 +35,13 @@ public slots:
     void onTabCloseRequested(int tab);
     void onStartChatEntryClicked();
     void onInviteClicked();
-    void onAddUserReturn(QSharedPointer<const User> user, const QObject *id, bool success, const QString &msg);
     void deleteAccount();
     void onLogoutCompleted(bool success, const QString &msg);
     void onUserDeleted(bool success, const QString &msg);
+    void onContactListReceived(const QStringList &list, bool success, const QString &msg);
+    void onLogoutReady();
+    void contextMenuRequested(const QPoint &point);
+    void onContactInvite(const QModelIndex &index);
 private:
     void closeEvent(QCloseEvent *event);
 
@@ -45,7 +49,9 @@ private:
     QSharedPointer<Session> d_session;
     ChatWidget *activeChat;
     QMenu *settingspopupmenu;
+    QMenu *contactListMenu;
     QList<QSharedPointer<const User> > inviteQueue;
+    UserModel *contactList;
 };
 
 #endif // APPWINDOW_H

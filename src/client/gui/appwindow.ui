@@ -104,7 +104,7 @@
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout_2">
             <item>
-             <widget class="QListWidget" name="lwChats"/>
+             <widget class="QListView" name="lvContacts"/>
             </item>
            </layout>
           </widget>
