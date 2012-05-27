@@ -17,6 +17,7 @@ set(client_gui_FORMS
 qt4_wrap_ui(client_gui_FORMS_HEADERS ${client_gui_FORMS})
 
 set(client_gui_QTHEADERS
+        chattimestampmodel.h
         logindialog.h
         appwindow.h
         chatwidget.h
@@ -27,6 +28,7 @@ set(client_gui_QTHEADERS
 qt4_wrap_cpp(client_gui_QTHEADERS_MOC ${client_gui_QTHEADERS})
 
 set(client_gui_SRCS
+        chattimestampmodel.cpp
         logindialog.cpp
         appwindow.cpp
         chatwidget.cpp

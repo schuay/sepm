@@ -263,6 +263,6 @@ void AppWindow::onStartChatEntryClicked()
 
 void AppWindow::onViewChatLogsEntryClicked()
 {
-    ChatLogDialog *dialog = new ChatLogDialog(this);
+    ChatLogDialog *dialog = new ChatLogDialog(this, d_session);
     dialog->show();
 }
