@@ -71,13 +71,26 @@ public:
     static QString fileName();
 
 private:
-    static QString getKey(SettingsKey key);
+    struct Setting {
+        Setting() { }
+        Setting(const QString &key, const QVariant &defaultValue) : key(key), defaultValue(defaultValue) { }
+        QString key;
+        QVariant defaultValue;
+    };
+
+    static void fillConfiguration();
 
     /**
      * The settings object used for all other methods.
      * Must be initialized by calling init() before usage.
      */
     static QSharedPointer<QSettings> settings;
+
+    /**
+     * The configuration stores mappings between the public SettingsKey,
+     * and the associated key and default value.
+     */
+    static QMap<SettingsKey, Setting> configuration;
 };
 
 }
