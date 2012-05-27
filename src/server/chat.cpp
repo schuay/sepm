@@ -89,9 +89,22 @@ void LocalChat::inviteUser(const sdc::User &user, const sdc::ByteSeq &sessionKey
     notifyJoin(user);
 }
 
-void LocalChat::leaveChat(const sdc::User &/*user*/)
+void LocalChat::leaveChat(const sdc::User &user)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
+
+    QString username = QString::fromStdString(user.ID);
+
+    QMutexLocker locker(&participantsMutex);
+    if (!participants.contains(username))
+        throw sdc::SessionException("User is not in the chat.");
+
+    participants.remove(username);
+    locker.unlock();
+
+    notifyLeave(user);
+
+    /* TODO: destroy empty chats. */
 }
 
 }

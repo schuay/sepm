@@ -56,12 +56,11 @@ throw(sdc::SessionException, sdc::InterServerException)
 
     const QString id = QString::fromStdString(chatID);
 
-    /* TODO: notify chat, destroy if empty, interserver chat handling. */
-
     QMutexLocker locker(&chatsMutex);
     if (!chats.contains(id))
         throw sdc::SessionException("Chat does not exist");
 
+    chats[id]->leaveChat(self);
     chats.remove(id);
 }
 
