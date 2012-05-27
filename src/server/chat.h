@@ -39,7 +39,13 @@ protected:
      * Notifies all participants that user has joined.
      * The participantsMutex must be unlocked when called.
      */
-    void notifyAll(const sdc::User &joined);
+    void notifyJoin(const sdc::User &joined);
+
+    /**
+     * Notifies all participants that user has left.
+     * The participantsMutex must be unlocked when called.
+     */
+    void notifyLeave(const sdc::User &left);
 
     const QString chatID;
 
