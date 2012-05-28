@@ -57,6 +57,13 @@ public:
     throw(sdc::UserHandlingException);
 
     /**
+     * Get the chat with id chatID.
+     * Throws an InterServerException if the chat does not exist.
+     */
+    QSharedPointer<Chat> getChat(const QString &chatID)
+    throw(sdc::InterServerException);
+
+    /**
      * Removes the chat with chatID from the list of active chats.
      */
     void removeChat(const QString &chatID);

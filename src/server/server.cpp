@@ -128,6 +128,17 @@ void Server::removeChat(const QString &chatID)
     chats.remove(chatID);
 }
 
+QSharedPointer<Chat> Server::getChat(const QString &chatID)
+throw(sdc::InterServerException)
+{
+    QMutexLocker chatsLocker(&chatsMutex);
+    if (!chats.contains(chatID)) {
+        throw sdc::InterServerException("Chat does not exist.");
+    }
+
+    return chats[chatID];
+}
+
 sdc::InterServerIPrx Server::getInterServerProxy(const QString &hostname)
 {
     /* Spawning a new interserver proxy per request is primitive. On demand, we can replace
