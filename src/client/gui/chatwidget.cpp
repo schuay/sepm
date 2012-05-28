@@ -13,10 +13,14 @@ ChatWidget::ChatWidget(QSharedPointer<Session> session,
     setAttribute(Qt::WA_DeleteOnClose, true);
     ui->setupUi(this);
 
+
     qRegisterMetaType<QSharedPointer<const User> >("QSharedPointer<const User>");
 
     d_chat = chat;
     d_session = session;
+    pList = new UserModel(d_session);
+
+    ui->lvParticipants->setModel(pList);
 
     QListIterator<QSharedPointer<const User> > it(d_chat->getUserList());
     while (it.hasNext()) {
@@ -41,7 +45,7 @@ ChatWidget::ChatWidget(QWidget *parent) :
 {
     ui->setupUi(this);
     ui->leMessage->setEnabled(false);
-    ui->lwParticipants->setEnabled(false);
+    ui->lvParticipants->setEnabled(false);
     ui->tbChat->setEnabled(false);
 }
 
@@ -67,30 +71,13 @@ void ChatWidget::messageReceived(QSharedPointer<const User> user, const QString 
 void ChatWidget::userJoined(QSharedPointer<const User> user)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
-    if (ui->lwParticipants->findItems(user->getName(), Qt::MatchExactly).size() == 0) {
-        ui->lwParticipants->addItem(user->getName());
-        ui->lwParticipants->sortItems();
-    } else {
-        QLOG_WARN() << "User " << user->getName() << " joined while already in chat.";
-    }
+    pList->addUser(user);
 }
 
 void ChatWidget::userLeft(QSharedPointer<const User> user)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
-    QListWidgetItem *it = ui->lwParticipants->findItems(
-                              user->getName(),
-                              Qt::MatchExactly
-                          ).first();
-
-    if (it == NULL) {
-        QLOG_ERROR() << QString("User '%1' not in participant list.").arg(user->getName());
-        return;
-    }
-
-    ui->lwParticipants->takeItem(ui->lwParticipants->row(it));
-
-    delete it;
+    pList->removeUser(user);
 }
 
 /**
@@ -160,4 +147,5 @@ void ChatWidget::sendCompleted(bool success, const QString &msg)
 ChatWidget::~ChatWidget()
 {
     delete ui;
+    delete pList;
 }

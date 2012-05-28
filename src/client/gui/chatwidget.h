@@ -6,6 +6,7 @@
 #include <QMap>
 #include "chat.h"
 #include "session.h"
+#include "usermodel.h"
 
 using namespace sdcc;
 
@@ -77,6 +78,7 @@ private:
     QSharedPointer<Chat> d_chat;
     QString lastMsg;
     QSharedPointer<Session> d_session;
+    UserModel *pList;
 };
 
 #endif // CHATWIDGET_H
