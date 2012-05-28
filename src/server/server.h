@@ -61,6 +61,11 @@ public:
      */
     void removeChat(const QString &chatID);
 
+    /**
+     * Returns an inter-server proxy for the requested hostname.
+     */
+    sdc::InterServerIPrx getInterServerProxy(const QString &hostname);
+
 private:
     Server();
     virtual ~Server();

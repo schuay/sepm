@@ -128,4 +128,12 @@ void Server::removeChat(const QString &chatID)
     chats.remove(chatID);
 }
 
+sdc::InterServerIPrx Server::getInterServerProxy(const QString &hostname)
+{
+    /* Spawning a new interserver proxy per request is primitive. On demand, we can replace
+     * this with a caching solution. */
+    QString conn = QString("InterServer:ssl -h %1 -p %2").arg(hostname).arg(sdc::port);
+    return sdc::InterServerIPrx::checkedCast(communicator->stringToProxy(conn.toStdString()));
+}
+
 }
