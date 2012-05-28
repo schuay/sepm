@@ -37,6 +37,12 @@ void Server::create(Ice::CommunicatorPtr communicator)
     Ice::ObjectPtr authObj = server.auth;
 
     adapter->add(authObj, communicator->stringToIdentity("Authentication"));
+
+    server.interserver = new InterServer();
+    Ice::ObjectPtr interServerObj = server.interserver;
+
+    adapter->add(interServerObj, communicator->stringToIdentity("InterServer"));
+
     adapter->activate();
 }
 

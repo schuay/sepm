@@ -8,6 +8,7 @@
 
 #include "authentication.h"
 #include "chat.h"
+#include "interserver.h"
 
 namespace sdcs
 {
@@ -89,8 +90,7 @@ private:
 
     Ice::CommunicatorPtr communicator;
     Authentication *auth;
-
-    /* TODO: InterServer. */
+    InterServer *interserver;
 
     QString hostname;
 
