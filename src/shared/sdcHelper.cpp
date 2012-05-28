@@ -57,3 +57,12 @@ bool sdcHelper::isValidID(const std::string &id)
 {
     return (sdcHelper::getNameFromID(id) == "" || sdcHelper::getServerFromID(id) == "") ? false : true;
 }
+
+StringSeq sdcHelper::qStringListToStringSeq(const QStringList &s)
+{
+    sdc::StringSeq seq;
+    for (int i = 0; i < s.size(); i++) {
+        seq.push_back(s[i].toStdString());
+    }
+    return seq;
+}

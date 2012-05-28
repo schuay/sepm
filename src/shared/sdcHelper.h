@@ -2,10 +2,10 @@
 #define SDCHELPER_H
 
 #include <cstddef>
+#include <QByteArray>
+#include <QStringList>
 
 #include "SecureDistributedChat.h"
-
-#include <QByteArray>
 
 namespace sdc
 {
@@ -20,6 +20,7 @@ public:
     static std::string getServerFromID(const std::string &id);
     static std::string getNameFromID(const std::string &id);
     static bool isValidID(const std::string &id);
+    static StringSeq qStringListToStringSeq(const QStringList &s);
 };
 
 }
