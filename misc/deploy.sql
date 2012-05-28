@@ -13,7 +13,7 @@ create table public.User (
 create table public.Chatlog (
 	id serial primary key,
 	user_id int references public.User(id) not null,
-    chat_id varchar not null,
+	chat_id varchar not null,
 	time_stamp bigint not null,
 	encrypted_content bytea not null,
 	signature bytea not null,
@@ -24,6 +24,5 @@ create table public.Contactlist (
 	id serial primary key,
 	user_id int references public.User(id) not null unique,
 	encrypted_content bytea not null,
-	signature bytea not null,
 	signature bytea not null
 ); 
