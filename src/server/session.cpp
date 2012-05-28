@@ -176,14 +176,17 @@ throw(sdc::ContactException)
     return proxy->retrieveContactList();
 }
 
-sdc::ChatClientCallbackIPrx Session::addChat(QSharedPointer<Chat> chat)
+void Session::addChat(QSharedPointer<Chat> chat)
 {
     QMutexLocker locker(&chatsMutex);
     if (chats.contains(chat->getChatID())) {
         throw sdc::UserHandlingException("User is already in chat.");
     }
     chats[chat->getChatID()] = chat;
+}
 
+sdc::ChatClientCallbackIPrx Session::getCallback()
+{
     return callback;
 }
 

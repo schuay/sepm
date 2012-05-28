@@ -52,9 +52,17 @@ public:
     QSharedPointer<Chat> createLocalChat(const sdc::User &user, sdc::ChatClientCallbackIPrx callback);
 
     /**
-     * Retrieve the user client callback. Throws an exception if that client is not active.
+     * Adds the chat with id chatID to the session-local chat map of user.
+     * Throws an exception if that client is not active.
      */
-    sdc::ChatClientCallbackIPrx addChatTo(const QString &user, const QString &chatID)
+    void addChatTo(const QString &user, const QString &chatID)
+    throw(sdc::UserHandlingException);
+
+    /**
+     * Retrieve the user client callback.
+     * Throws an exception if that client is not active.
+     */
+    sdc::ChatClientCallbackIPrx getClientCallback(const QString &user)
     throw(sdc::UserHandlingException);
 
     /**

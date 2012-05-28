@@ -27,7 +27,9 @@ LocalParticipant::LocalParticipant(const sdc::User &user, sdc::ChatClientCallbac
 LocalParticipant::LocalParticipant(const sdc::User &user, const QString &chatID)
     : Participant(user, chatID)
 {
-    proxy = Server::instance().addChatTo(QString::fromStdString(user.ID), chatID);
+    QString id = QString::fromStdString(user.ID);
+    Server::instance().addChatTo(id, chatID);
+    proxy = Server::instance().getClientCallback(id);
 }
 
 void LocalParticipant::invite(const QStringList &users, const sdc::ByteSeq &sessionKey)

@@ -122,9 +122,14 @@ public:
     throw(sdc::ContactException);
 
     /**
-     * Add chat to the list of active chats and return the client callback.
+     * Add chat to the list of active chats.
      */
-    sdc::ChatClientCallbackIPrx addChat(QSharedPointer<Chat> chat);
+    void addChat(QSharedPointer<Chat> chat);
+
+    /**
+     * Return the client callback.
+     */
+    sdc::ChatClientCallbackIPrx getCallback();
 
 private:
     const sdc::User self;

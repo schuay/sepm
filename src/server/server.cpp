@@ -108,7 +108,7 @@ QSharedPointer<Chat> Server::createLocalChat(const sdc::User &user, sdc::ChatCli
     return p;
 }
 
-sdc::ChatClientCallbackIPrx Server::addChatTo(const QString &user, const QString &chatID)
+void Server::addChatTo(const QString &user, const QString &chatID)
 throw(sdc::UserHandlingException)
 {
     QMutexLocker sessionsLocker(&sessionsMutex);
@@ -121,7 +121,18 @@ throw(sdc::UserHandlingException)
         throw sdc::UserHandlingException("Chat does not exist.");
     }
 
-    return sessions[user].session->addChat(chats[chatID]);
+    sessions[user].session->addChat(chats[chatID]);
+}
+
+sdc::ChatClientCallbackIPrx Server::getClientCallback(const QString &user)
+throw(sdc::UserHandlingException)
+{
+    QMutexLocker sessionsLocker(&sessionsMutex);
+    if (!sessions.contains(user)) {
+        throw sdc::UserHandlingException("User not logged in.");
+    }
+
+    return sessions[user].session->getCallback();
 }
 
 void Server::removeChat(const QString &chatID)
