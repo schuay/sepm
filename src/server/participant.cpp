@@ -2,6 +2,7 @@
 
 #include "QsLog.h"
 #include "server.h"
+#include "sdcHelper.h"
 
 namespace sdcs
 {
@@ -33,12 +34,7 @@ void LocalParticipant::invite(const QStringList &users, const sdc::ByteSeq &sess
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
 
-    sdc::StringSeq seq;
-    for (int i = 0; i < users.size(); i++) {
-        seq.push_back(users[i].toStdString());
-    }
-
-    proxy->initChat(seq, chatID.toStdString(), sessionKey);
+    proxy->initChat(sdc::sdcHelper::qStringListToStringSeq(users), chatID.toStdString(), sessionKey);
 }
 
 void LocalParticipant::addChatParticipant(const sdc::User &participant)
