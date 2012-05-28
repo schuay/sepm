@@ -47,10 +47,8 @@ private:
 
     Ui::AppWindow *ui;
     QSharedPointer<Session> d_session;
-    ChatWidget *activeChat;
     QMenu *settingspopupmenu;
     QMenu *contactListMenu;
-    QList<QSharedPointer<const User> > inviteQueue;
     UserModel *contactList;
 };
 

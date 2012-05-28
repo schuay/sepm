@@ -150,10 +150,6 @@ void AppWindow::onChatOpened(QSharedPointer<Chat> chat, bool success, const QStr
     QLOG_TRACE() << __PRETTY_FUNCTION__;
     if (success) {
         onChatOpened(chat);
-        if (!inviteQueue.isEmpty()) {
-            chat->invite(inviteQueue.first());
-            inviteQueue.removeFirst();
-        }
     } else {
         QMessageBox::warning(this, "Chat Creation Failed", msg);
     }

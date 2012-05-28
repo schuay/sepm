@@ -76,7 +76,6 @@ private slots:
 private:
     Ui::ChatWidget *ui;
     QSharedPointer<Chat> d_chat;
-    QString lastMsg;
     QSharedPointer<Session> d_session;
     UserModel *pList;
 };
