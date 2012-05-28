@@ -9,6 +9,7 @@ add_library(serverlib STATIC
         authentication.cpp
         chat.cpp
         interserverfactory.cpp
+        interserver.cpp
         participant.cpp
         session.cpp
         userdbproxy.cpp
