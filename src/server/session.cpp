@@ -5,6 +5,7 @@
 #include "userdbproxy.h"
 #include "QsLog.h"
 #include "server.h"
+#include "sdcHelper.h"
 
 namespace sdcs
 {
@@ -32,11 +33,24 @@ throw(sdc::UserHandlingException, sdc::InterServerException)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
 
-    /* TODO: handle interserver user requests. */
+    QString hostname = QString::fromStdString(sdc::sdcHelper::getServerFromID(userID));
 
-    QSharedPointer<UserDbProxy> proxy = UserDbProxy::getProxy(QString::fromStdString(userID));
+    if (hostname == Server::instance().getHostname()) {
+        QSharedPointer<UserDbProxy> proxy = UserDbProxy::getProxy(QString::fromStdString(userID));
+        return proxy->getUser();
+    } else {
+        sdc::InterServerIPrx proxy = Server::instance().getInterServerProxy(hostname);
+        sdc::User u = proxy->retrieveUser(userID);
 
-    return proxy->getUser();
+        /* The reference server is bugged and returns an ID without hostname. */
+        QString id = QString::fromStdString(u.ID);
+        if (!id.contains('@')) {
+            id = id + "@" + hostname;
+            u.ID = id.toStdString();
+        }
+
+        return u;
+    }
 }
 
 std::string Session::initChat(const Ice::Current &) throw(sdc::SessionException)

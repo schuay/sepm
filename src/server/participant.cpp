@@ -58,6 +58,13 @@ void LocalParticipant::appendMessageToChat(const sdc::User &user, const sdc::Byt
     proxy->appendMessageToChat(message, chatID.toStdString(), user);
 }
 
+RemoteParticipant::RemoteParticipant(const sdc::User &user, const QString &chatID)
+    : Participant(user, chatID)
+{
+    QString hostname = QString::fromStdString(sdc::sdcHelper::getServerFromID(user.ID));
+    proxy = Server::instance().getInterServerProxy(hostname);
+}
+
 void RemoteParticipant::invite(const QStringList &users, const sdc::ByteSeq &sessionKey)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;

@@ -4,6 +4,7 @@
 
 #include "QsLog.h"
 #include "server.h"
+#include "sdcHelper.h"
 
 namespace sdcs
 {
@@ -79,8 +80,16 @@ void LocalChat::inviteUser(const sdc::User &user, const sdc::ByteSeq &sessionKey
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
 
-    QSharedPointer<Participant> p(new LocalParticipant(user, chatID));
+    QSharedPointer<Participant> p;
+
+    QString hostname = QString::fromStdString(sdc::sdcHelper::getServerFromID(user.ID));
     QString username = QString::fromStdString(user.ID);
+
+    if (hostname == Server::instance().getHostname()) {
+        p = QSharedPointer<Participant>(new LocalParticipant(user, chatID));
+    } else {
+        p = QSharedPointer<Participant>(new RemoteParticipant(user, chatID));
+    }
 
     QMutexLocker locker(&participantsMutex);
     p->invite(participants.keys(), sessionKey);
