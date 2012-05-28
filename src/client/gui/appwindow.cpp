@@ -209,10 +209,9 @@ void AppWindow::onUserDeleted(bool success, const QString &msg)
 void AppWindow::onContactListReceived(const QStringList &list, bool success, const QString &msg)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
-    if (success) {
-        QLOG_DEBUG() << list;
+    if (success)
         contactList->fromNameList(list);
-    } else
+    else
         QMessageBox::warning(this, "Contact list couldn't be loaded", msg);
 }
 
