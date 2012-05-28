@@ -104,14 +104,23 @@ throw(sdc::ParticipationException)
 }
 
 void InterServer::clientAppendMessageToChat(
-    const sdc::User &/*client*/,
-    const sdc::ByteSeq &/*message*/,
-    const std::string &/*chatID*/,
-    const sdc::User &/*participant*/,
+    const sdc::User &client,
+    const sdc::ByteSeq &message,
+    const std::string &chatID,
+    const sdc::User &participant,
     const Ice::Current &)
 throw(sdc::MessageCallbackException)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
+
+    QString id = QString::fromStdString(client.ID);
+
+    try {
+        sdc::ChatClientCallbackIPrx proxy = Server::instance().getClientCallback(id);
+        proxy->appendMessageToChat(message, chatID, participant);
+    } catch (...) {
+        throw sdc::MessageCallbackException();
+    }
 }
 
 }
