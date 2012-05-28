@@ -109,4 +109,25 @@ void LocalChat::leaveChat(const sdc::User &user)
         Server::instance().removeChat(chatID);
 }
 
+
+void RemoteChat::appendMessageFrom(const sdc::User &user, const sdc::ByteSeq &message)
+{
+    // Can throw InterServerExeption, which is also expected in SessionI
+    interServer->sendMessage(user, message, chatID.toStdString());
+
+}
+
+void RemoteChat::inviteUser(const sdc::User &user, const sdc::ByteSeq &sessionKey)
+{
+    // Can throw UserHandlingException and InterServerException, which is also
+    // expected in SessionI
+    interServer->invite(user, chatID.toStdString(), sessionKey);
+}
+
+void RemoteChat::leaveChat(const sdc::User &user)
+{
+    // Again, can throw InterServerException, which is expected in SessionI
+    interServer->leaveChat(user, chatID.toStdString());
+}
+
 }

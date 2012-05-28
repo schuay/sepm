@@ -58,5 +58,45 @@ void LocalParticipant::appendMessageToChat(const sdc::User &user, const sdc::Byt
     proxy->appendMessageToChat(message, chatID.toStdString(), user);
 }
 
+void RemoteParticipant::invite(const QStringList &users, const sdc::ByteSeq &sessionKey)
+{
+    QLOG_TRACE() << __PRETTY_FUNCTION__;
+
+    proxy->clientInitChat(self, sdc::sdcHelper::qStringListToStringSeq(users), chatID.toStdString(), sessionKey);
+}
+
+void RemoteParticipant::addChatParticipant(const sdc::User &participant)
+{
+    QLOG_TRACE() << __PRETTY_FUNCTION__;
+
+    try {
+        proxy->clientAddChatParticipant(self, participant, chatID.toStdString());
+    } catch (const sdc::ParticipationException &e) {
+        QLOG_TRACE() << "A user could not be notified of a new chat participant.";
+    }
+
+}
+
+void RemoteParticipant::removeChatParticipant(const sdc::User &participant)
+{
+    QLOG_TRACE() << __PRETTY_FUNCTION__;
+
+    try {
+        proxy->clientRemoveChatParticipant(self, participant, chatID.toStdString());
+    } catch (const sdc::ParticipationException &e) {
+        QLOG_TRACE() << "A user could not be notified that a chat participant left";
+    }
+}
+
+void RemoteParticipant::appendMessageToChat(const sdc::User &user, const sdc::ByteSeq &message)
+{
+    QLOG_TRACE() << __PRETTY_FUNCTION__;
+
+    try {
+        proxy->clientAppendMessageToChat(self,  message,   chatID.toStdString(),    user);
+    } catch (const sdc::MessageCallbackException &e) {
+        QLOG_TRACE() << "A user could not be notified of a new message in a chat";
+    }
+}
 
 }
