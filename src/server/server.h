@@ -59,6 +59,15 @@ public:
     throw(sdc::UserHandlingException);
 
     /**
+     * Adds the remote chat with id chatID to the session-local chat map of user.
+     * The remote chat is treated as something previously unknown to us and owned
+     * by the user.
+     * Throws an exception if that client is not active.
+     */
+    void addRemoteChatTo(const QString &user, const QString &chatID)
+    throw(sdc::UserHandlingException);
+
+    /**
      * Retrieve the user client callback.
      * Throws an exception if that client is not active.
      */

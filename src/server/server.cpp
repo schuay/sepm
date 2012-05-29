@@ -124,6 +124,18 @@ throw(sdc::UserHandlingException)
     sessions[user].session->addChat(chats[chatID]);
 }
 
+void Server::addRemoteChatTo(const QString &user, const QString &chatID)
+throw(sdc::UserHandlingException)
+{
+    QMutexLocker sessionsLocker(&sessionsMutex);
+    if (!sessions.contains(user)) {
+        throw sdc::UserHandlingException("User not logged in.");
+    }
+    Session *session = sessions[user].session;
+    QSharedPointer<Chat> chat(new RemoteChat(chatID));
+    session->addChat(chat);
+}
+
 sdc::ChatClientCallbackIPrx Server::getClientCallback(const QString &user)
 throw(sdc::UserHandlingException)
 {
