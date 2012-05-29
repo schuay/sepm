@@ -54,7 +54,11 @@ void LocalParticipant::removeChatParticipant(const sdc::User &participant)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
 
-    proxy->removeChatParticipant(participant, chatID.toStdString());
+    try {
+        proxy->removeChatParticipant(participant, chatID.toStdString());
+    } catch (const sdc::ParticipationException &e) {
+        QLOG_ERROR() << "A user could not be notified that a chat participant left";
+    }
 }
 
 void LocalParticipant::appendMessageToChat(const sdc::User &user, const sdc::ByteSeq &message)
