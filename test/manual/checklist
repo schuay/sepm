@@ -1,0 +1,35 @@
+|_.ID|_.Type|_.Description|_.Procedure|_.Expected Results|
+|001|s|Connection Test|Fill "Domain" field with correct domain, click "Test Connection"|"Success" appears in the lower left corner|
+|002|f|Connection Test|Leave "Domain" field blank and click "Test Connection"|Error message appears: "Please make sure the server field is filled in."|
+|003|f|Connection Test|Fill "Domain" field with invalid domain, click "Test Connection"|Error message appears: "DNS Error"|
+|004|f|Register User|Leave all fields empty and click "Register"|Error message appears: "Please make sure the username, password, public key, private key, server and server certificate fields are filled in."|
+|005|f|Register User|Leave some fields empty and click "Register"|Error message appears: "Please make sure the username, password, public key, private key, server and server certificate fields are filled in."|
+|006|s|Register User|Fill all fields correctly and click "Register"|"Success" appears in the lower left corner|
+|007|f|Register User|Use the same data as the last test and click "Register"|Error message appears: "Registration failed"|
+|008|f|Login User|Use the wrong password and click "Login"|Error message appears: "Incorrect password"|
+|009|s|Login USer|Login with correct data|Logged in|
+|010|f|Main Window|Use the invite button with no open chats|Error message appears: "You can't invite a user without first opening up a chat"|
+|011|s|Main Window|Start chat|Chat tab appears, one user in participants list|
+|012|f|Invite|Invite someone who doesn't exist|Error message appears: "Could not correctly retrieve user from database: A database operation did not have enough results."|
+|013|f|Invite|Invite someone on a nonexistant domain|Error message appears: Error message appears: "InterServerException"|
+|014|f|Invite|Invite someone who is offline|Error message appears: "ConnectionLostException"|
+|015|s|Invite|Invite someone who is online|User appears in the participants list, can chat|
+|016|f|Invite|Invite yourself|Error message appears: "User already in chat"|
+|017|f|Invite|Invite someone already in the chat|Error message appears: "User already in chat"|
+|018|s|Close Chat|Close an active chat tab|Tab is closed, user leaves the chat, which reflects in the participants list of other clients|
+|019|s|Invite|Get invited to a chat you just left|Chat tab appears, user joins normally|
+|020|s|Options|In the options window, change options. Click OK, then open it again|The changed options have been saved|
+|021|s|Options|In the options window, change options. Click the cancel or close the window, then open it again|The changed options have been discarded|
+|022|s|Logout|Logout while still in a chat|Login window appears, user leaves all chats|
+|023|s|Logout|Close the window|Login window appears, user leaves all chats|
+|024|s|Delete Account|Go to the options window, delete the user|Login window appears, user is deleted|
+|025|f|Delete Account|Try to login as the user you just removed|Error message appears: "User couldn't be found"|
+|026|s|Add Contact|Try to add a correct contact|Contact appears in the contact list|
+|027|f|Add Contact|Try to add a contact that doesn't exist|Error message appears|
+|028|f|Add Contact|Try to add a contact already in the list|Nothing happens|
+|029|s|Invite Contact|Try to double click a contact while in a chat and while they are online|Contact gets invited to the chat|
+|030|s|Invite Contact|Try to invite a contact via the right click menu while in a chat and while they are online|Contact gets invited to the chat|
+|031|f|Invite Contact|Try to invite a contact while they aren't online|Error message appears|
+|032|f|Invite Contact|Try to invite a contact while not in a chat|Nothing happens|
+|033|s|Delete Contact|Try to delete a contact|Contact disappears from the contact list|
+|034|s|Save Contacts|Log out, then log in again|The contact list is fully restored|
