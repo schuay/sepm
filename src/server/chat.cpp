@@ -25,30 +25,6 @@ QString Chat::getChatID() const
     return chatID;
 }
 
-void Chat::notifyJoin(const sdc::User &joined)
-{
-    QMutexLocker locker(&participantsMutex);
-    QList<QSharedPointer<Participant> > keys = participants.values();
-    locker.unlock();
-
-    for (int i = 0; i < keys.size(); i++) {
-        QSharedPointer<Participant> p = keys[i];
-        p->addChatParticipant(joined);
-    }
-}
-
-void Chat::notifyLeave(const sdc::User &left)
-{
-    QMutexLocker locker(&participantsMutex);
-    QList<QSharedPointer<Participant> > keys = participants.values();
-    locker.unlock();
-
-    for (int i = 0; i < keys.size(); i++) {
-        QSharedPointer<Participant> p = keys[i];
-        p->removeChatParticipant(left);
-    }
-}
-
 LocalChat::LocalChat(const QString &chatID, const sdc::User &user, sdc::ChatClientCallbackIPrx callback)
     : Chat(chatID)
 {
@@ -133,6 +109,30 @@ void LocalChat::leaveChat(const sdc::User &user)
 
     if (participants.empty())
         Server::instance().removeChat(chatID);
+}
+
+void LocalChat::notifyJoin(const sdc::User &joined)
+{
+    QMutexLocker locker(&participantsMutex);
+    QList<QSharedPointer<Participant> > keys = participants.values();
+    locker.unlock();
+
+    for (int i = 0; i < keys.size(); i++) {
+        QSharedPointer<Participant> p = keys[i];
+        p->addChatParticipant(joined);
+    }
+}
+
+void LocalChat::notifyLeave(const sdc::User &left)
+{
+    QMutexLocker locker(&participantsMutex);
+    QList<QSharedPointer<Participant> > keys = participants.values();
+    locker.unlock();
+
+    for (int i = 0; i < keys.size(); i++) {
+        QSharedPointer<Participant> p = keys[i];
+        p->removeChatParticipant(left);
+    }
 }
 
 RemoteChat::RemoteChat(const QString &chatID) : Chat(chatID)

@@ -35,6 +35,22 @@ public:
     QString getChatID() const;
 
 protected:
+
+    const QString chatID;
+};
+
+/* owned by server, not by session. pointer kept in global list. destroyed only when empty. */
+class LocalChat : public Chat
+{
+public:
+    LocalChat(const QString &chatID, const sdc::User &user, sdc::ChatClientCallbackIPrx callback);
+
+    void appendMessageFrom(const sdc::User &user, const sdc::ByteSeq &message);
+    void inviteUser(const sdc::User &user, const sdc::ByteSeq &sessionKey);
+    void leaveChat(const sdc::User &user);
+
+private:
+
     /**
      * Notifies all participants that user has joined.
      * The participantsMutex must be unlocked when called.
@@ -47,21 +63,8 @@ protected:
      */
     void notifyLeave(const sdc::User &left);
 
-    const QString chatID;
-
     QMap<QString, QSharedPointer<Participant> > participants;
     QMutex participantsMutex;
-};
-
-/* owned by server, not by session. pointer kept in global list. destroyed only when empty. */
-class LocalChat : public Chat
-{
-public:
-    LocalChat(const QString &chatID, const sdc::User &user, sdc::ChatClientCallbackIPrx callback);
-
-    void appendMessageFrom(const sdc::User &user, const sdc::ByteSeq &message);
-    void inviteUser(const sdc::User &user, const sdc::ByteSeq &sessionKey);
-    void leaveChat(const sdc::User &user);
 };
 
 /* owned by session, pointer kept in session. destroyed on leave or logout. */
