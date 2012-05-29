@@ -33,3 +33,6 @@
 |032|f|Invite Contact|Try to invite a contact while not in a chat|Nothing happens|
 |033|s|Delete Contact|Try to delete a contact|Contact disappears from the contact list|
 |034|s|Save Contacts|Log out, then log in again|The contact list is fully restored|
+|035|s|Chat Logs|Open a chat, close Chat, Menu -> View Chatlogs|Entry with current timestamp is there|
+|036|s|Chat Logs|As 035, but send a few messages. Click the entry in the Loglist|The chatmessages from the earlier chat are there.|
+|037|s|Chat Logs|As 036 but invite a second participant|The other participants' messages should be there as well|
