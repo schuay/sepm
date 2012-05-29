@@ -24,6 +24,7 @@ set(client_gui_QTHEADERS
         chatlogdialog.h
         settingsdialog.h
         usermodel.h
+	chattabwidget.h
 )
 qt4_wrap_cpp(client_gui_QTHEADERS_MOC ${client_gui_QTHEADERS})
 
@@ -35,6 +36,7 @@ set(client_gui_SRCS
         chatlogdialog.cpp
         settingsdialog.cpp
         usermodel.cpp
+	chattabwidget.cpp
 )
 
 if (CMAKE_COMPILER_IS_GNUCXX)

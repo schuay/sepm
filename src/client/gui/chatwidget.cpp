@@ -63,6 +63,7 @@ void ChatWidget::messageReceived(QSharedPointer<const User> user, const QString 
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
     ui->tbChat->append(user->getName() + QString(": ") + msg);
+    emit chatUpdate(this);
 }
 
 /**
@@ -72,12 +73,14 @@ void ChatWidget::userJoined(QSharedPointer<const User> user)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
     pList->addUser(user);
+    emit chatUpdate(this);
 }
 
 void ChatWidget::userLeft(QSharedPointer<const User> user)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
     pList->removeUser(user);
+    emit chatUpdate(this);
 }
 
 /**

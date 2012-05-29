@@ -29,6 +29,8 @@ public:
 
 signals:
     void leftChat();
+    void chatUpdate(ChatWidget *changed);
+
 public slots:
     // void chatClosed();
     /**

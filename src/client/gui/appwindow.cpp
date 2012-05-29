@@ -151,6 +151,8 @@ void AppWindow::onChatOpened(QSharedPointer<Chat> chat)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
     ChatWidget *widget = new ChatWidget(d_session, chat);
+    connect(widget, SIGNAL(chatUpdate(ChatWidget *)), ui->twChats,
+            SLOT(onChatUpdate(ChatWidget *)));
     ui->twChats->addTab(widget, chat->getID());
     ui->twChats->setCurrentWidget(widget);
 }
