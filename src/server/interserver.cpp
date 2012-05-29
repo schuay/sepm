@@ -37,6 +37,12 @@ throw(sdc::InterServerException)
     try {
         QSharedPointer<Chat> p = Server::instance().getChat(QString::fromStdString(chatID));
         p->inviteUser(participant, key);
+    } catch (const sdc::InterServerException &e) {
+        // getChat throws this with a useful message
+        throw e;
+    } catch (const sdc::ChatException &e) {
+        // thrown by the Users' ChatClientCallback
+        throw sdc::InterServerException("Received error from client " + participant.ID + ":\n" + e.what);
     } catch (...) {
         throw sdc::InterServerException();
     }
@@ -53,6 +59,9 @@ throw(sdc::InterServerException)
     try {
         QSharedPointer<Chat> p = Server::instance().getChat(QString::fromStdString(chatID));
         p->appendMessageFrom(sender, message);
+    } catch (const sdc::MessageCallbackException &e) {
+        // chat throws this with a useful message
+        throw sdc::InterServerException(e.what);
     } catch (...) {
         throw sdc::InterServerException();
     }
@@ -69,6 +78,8 @@ throw(sdc::InterServerException)
         QSharedPointer<Chat> p = Server::instance().getChat(QString::fromStdString(chatID));
         p->leaveChat(participant);
     } catch (...) {
+        // Exception should not normally occur here, since these are caught
+        // in participant and logged as an error.
         throw sdc::InterServerException();
     }
 }
