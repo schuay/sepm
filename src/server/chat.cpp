@@ -146,7 +146,6 @@ void RemoteChat::appendMessageFrom(const sdc::User &user, const sdc::ByteSeq &me
 {
     // Can throw InterServerExeption, which is also expected in SessionI
     interServer->sendMessage(user, message, chatID.toStdString());
-
 }
 
 void RemoteChat::inviteUser(const sdc::User &user, const sdc::ByteSeq &sessionKey)

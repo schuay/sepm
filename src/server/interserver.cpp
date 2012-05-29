@@ -117,11 +117,8 @@ throw(sdc::ParticipationException)
     QString userID = QString::fromStdString(client.ID);
 
     try {
-        Server::instance().getUserChat(userID, QString::fromStdString(chatID))->notifyJoin(participant);
-
-    } catch (const sdc::ParticipationException &e) {
-        // client throws this for us with a useful message
-        throw e;
+        sdc::ChatClientCallbackIPrx proxy = Server::instance().getClientCallback(userID);
+        proxy->addChatParticipant(participant, chatID);
     } catch (...) {
         throw sdc::ParticipationException();
     }
@@ -139,11 +136,8 @@ throw(sdc::ParticipationException)
     QString userID = QString::fromStdString(client.ID);
 
     try {
-        Server::instance().getUserChat(userID, QString::fromStdString(chatID))->leaveChat(participant);
-
-    } catch (const sdc::ParticipationException &e) {
-        // client throws this for us with a useful message
-        throw e;
+        sdc::ChatClientCallbackIPrx proxy = Server::instance().getClientCallback(userID);
+        proxy->removeChatParticipant(participant, chatID);
     } catch (...) {
         throw sdc::ParticipationException();
     }
