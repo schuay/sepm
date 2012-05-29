@@ -106,23 +106,48 @@ throw(sdc::ChatException)
 }
 
 void InterServer::clientAddChatParticipant(
-    const sdc::User &/*client*/,
-    const sdc::User &/*participant*/,
-    const std::string &/*chatID*/,
+    const sdc::User &client,
+    const sdc::User &participant,
+    const std::string &chatID,
     const Ice::Current &)
 throw(sdc::ParticipationException)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
+
+    QString userID = QString::fromStdString(client.ID);
+
+    try {
+        Server::instance().getUserChat(userID, QString::fromStdString(chatID))->notifyJoin(participant);
+
+    } catch (const sdc::ParticipationException &e) {
+        // client throws this for us with a useful message
+        throw e;
+    } catch (...) {
+        throw sdc::ParticipationException();
+    }
+
 }
 
 void InterServer::clientRemoveChatParticipant(
-    const sdc::User &/*client*/,
-    const sdc::User &/*participant*/,
-    const std::string &/*chatID*/,
+    const sdc::User &client,
+    const sdc::User &participant,
+    const std::string &chatID,
     const Ice::Current &)
 throw(sdc::ParticipationException)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
+    QString userID = QString::fromStdString(client.ID);
+
+    try {
+        Server::instance().getUserChat(userID, QString::fromStdString(chatID))->leaveChat(participant);
+
+    } catch (const sdc::ParticipationException &e) {
+        // client throws this for us with a useful message
+        throw e;
+    } catch (...) {
+        throw sdc::ParticipationException();
+    }
+
 }
 
 void InterServer::clientAppendMessageToChat(
@@ -135,10 +160,10 @@ throw(sdc::MessageCallbackException)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
 
-    QString id = QString::fromStdString(client.ID);
+    QString userID = QString::fromStdString(client.ID);
 
     try {
-        sdc::ChatClientCallbackIPrx proxy = Server::instance().getClientCallback(id);
+        sdc::ChatClientCallbackIPrx proxy = Server::instance().getClientCallback(userID);
         proxy->appendMessageToChat(message, chatID, participant);
     } catch (...) {
         throw sdc::MessageCallbackException();
