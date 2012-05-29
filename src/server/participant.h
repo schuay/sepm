@@ -17,6 +17,7 @@ public:
     Participant(const sdc::User &user, const QString &chatID);
     virtual ~Participant();
 
+    QString getUserID();
     virtual void invite(const QStringList &users, const sdc::ByteSeq &sessionKey) = 0;
     virtual void addChatParticipant(const sdc::User &participant) = 0;
     virtual void removeChatParticipant(const sdc::User &participant) = 0;

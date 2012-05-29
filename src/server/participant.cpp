@@ -16,6 +16,10 @@ Participant::~Participant()
 {
 }
 
+QString Participant::getUserID()
+{
+    return QString::fromStdString(self.ID);
+}
 
 LocalParticipant::LocalParticipant(const sdc::User &user, sdc::ChatClientCallbackIPrx callback,
                                    const QString &chatID)
