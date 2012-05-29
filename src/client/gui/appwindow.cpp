@@ -8,6 +8,7 @@
 #include <QListWidgetItem>
 #include <QtGui>
 #include <QsLog.h>
+#define TIMEOUT 5
 
 Q_DECLARE_METATYPE(QSharedPointer<Chat>)
 
@@ -18,6 +19,8 @@ AppWindow::AppWindow(QWidget *parent, QSharedPointer<Session> session) :
     ui->setupUi(this);
     d_session = session;
     contactList = new UserModel(d_session);
+    timer = new QTimer(this);
+    timer->setInterval(TIMEOUT * 1000);
     setAttribute(Qt::WA_DeleteOnClose, true);
     ui->lUsername->setText(d_session->getUser()->getName());
 
@@ -61,6 +64,10 @@ AppWindow::AppWindow(QWidget *parent, QSharedPointer<Session> session) :
             SIGNAL(activated(QModelIndex)),
             this,
             SLOT(onContactInvite(QModelIndex)));
+    connect(timer,
+            SIGNAL(timeout()),
+            this,
+            SLOT(onLogoutCompleted(bool, QString)));
 
     ui->lvContacts->setModel(contactList);
     d_session->retrieveContactList();
@@ -95,6 +102,7 @@ void AppWindow::closeEvent(QCloseEvent *event)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
     if (d_session->isValid()) {
+        timer->start();
         logout();
         event->ignore();
     }
@@ -186,6 +194,8 @@ void AppWindow::onLogoutCompleted(bool success, const QString &msg)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
     if (success) {
+        if (timer->isActive())
+            timer->stop();
         LoginDialog *ld = new LoginDialog();
         ld->show();
         close();

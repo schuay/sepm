@@ -36,7 +36,7 @@ public slots:
     void onStartChatEntryClicked();
     void onInviteClicked();
     void deleteAccount();
-    void onLogoutCompleted(bool success, const QString &msg);
+    void onLogoutCompleted(bool success = true, const QString &msg = "");
     void onUserDeleted(bool success, const QString &msg);
     void onContactListReceived(const QStringList &list, bool success, const QString &msg);
     void onLogoutReady();
@@ -50,6 +50,7 @@ private:
     QMenu *settingspopupmenu;
     QMenu *contactListMenu;
     UserModel *contactList;
+    QTimer *timer;
 };
 
 #endif // APPWINDOW_H
