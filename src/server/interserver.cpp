@@ -84,14 +84,25 @@ throw(sdc::InterServerException)
     }
 }
 
-void InterServer::clientInitChat(const sdc::User &/*client*/,
-                                 const sdc::StringSeq &/*users*/,
-                                 const std::string &/*chatID*/,
-                                 const sdc::ByteSeq &/*key*/,
+void InterServer::clientInitChat(const sdc::User &user,
+                                 const sdc::StringSeq &participants,
+                                 const std::string &chatID,
+                                 const sdc::ByteSeq &sessionKey,
                                  const Ice::Current &)
 throw(sdc::ChatException)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
+    try {
+        QString userID = QString::fromStdString(user.ID);
+
+        Server::instance().addRemoteChatTo(userID, QString::fromStdString(chatID));
+
+        sdc::ChatClientCallbackIPrx proxy = Server::instance().getClientCallback(userID);
+        proxy->initChat(participants, chatID, sessionKey);
+    } catch (...) {
+        throw sdc::ChatException();
+    }
+
 }
 
 void InterServer::clientAddChatParticipant(
