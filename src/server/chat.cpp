@@ -70,9 +70,26 @@ void LocalChat::appendMessageFrom(const sdc::User &user, const sdc::ByteSeq &mes
     QList<QSharedPointer<Participant> > keys = participants.values();
     locker.unlock();
 
+    // If we can't deliver the message to some of the users,
+    // we can report that, but may still want to reach the others
+    QStringList failures;
+
     for (int i = 0; i < keys.size(); i++) {
+
         QSharedPointer<Participant> p = keys[i];
-        p->appendMessageToChat(user, message);
+
+        try {
+            p->appendMessageToChat(user, message);
+        } catch (sdc::MessageCallbackException) {
+            failures << p->getUserID();
+            // TODO: Would it be sensible to remove these users
+            // from the chat?
+        }
+    }
+
+    if (!failures.isEmpty()) {
+        QString errmsg = "Could not deliver the message to some users: %1;";
+        QLOG_ERROR() << errmsg.arg(failures.join(" "));
     }
 }
 
