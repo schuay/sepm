@@ -36,3 +36,7 @@
 |035|s|Chat Logs|Open a chat, close Chat, Menu -> View Chatlogs|Entry with current timestamp is there|
 |036|s|Chat Logs|As 035, but send a few messages. Click the entry in the Loglist|The chatmessages from the earlier chat are there.|
 |037|s|Chat Logs|As 036 but invite a second participant|The other participants' messages should be there as well|
+|038|s|UI Notifications|Establish chat with 2 users, user 1 opens another chat and switches to it, user 2 sends a message|Tab text of old chat at user 1's client is now red|
+|039|s|UI Notifications|Establish chat with 2 users, user 1 opens another chat and switches to it, user 2 leaves the chat|Tab text of old chat at user 1's client is now red|
+|040|s|UI Notifications|Establish chat with 2 users, user 1 opens another chat and switches to it, user 2 invites another user (user 3)|Tab text of old chat at user 1's client is now red|
+|041|s|UI Notifications|Make sure a chat with red tab text is open, switch to that tab|Tab text of the chat is now black|
