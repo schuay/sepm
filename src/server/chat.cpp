@@ -135,6 +135,12 @@ void LocalChat::leaveChat(const sdc::User &user)
         Server::instance().removeChat(chatID);
 }
 
+RemoteChat::RemoteChat(const QString &chatID) : Chat(chatID)
+{
+    QString hostname = QString::fromStdString(sdc::sdcHelper::getServerFromID(
+                           chatID.toStdString()));
+    interServer = Server::instance().getInterServerProxy(hostname);
+}
 
 void RemoteChat::appendMessageFrom(const sdc::User &user, const sdc::ByteSeq &message)
 {
