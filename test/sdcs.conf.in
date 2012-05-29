@@ -7,5 +7,5 @@ dbDriver=QPSQL
 dbHost=localhost
 dbDatabase=sdcs_test
 dbUser=sdcs_test
-dbPassword=sdc_test
+dbPassword=sdcs_test
 hostname=localhost
