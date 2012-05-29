@@ -53,6 +53,7 @@ public:
 
     /**
      * Adds the chat with id chatID to the session-local chat map of user.
+     * The chat must already be in the server chat map.
      * Throws an exception if that client is not active.
      */
     void addChatTo(const QString &user, const QString &chatID)
