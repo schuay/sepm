@@ -1,0 +1,40 @@
+h3. Tests with Reference Server
+
+|_.ID|_.Type|_.Direction|_.Description|_.Procedure|_.Expected Results|
+|1|p||Prerequisite - Start Server|Start group server; make sure hostname is configured, host ist reachable by ref server and port 1337 is open.|Server up and running|
+|2|p||Prerequisite - Connect Clients|Start Clients 'A' (connect to our server 'LS') and 'B' (connect to reference server 'RS')|Clients running|
+|3|p||Prerequisite - Create Users|Create two Users 'P' and 'Q' on Client 'A'; log in with 'P'|Success and logged in|
+|4|p||Prerequisite - Create Users|Create two Users 'R' and 'S' on Client 'B'; log in with 'P'|Success and logged in|
+|5|s|Incoming|Retrieve User|on B: add user P@LS to contact list|User added to contact list|
+|6|s|Incoming|Retrieve Logged Out User|on B: add user Q@LS to contact list|User added to contact list|
+|7|s|Outgoing|Retrieve User|on A: add user R@RS to contact list|User added to contact list|
+|8|s|Outgoing|Retrieve Logged Out User|on A: add user S@RS to contact list|User added to contact list|
+|9|f|Incoming|Retrieve nonexistant User|on B: add a nonexistant user @LS to contact list|Failure|
+|10|f|Outgoing|Retrieve nonexistant User|on A: add a nonexistant user @RS to contact list|Failure|
+|11|s|Incoming|Invite User|on B: open a chat and invite P@LS from contact list; repeat test with manually entered name|Chat opens on A. Both participants lists contain P@LS and R@RS|
+|12|s|Incoming|Notification "User Leaves"|on B: leave chat|B disappears from participants list on A|
+|13|s|Incoming|Chat persistance|on B: leave chat; on A: enter a message|Chat stays open on A; A sees his message|
+|14|s|Incoming|Chat persistance|on A: invite B to the same chat; both: enter a message|Both users see both messages|
+|15|s|Outgoing|Invite User|on A: open a chat and invite R@RS from contact list; repeat test with manually entered name|Chat opens on B. Both participants lists contain P@LS and R@RS|
+|12|s|Outgoing|Notification "User Leaves"|on A: leave chat|A disappears from participants list on B|
+|16|s|Outgoing|Chat persistance|on B: enter a message|Chat stays open on B; B sees his message|
+|17|s|Outgoing|Chat persistance|on B: invite A to the same chat; both: enter a message|Both users see both messages|
+
+h3. Tests with 2 local servers
+
+|_.ID|_.Type|_.Description|_.Procedure|_.Expected Results|
+|18|p|Prerequisite - Start Server|Start two servers on two hosts; make sure hostnames are configured and network communication through port 1337 is possible.|Server up and running|
+|19|p|Prerequisite - Connect Clients|Start Clients 'A' (connect to the first server 'LS') and 'B' (connect to the second server 'LS2')|Clients running|
+|20|p|Prerequisite - Create Users|Create two Users 'P' and 'Q' on Client 'A'; log in with 'P'|Success and logged in|
+|21|p|Prerequisite - Create Users|Create two Users 'R' and 'S' on Client 'B'; log in with 'P'|Success and logged in|
+|22|mixed|Repeat "incoming" tests from before replacing 'RS' with 'LS2'|||
+
+h3. Tests with 3 servers
+
+|_.ID|_.Type|_.Direction|_.Description|_.Procedure|_.Expected Results|
+|23|p||Prerequisite - Start servers|Make sure 'LS' and 'LS2' are still running and 'LS2' can also reach 'RS'||
+|24|p||Prerequisite - Start Clients|Open Client 'C'. Login 'A' on 'LS', 'B' on 'RS' and 'C' on 'LS2'|all connected|
+|25|s|Incoming|Invite to chat on remote server|On B: open a chat and invite A; on A: invite C to the same chat|On all clients: All three users in participants list|
+|26|s|Incoming|Chat with three users|Each client: enter a message|On all clients: See all three messages|
+|27|s|Outgoing|Invite to chat on remote server|On A: open a chat and invite B; on B: invite C to the same chat|On all clients: All three users in participants list|
+|28|s|Outgoing|Chat with three users|Each client: enter a message|On all clients: See all three messages|
