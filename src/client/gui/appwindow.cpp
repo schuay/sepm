@@ -252,6 +252,11 @@ void AppWindow::contextMenuRequested(const QPoint &point)
 
 void AppWindow::onContactInvite(const QModelIndex &index)
 {
+    QLOG_TRACE() << __PRETTY_FUNCTION__;
+    if (ui->twChats->count() == 0) {
+        QMessageBox::warning(this, "Invite Failed", "To invite a user, please create or join a chat.");
+        return;
+    }
     ChatWidget *cw = dynamic_cast<ChatWidget *>(ui->twChats->currentWidget());
     if (cw == 0) return;
     cw->invite(contactList->getUser(index));
