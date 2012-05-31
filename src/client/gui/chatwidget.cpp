@@ -73,6 +73,10 @@ void ChatWidget::userJoined(QSharedPointer<const User> user)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
     pList->addUser(user);
+    int oldWeight = ui->tbChat->fontWeight();
+    ui->tbChat->setFontWeight(QFont::Bold);
+    ui->tbChat->append(user->getName() + QString(" joined"));
+    ui->tbChat->setFontWeight(oldWeight);
     emit chatUpdate(this);
 }
 
@@ -80,6 +84,10 @@ void ChatWidget::userLeft(QSharedPointer<const User> user)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
     pList->removeUser(user);
+    int oldWeight = ui->tbChat->fontWeight();
+    ui->tbChat->setFontWeight(QFont::Bold);
+    ui->tbChat->append(user->getName() + QString(" left"));
+    ui->tbChat->setFontWeight(oldWeight);
     emit chatUpdate(this);
 }
 
