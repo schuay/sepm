@@ -30,7 +30,7 @@
 |029|s|Invite Contact|Try to double click a contact while in a chat and while they are online|Contact gets invited to the chat|
 |030|s|Invite Contact|Try to invite a contact via the right click menu while in a chat and while they are online|Contact gets invited to the chat|
 |031|f|Invite Contact|Try to invite a contact while they aren't online|Error message appears|
-|032|f|Invite Contact|Try to invite a contact while not in a chat|Nothing happens|
+|032|f|Invite Contact|Try to invite a contact while not in a chat|Error message appears: "You can't invite a user without first opening up a chat"|
 |033|s|Delete Contact|Try to delete a contact|Contact disappears from the contact list|
 |034|s|Save Contacts|Log out, then log in again|The contact list is fully restored|
 |035|s|Chat Logs|Open a chat, close Chat, Menu -> View Chatlogs|Entry with current timestamp is there|
@@ -40,3 +40,5 @@
 |039|s|UI Notifications|Establish chat with 2 users, user 1 opens another chat and switches to it, user 2 leaves the chat|Tab text of old chat at user 1's client is now red|
 |040|s|UI Notifications|Establish chat with 2 users, user 1 opens another chat and switches to it, user 2 invites another user (user 3)|Tab text of old chat at user 1's client is now red|
 |041|s|UI Notifications|Make sure a chat with red tab text is open, switch to that tab|Tab text of the chat is now black|
+|042|s|Chat Info|Establish chat, invite a user|The inviting user gets the message "<username> joined" in a bold font|
+|043|s|Chat Info|Establish a chat with 2 users, 1 user leaves the chat|The remaining users get the message "<username> left" in a bold font|
