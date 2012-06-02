@@ -74,7 +74,7 @@ private:
     void leaveAllChats(void);
 
 private slots:
-    void leaveChatCompletedSlot(bool success, const QString &message);
+    void leaveChatCompletedSlot();
 };
 
 }

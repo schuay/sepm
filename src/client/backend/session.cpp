@@ -38,7 +38,7 @@ void SessionPrivate::initChat(const sdc::StringSeq &cUsers,
 
     cp = QSharedPointer<Chat>(new Chat(session, *q, key, sessionKey));
     connect(cp.data(), SIGNAL(leaveChatCompleted(bool, QString)),
-            this, SLOT(leaveChatCompletedSlot(bool, QString)));
+            this, SLOT(leaveChatCompletedSlot()));
 
     sdc::StringSeq::const_iterator i;
     cp->addChatParticipant(user);
@@ -162,7 +162,7 @@ void SessionPrivate::runInitChat()
         cp = QSharedPointer<Chat>(new Chat(session, *q, key,
                                            s.genAESKey(SESSION_KEY_SIZE)));
         connect(cp.data(), SIGNAL(leaveChatCompleted(bool, QString)),
-                this, SLOT(leaveChatCompletedSlot(bool, QString)));
+                this, SLOT(leaveChatCompletedSlot()));
 
         QMutexLocker locker(&chatsMutex);
         chats[key] = cp;
@@ -400,12 +400,11 @@ QSharedPointer<const User> SessionPrivate::getUser(const QString &username)
     return users[username];
 }
 
-void SessionPrivate::leaveChatCompletedSlot(bool /* success */,
-        const QString& /* message */)
+void SessionPrivate::leaveChatCompletedSlot()
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
     QMutexLocker locker(&chatsMutex);
-    chats.remove(qobject_cast<Chat *>(this->sender())->getID());
+    chats.remove(qobject_cast<Chat *>(sender())->getID());
 }
 
 const QSharedPointer<const LoginUser> Session::getUser() const
