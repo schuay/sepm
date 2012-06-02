@@ -41,6 +41,7 @@ void Settings::fillConfiguration()
     configuration[SCertPath] = Setting("server/certPath", "localhost.crt");
     configuration[SKeyPath] = Setting("server/keyPath", "localhost.key");
     configuration[SCertAuthPath] = Setting("server/certAuthPath", "ca.crt");
+    configuration[SListenAddress] = Setting("server/listenAddress", "0.0.0.0");
     configuration[SHostname] = Setting("server/hostname", "localhost");
     configuration[SDbHost] = Setting("server/dbHost", "localhost");
     configuration[SDbUser] = Setting("server/dbUser", "grp22");

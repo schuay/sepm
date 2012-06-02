@@ -104,7 +104,7 @@ int main(int argc, char **argv)
     Ice::PropertiesPtr props = Ice::createProperties();
     props->setProperty("Ice.Plugin.IceSSL", "IceSSL:createIceSSL");
     props->setProperty("Ice.Override.Timeout", "5000");
-    props->setProperty("Ice.Default.Host", GET_STDSTRING_SETTING(sdc::Settings::SHostname));
+    props->setProperty("Ice.Default.Host", GET_STDSTRING_SETTING(sdc::Settings::SListenAddress));
     props->setProperty("IceSSL.DefaultDir", GET_STDSTRING_SETTING(sdc::Settings::SCertsDir));
     props->setProperty("IceSSL.CertFile", GET_STDSTRING_SETTING(sdc::Settings::SCertPath));
     props->setProperty("IceSSL.KeyFile", GET_STDSTRING_SETTING(sdc::Settings::SKeyPath));

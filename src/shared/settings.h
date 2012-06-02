@@ -30,6 +30,7 @@ public:
         SKeyPath,
         SCertAuthPath,
         SHostname,
+        SListenAddress,
         SDbHost,
         SDbUser,
         SDbDatabase,
