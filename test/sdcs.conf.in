@@ -9,3 +9,4 @@ dbDatabase=sdcs_test
 dbUser=sdcs_test
 dbPassword=sdcs_test
 hostname=localhost
+listenAddress=127.0.0.1
