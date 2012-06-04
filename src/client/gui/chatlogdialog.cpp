@@ -14,7 +14,6 @@ ChatLogDialog::ChatLogDialog(QWidget *parent, QSharedPointer<Session> session) :
     d_session->retrieveLoglist();
     ui->setupUi(this);
     this->setWindowTitle("View Chatlogs");
-
     connect(d_session.data(),
             SIGNAL(retrieveLoglistCompleted(const QList<QPair<QDateTime, QString> >, bool, const QString)),
             this,
@@ -34,6 +33,15 @@ ChatLogDialog::ChatLogDialog(QWidget *parent, QSharedPointer<Session> session) :
             SIGNAL(retrieveLogCompleted(const QList<ChatlogEntry>, bool, const QString)),
             this,
             SLOT(onRetrieveLogCompleted(const QList<ChatlogEntry>, bool, QString)));
+
+
+}
+
+void ChatLogDialog::selectionChanged(const QItemSelection &sel, const QItemSelection &des)
+{
+    Q_UNUSED(des);
+    onTimeStampClicked(sel.indexes().at(0));
+
 }
 
 void ChatLogDialog::onRetrieveLoglistCompleted(const QList<QPair<QDateTime, QString> > &list,
@@ -42,6 +50,10 @@ void ChatLogDialog::onRetrieveLoglistCompleted(const QList<QPair<QDateTime, QStr
     if (success) {
         chattimestampmodel->setEntries(list);
         ui->lwChatTimestampList->setModel(chattimestampmodel);
+        // We can only connect the signal after a model has been assigned.
+        connect(ui->lwChatTimestampList->selectionModel(), SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
+                this, SLOT(selectionChanged(const QItemSelection &, const QItemSelection &)));
+
     } else {
         QMessageBox::warning(this, "Retrieve Loglist Failed", msg);
     }

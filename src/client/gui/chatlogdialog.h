@@ -28,6 +28,7 @@ public slots:
     void onTimeStampClicked(QModelIndex index);
     void onRetrieveLogCompleted(const QList<ChatlogEntry> &list,
                                 bool success, const QString &msg);
+    void selectionChanged(const QItemSelection &sel, const QItemSelection &des);
 private:
     Ui::ChatLogDialog *ui;
     QSharedPointer<Session> d_session;
