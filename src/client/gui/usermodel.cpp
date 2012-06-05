@@ -31,7 +31,9 @@ int UserModel::rowCount(const QModelIndex &parent) const
 
 QVariant UserModel::data(const QModelIndex &index, int role) const
 {
-    QSharedPointer<const User> user = d_users.values().at(index.row());
+    QSharedPointer<const User> user = getUser(index);
+    if (user.isNull())
+        return QVariant();
 
     if (role == Qt::DisplayRole) {
         QString name = QString(
@@ -56,7 +58,10 @@ QSharedPointer<const User> UserModel::getUser(const QString &username) const
 
 QSharedPointer<const User> UserModel::getUser(int id) const
 {
-    return d_users.values().at(id);
+    if (d_users.size() > id)
+        return d_users.values().at(id);
+    else
+        return QSharedPointer<const sdcc::User>();
 }
 
 QSharedPointer<const User> UserModel::getUser(const QModelIndex &index) const
@@ -100,7 +105,10 @@ QSharedPointer<const User> UserModel::removeUser(QSharedPointer<const User> user
 
 QSharedPointer<const User> UserModel::removeUser(int index)
 {
-    return removeUser(d_users.keys().at(index));
+    if (d_users.keys().size() > index)
+        return removeUser(d_users.keys().at(index));
+    else
+        return QSharedPointer<const sdcc::User>();
 }
 
 QSharedPointer<const User> UserModel::removeUser(const QModelIndex &index)
