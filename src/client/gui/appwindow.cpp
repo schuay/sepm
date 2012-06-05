@@ -68,7 +68,7 @@ AppWindow::AppWindow(QWidget *parent, QSharedPointer<Session> session) :
     connect(timer,
             SIGNAL(timeout()),
             this,
-            SLOT(onLogoutCompleted(bool, QString)));
+            SLOT(onLogoutCompleted()));
 
     ui->lvContacts->setModel(contactList);
     d_session->retrieveContactList();
