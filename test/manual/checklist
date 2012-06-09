@@ -44,3 +44,5 @@
 |043|s|Chat Info|Establish a chat with 2 users, 1 user leaves the chat|The remaining users get the message "<username> left" in a bold font|
 |044|s|Chat Logs|Try selecting a log by switching with arrow keys or clicking or double-clicking it|The chatlog should be selected and the messages are listed|
 |045|s|Settings Dialog|Try selecting new public/privatekey and cancel after the selection|The new settings should be discarded|
+|046|f|Miscellaneous|Log in with an incorrect public key, use the contact list, invite, get invited, chat|Errors can appear but the client should not crash|
+|047|f|Miscellaneous|Log in with an incorrect private key, use the contact list, invite, get invited, chat|Errors can appear but the client should not crash|
