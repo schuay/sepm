@@ -51,12 +51,6 @@ public:
 
 private:
 
-    /**
-     * Notifies all participants that user has left.
-     * The participantsMutex must be unlocked when called.
-     */
-    void notifyLeave(const sdc::User &left);
-
     QMap<QString, QSharedPointer<Participant> > participants;
     QMutex participantsMutex;
 };

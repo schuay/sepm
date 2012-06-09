@@ -106,24 +106,17 @@ void LocalChat::leaveChat(const sdc::User &user)
         throw sdc::SessionException("User is not in the chat.");
 
     participants.remove(username);
-    locker.unlock();
 
-    notifyLeave(user);
+    QList<QSharedPointer<Participant> > values = participants.values();
+    for (int i = 0; i < values.size(); i++) {
+        QSharedPointer<Participant> p = values[i];
+        p->removeChatParticipant(user);
+    }
+
+    locker.unlock();
 
     if (participants.empty())
         Server::instance().removeChat(chatID);
-}
-
-void LocalChat::notifyLeave(const sdc::User &left)
-{
-    QMutexLocker locker(&participantsMutex);
-    QList<QSharedPointer<Participant> > keys = participants.values();
-    locker.unlock();
-
-    for (int i = 0; i < keys.size(); i++) {
-        QSharedPointer<Participant> p = keys[i];
-        p->removeChatParticipant(left);
-    }
 }
 
 RemoteChat::RemoteChat(const QString &chatID) : Chat(chatID)
