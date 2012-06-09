@@ -14,6 +14,7 @@ void SessionPrivate::initChat(const sdc::StringSeq &cUsers,
                               const std::string &chatID,
                               const sdc::ByteSeq &sessionKeyEnc,
                               const Ice::Current &)
+throw(sdc::ChatClientCallbackException)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
     Q_Q(Session);
@@ -25,15 +26,18 @@ void SessionPrivate::initChat(const sdc::StringSeq &cUsers,
     try {
         sessionKey = user->decrypt(sessionKeyEnc);
     } catch (const sdc::SecurityException &e) {
-        QLOG_ERROR() << QString("Could not decrypt session key for '%1'").arg(key);
-        return;
+        QString msg = QString("Could not decrypt session key for '%1'")
+                .arg(key);
+        QLOG_ERROR() << msg;
+        throw sdc::ChatClientCallbackException(msg.toStdString());
     }
 
     QMutexLocker locker(&chatsMutex);
     if (chats.contains(key)) {
-        QLOG_WARN() << QString("Received invitation for a chat we are already in ('%1')")
-                    .arg(key);
-        return;
+        QString msg = QString("Received invitation for a chat we are already in ('%1')")
+                .arg(key);
+        QLOG_ERROR() << msg;
+        throw sdc::ChatClientCallbackException(msg.toStdString());
     }
 
     cp = QSharedPointer<Chat>(new Chat(session, *q, key, sessionKey));
@@ -50,19 +54,24 @@ void SessionPrivate::initChat(const sdc::StringSeq &cUsers,
         chats[key] = cp;
         emit q->invitationReceived(cp);
     } catch (const sdc::UserHandlingException &e) {
-        QLOG_ERROR() << QString("Received invitation with invalid user, '%1', '%2'")
-                     .arg(key).arg(QString::fromStdString(*i));
+        QString msg = QString("Received invitation with invalid user, '%1', '%2'")
+                .arg(key).arg(QString::fromStdString(*i));
+        QLOG_ERROR() << msg;
+        throw sdc::ChatClientCallbackException(msg.toStdString());
     } catch (const sdc::InterServerException &e) {
-        QLOG_ERROR() << QString("Received invitation with invalid user, '%1', '%2'")
-                     .arg(key).arg(QString::fromStdString(*i));
+        QString msg = QString("Received invitation with invalid user, '%1', '%2'")
+                .arg(key).arg(QString::fromStdString(*i));
+        QLOG_ERROR() << msg;
+        throw sdc::ChatClientCallbackException(msg.toStdString());
     } catch (...) {
-        QLOG_ERROR() << QString("Unexpected exception");
+        throw sdc::ChatClientCallbackException("Unexpected exception");
     }
 }
 
 void SessionPrivate::addChatParticipant(const sdc::User &participant,
                                         const std::string &chatID,
                                         const Ice::Current &)
+throw(sdc::ParticipationException)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
 
@@ -71,8 +80,10 @@ void SessionPrivate::addChatParticipant(const sdc::User &participant,
 
     QMutexLocker chatLocker(&chatsMutex);
     if (!chats.contains(key)) {
-        QLOG_ERROR() << QString("New participant for nonexistant chat '%1'").arg(key);
-        return;
+        QString msg = QString("New participant for nonexistant chat '%1'")
+                .arg(key);
+        QLOG_ERROR() << msg;
+        throw sdc::ParticipationException(msg.toStdString());
     }
 
     QMutexLocker userLocker(&usersMutex);
@@ -84,6 +95,7 @@ void SessionPrivate::addChatParticipant(const sdc::User &participant,
 void SessionPrivate::removeChatParticipant(const sdc::User &participant,
         const std::string &chatID,
         const Ice::Current &)
+throw(sdc::ParticipationException)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
 
@@ -92,8 +104,10 @@ void SessionPrivate::removeChatParticipant(const sdc::User &participant,
 
     QMutexLocker chatLocker(&chatsMutex);
     if (!chats.contains(key)) {
-        QLOG_ERROR() << QString("Remove participant from nonexistant chat '%1'").arg(key);
-        return;
+        QString msg = QString("Remove participant from nonexistant chat '%1'")
+                .arg(key);
+        QLOG_ERROR() << msg;
+        throw sdc::ParticipationException(msg.toStdString());
     }
 
     QMutexLocker userLocker(&usersMutex);
@@ -106,6 +120,7 @@ void SessionPrivate::appendMessageToChat(const sdc::ByteSeq &message,
         const std::string &chatID,
         const sdc::User &participant,
         const Ice::Current &)
+throw(sdc::MessageCallbackException)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
 
@@ -114,8 +129,9 @@ void SessionPrivate::appendMessageToChat(const sdc::ByteSeq &message,
     QMutexLocker chatLocker(&chatsMutex);
     QString key = QString::fromStdString(chatID);
     if (!chats.contains(key)) {
-        QLOG_ERROR() << QString("Received message for nonexistant chat '%1'").arg(key);
-        return;
+        QString msg = QString("Received message for nonexistant chat '%1'").arg(key);
+        QLOG_ERROR() << msg;
+        throw sdc::MessageCallbackException(msg.toStdString());
     }
 
     QMutexLocker userLocker(&usersMutex);
@@ -125,6 +141,7 @@ void SessionPrivate::appendMessageToChat(const sdc::ByteSeq &message,
 }
 
 std::string SessionPrivate::echo(const std::string &message, const Ice::Current &)
+throw(sdc::SDCException)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
     return message;

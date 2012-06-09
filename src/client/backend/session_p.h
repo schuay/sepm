@@ -22,18 +22,23 @@ class SessionPrivate : public QObject, public sdc::ChatClientCallbackI
         : communicator(c), q_ptr(q) { }
 
     void initChat(const sdc::StringSeq &cUsers, const std::string &chatID,
-                  const sdc::ByteSeq &sessionKeyEnc, const Ice::Current &);
+                  const sdc::ByteSeq &sessionKeyEnc, const Ice::Current &)
+    throw(sdc::ChatClientCallbackException);
 
     void addChatParticipant(const sdc::User &participant,
-                            const std::string &chatID, const Ice::Current &);
+                            const std::string &chatID, const Ice::Current &)
+    throw(sdc::ParticipationException);
 
-    void removeChatParticipant(const sdc::User &/*participant*/,
-                               const std::string &/*chatID*/, const Ice::Current &);
+    void removeChatParticipant(const sdc::User &participant,
+                               const std::string &chatID, const Ice::Current &)
+    throw(sdc::ParticipationException);
 
     void appendMessageToChat(const sdc::ByteSeq &message, const std::string &chatID,
-                             const sdc::User &participant, const Ice::Current &);
+                             const sdc::User &participant, const Ice::Current &)
+    throw(sdc::MessageCallbackException);
 
-    std::string echo(const std::string &message, const Ice::Current &);
+    std::string echo(const std::string &message, const Ice::Current &)
+    throw(sdc::SDCException);
 
     void runRetrieveUser(const QString &username, const QObject *id);
 
