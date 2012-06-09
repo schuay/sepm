@@ -10,6 +10,14 @@
 namespace sdcs
 {
 
+#define UNEXPECTED_EXCEPTION(type) type("Unexpected exception in: " __PRETTY_FUNCTION)
+
+static inline bool isLocal(const QString &id)
+{
+    return (QString::fromStdString(sdc::sdcHelper::getServerFromID(id.toStdString()))
+            == Server::instance().getHostname());
+}
+
 Session::Session(const sdc::User &user, sdc::ChatClientCallbackIPrx callback)
     : self(user), callback(callback)
 {
@@ -20,12 +28,18 @@ void Session::logout(const Ice::Current &) throw(sdc::UserHandlingException)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
 
-    QMutexLocker locker(&chatsMutex);
-    QList<QSharedPointer<Chat> > values = chats.values();
-    for (int i = 0; i < values.size(); i++)
-        values[i]->leaveChat(self);
+    try {
+        QMutexLocker locker(&chatsMutex);
+        QList<QSharedPointer<Chat> > values = chats.values();
+        for (int i = 0; i < values.size(); i++)
+            values[i]->leaveChat(self);
 
-    Server::instance().removeSession(QString::fromStdString(self.ID));
+        Server::instance().removeSession(QString::fromStdString(self.ID));
+    } catch (const sdc::UserHandlingException &e) {
+        throw e;
+    } catch (...) {
+        throw sdc::UserHandlingException();
+    }
 }
 
 sdc::User Session::retrieveUser(const std::string &userID, const Ice::Current &)
@@ -36,20 +50,34 @@ throw(sdc::UserHandlingException, sdc::InterServerException)
     QString hostname = QString::fromStdString(sdc::sdcHelper::getServerFromID(userID));
 
     if (hostname == Server::instance().getHostname()) {
-        QSharedPointer<UserDbProxy> proxy = UserDbProxy::getProxy(QString::fromStdString(userID));
-        return proxy->getUser();
-    } else {
-        sdc::InterServerIPrx proxy = Server::instance().getInterServerProxy(hostname);
-        sdc::User u = proxy->retrieveUser(userID);
-
-        /* The reference server is bugged and returns an ID without hostname. */
-        QString id = QString::fromStdString(u.ID);
-        if (!id.contains('@')) {
-            id = id + "@" + hostname;
-            u.ID = id.toStdString();
+        try {
+            QSharedPointer<UserDbProxy> proxy = UserDbProxy::getProxy(QString::fromStdString(userID));
+            return proxy->getUser();
+        } catch (const sdc::UserHandlingException &e) {
+            throw e;
+        } catch (...) {
+            throw sdc::UserHandlingException();
         }
+    } else {
+        try {
+            sdc::InterServerIPrx proxy = Server::instance().getInterServerProxy(hostname);
+            sdc::User u = proxy->retrieveUser(userID);
 
-        return u;
+            /* The reference server is bugged and returns an ID without hostname. */
+            QString id = QString::fromStdString(u.ID);
+            if (!id.contains('@')) {
+                id = id + "@" + hostname;
+                u.ID = id.toStdString();
+            }
+
+            return u;
+        } catch (const sdc::InterServerException &e) {
+            throw e;
+        } catch (const sdc::UserHandlingException &e) {
+            throw sdc::InterServerException(e.what);
+        } catch (...) {
+            throw sdc::InterServerException();
+        }
     }
 }
 
@@ -57,13 +85,19 @@ std::string Session::initChat(const Ice::Current &) throw(sdc::SessionException)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
 
-    QSharedPointer<Chat> p = Server::instance().createLocalChat(self, callback);
-    QString chatID = p->getChatID();
+    try {
+        QSharedPointer<Chat> p = Server::instance().createLocalChat(self, callback);
+        QString chatID = p->getChatID();
 
-    QMutexLocker locker(&chatsMutex);
-    chats[chatID] = p;
+        QMutexLocker locker(&chatsMutex);
+        chats[chatID] = p;
 
-    return chatID.toStdString();
+        return chatID.toStdString();
+    } catch (const sdc::SessionException &e) {
+        throw e;
+    } catch (...) {
+        throw sdc::SessionException();
+    }
 }
 
 void Session::leaveChat(const std::string &chatID, const Ice::Current &)
@@ -73,12 +107,23 @@ throw(sdc::SessionException, sdc::InterServerException)
 
     const QString id = QString::fromStdString(chatID);
 
-    QMutexLocker locker(&chatsMutex);
-    if (!chats.contains(id))
-        throw sdc::SessionException("Chat does not exist");
+    try {
+        QMutexLocker locker(&chatsMutex);
+        if (!chats.contains(id))
+            throw sdc::SessionException("Chat does not exist");
 
-    chats[id]->leaveChat(self);
-    chats.remove(id);
+        chats[id]->leaveChat(self);
+        chats.remove(id);
+    } catch (const sdc::SessionException &e) {
+        throw e;
+    } catch (const sdc::InterServerException &e) {
+        throw e;
+    } catch (...) {
+        if (isLocal(id))
+            throw sdc::SessionException();
+        else
+            throw sdc::InterServerException();
+    }
 }
 
 void Session::invite(const sdc::User &participant, const std::string &chatID,
@@ -89,11 +134,22 @@ throw(sdc::UserHandlingException, sdc::InterServerException)
 
     const QString id = QString::fromStdString(chatID);
 
-    QMutexLocker locker(&chatsMutex);
-    if (!chats.contains(id))
-        throw sdc::SessionException("Chat does not exist");
+    try {
+        QMutexLocker locker(&chatsMutex);
+        if (!chats.contains(id))
+            throw sdc::SessionException("Chat does not exist");
 
-    chats[id]->inviteUser(participant, sessionKey);
+        chats[id]->inviteUser(participant, sessionKey);
+    } catch (const sdc::UserHandlingException &e) {
+        throw e;
+    } catch (const sdc::InterServerException &e) {
+        throw e;
+    } catch (...) {
+        if (isLocal(id))
+            throw sdc::UserHandlingException();
+        else
+            throw sdc::InterServerException();
+    }
 }
 
 void Session::sendMessage(const sdc::ByteSeq &message, const std::string &chatID, const Ice::Current &)
@@ -103,11 +159,22 @@ throw(sdc::MessageException, sdc::InterServerException)
 
     const QString id = QString::fromStdString(chatID);
 
-    QMutexLocker locker(&chatsMutex);
-    if (!chats.contains(id))
-        throw sdc::MessageException("Chat does not exist");
+    try {
+        QMutexLocker locker(&chatsMutex);
+        if (!chats.contains(id))
+            throw sdc::MessageException("Chat does not exist");
 
-    chats[id]->appendMessageFrom(self, message);
+        chats[id]->appendMessageFrom(self, message);
+    } catch (const sdc::MessageException &e) {
+        throw e;
+    } catch (const sdc::InterServerException &e) {
+        throw e;
+    } catch (...) {
+        if (isLocal(id))
+            throw sdc::MessageException();
+        else
+            throw sdc::InterServerException();
+    }
 }
 
 void Session::deleteUser(const sdc::User &participant, const Ice::Current &current)
@@ -115,14 +182,20 @@ throw(sdc::UserHandlingException)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
 
-    if (participant != self)
-        throw sdc::UserHandlingException("Unauthorized deletion attempt");
+    try {
+        if (participant != self)
+            throw sdc::UserHandlingException("Unauthorized deletion attempt");
 
-    QSharedPointer<UserDbProxy> proxy = UserDbProxy::getProxy(
-                                            QString::fromStdString(participant.ID));
-    proxy->deleteUser();
+        QSharedPointer<UserDbProxy> proxy = UserDbProxy::getProxy(
+                                                QString::fromStdString(participant.ID));
+        proxy->deleteUser();
 
-    logout(current);
+        logout(current);
+    } catch (const sdc::UserHandlingException &e) {
+        throw e;
+    } catch (...) {
+        throw sdc::UserHandlingException();
+    }
 }
 
 void Session::saveLog(const std::string &chatID, Ice::Long timestamp,
@@ -131,18 +204,30 @@ throw(sdc::LogException)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
 
-    QSharedPointer<UserDbProxy> proxy = UserDbProxy::getProxy(
-                                            QString::fromStdString(self.ID));
-    proxy->saveLog(QString::fromStdString(chatID), static_cast<long>(timestamp), log);
+    try {
+        QSharedPointer<UserDbProxy> proxy = UserDbProxy::getProxy(
+                                                QString::fromStdString(self.ID));
+        proxy->saveLog(QString::fromStdString(chatID), static_cast<long>(timestamp), log);
+    } catch (const sdc::LogException &e) {
+        throw e;
+    } catch (...) {
+        throw sdc::LogException();
+    }
 }
 
 sdc::Loglist Session::retrieveLoglist(const Ice::Current &) throw(sdc::LogException)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
 
-    QSharedPointer<UserDbProxy> proxy = UserDbProxy::getProxy(
-                                            QString::fromStdString(self.ID));
-    return proxy->retrieveLoglist();
+    try {
+        QSharedPointer<UserDbProxy> proxy = UserDbProxy::getProxy(
+                                                QString::fromStdString(self.ID));
+        return proxy->retrieveLoglist();
+    } catch (const sdc::LogException &e) {
+        throw e;
+    } catch (...) {
+        throw sdc::LogException();
+    }
 }
 
 sdc::SecureContainer Session::retrieveLog(const std::string &chatID,
@@ -151,9 +236,15 @@ throw(sdc::LogException)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
 
-    QSharedPointer<UserDbProxy> proxy = UserDbProxy::getProxy(
-                                            QString::fromStdString(self.ID));
-    return proxy->retrieveLog(QString::fromStdString(chatID), static_cast<long>(timestamp));
+    try {
+        QSharedPointer<UserDbProxy> proxy = UserDbProxy::getProxy(
+                                                QString::fromStdString(self.ID));
+        return proxy->retrieveLog(QString::fromStdString(chatID), static_cast<long>(timestamp));
+    } catch (const sdc::LogException &e) {
+        throw e;
+    } catch (...) {
+        throw sdc::LogException();
+    }
 }
 
 void Session::saveContactList(const sdc::SecureContainer &contactList, const Ice::Current &)
@@ -161,9 +252,15 @@ throw(sdc::ContactException)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
 
-    QSharedPointer<UserDbProxy> proxy = UserDbProxy::getProxy(
-                                            QString::fromStdString(self.ID));
-    proxy->saveContactList(contactList);
+    try {
+        QSharedPointer<UserDbProxy> proxy = UserDbProxy::getProxy(
+                                                QString::fromStdString(self.ID));
+        proxy->saveContactList(contactList);
+    } catch (const sdc::ContactException &e) {
+        throw e;
+    } catch (...) {
+        throw sdc::ContactException();
+    }
 }
 
 sdc::SecureContainer Session::retrieveContactList(const Ice::Current &)
@@ -171,9 +268,15 @@ throw(sdc::ContactException)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
 
-    QSharedPointer<UserDbProxy> proxy = UserDbProxy::getProxy(
-                                            QString::fromStdString(self.ID));
-    return proxy->retrieveContactList();
+    try {
+        QSharedPointer<UserDbProxy> proxy = UserDbProxy::getProxy(
+                                                QString::fromStdString(self.ID));
+        return proxy->retrieveContactList();
+    } catch (const sdc::ContactException &e) {
+        throw e;
+    } catch (...) {
+        throw sdc::ContactException();
+    }
 }
 
 void Session::addChat(QSharedPointer<Chat> chat)
