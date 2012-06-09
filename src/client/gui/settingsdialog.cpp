@@ -41,7 +41,6 @@ void SettingsDialog::onChooseServerCertClicked()
     QString temp = QFileDialog::getOpenFileName(this, "Select Server Certificate", ui->leServerCert->text(), filter, 0);
     if (!temp.isNull())
         ui->leServerCert->setText(temp);
-    settings.setValue(settings.CCertPath, ui->leServerCert->text());
 }
 
 void SettingsDialog::onChoosePrivateKeyClicked()
@@ -50,7 +49,6 @@ void SettingsDialog::onChoosePrivateKeyClicked()
     QString temp = QFileDialog::getOpenFileName(this, "Select Private Key", ui->lePrivateKey->text(), filter, 0);
     if (!temp.isNull())
         ui->lePrivateKey->setText(temp);
-    settings.setValue(settings.CPrivateKeyPath, ui->lePrivateKey->text());
 }
 
 void SettingsDialog::onChoosePublicKeyClicked()
@@ -59,7 +57,6 @@ void SettingsDialog::onChoosePublicKeyClicked()
     QString temp = QFileDialog::getOpenFileName(this, "Select Public Key", ui->lePublicKey->text(), filter, 0);
     if (!temp.isNull())
         ui->lePublicKey->setText(temp);
-    settings.setValue(settings.CPublicKeyPath, ui->lePublicKey->text());
 }
 
 void SettingsDialog::onDeleteAccountClicked()
