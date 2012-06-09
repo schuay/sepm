@@ -34,8 +34,6 @@ LocalChat::LocalChat(const QString &chatID, const sdc::User &user, sdc::ChatClie
     QString username = QString::fromStdString(user.ID);
 
     participants[username] = p;
-
-    notifyJoin(user);
 }
 
 void LocalChat::appendMessageFrom(const sdc::User &user, const sdc::ByteSeq &message)
