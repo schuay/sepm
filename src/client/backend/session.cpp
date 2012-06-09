@@ -55,6 +55,8 @@ void SessionPrivate::initChat(const sdc::StringSeq &cUsers,
     } catch (const sdc::InterServerException &e) {
         QLOG_ERROR() << QString("Received invitation with invalid user, '%1', '%2'")
                      .arg(key).arg(QString::fromStdString(*i));
+    } catch (...) {
+        QLOG_ERROR() << QString("Unexpected exception");
     }
 }
 
@@ -144,6 +146,9 @@ void SessionPrivate::runRetrieveUser(const QString &username, const QObject *id)
     } catch (const sdc::InterServerException &e) {
         success = false;
         message = e.what.c_str();
+    } catch (...) {
+        success = false;
+        message = "Unexpected exception";
     }
 
     emit q->retrieveUserCompleted(usr, id, success, message);
@@ -174,6 +179,9 @@ void SessionPrivate::runInitChat()
     } catch (const sdc::SecurityException &e) {
         success = false;
         message = e.what();
+    } catch (...) {
+        success = false;
+        message = "Unexpected exception";
     }
 
     emit q->initChatCompleted(cp, success, message);
@@ -205,6 +213,9 @@ void SessionPrivate::runLogout()
     } catch (const sdc::UserHandlingException &e) {
         success = false;
         message = e.what.c_str();
+    } catch (...) {
+        success = false;
+        message = "Unexpected exception";
     }
 
     emit q->logoutCompleted(success, message);
@@ -225,6 +236,9 @@ void SessionPrivate::runDeleteUser(QSharedPointer<const User> user)
     } catch (const sdc::UserHandlingException &e) {
         success = false;
         message = e.what.c_str();
+    } catch (...) {
+        success = false;
+        message = "Unexpected exception";
     }
 
     emit q->deleteUserCompleted(success, message);
@@ -251,6 +265,9 @@ void SessionPrivate::runRetrieveLoglist()
     } catch (const sdc::LogException &e) {
         success = false;
         message = e.what.c_str();
+    } catch (...) {
+        success = false;
+        message = "Unexpected exception";
     }
 
     emit q->retrieveLoglistCompleted(loglistdata, success, message);
@@ -296,6 +313,9 @@ void SessionPrivate::runRetrieveLog(const QDateTime &time, const QString &chat)
     } catch (const sdc::SecurityException) {
         success = false;
         message = "Decryption Failed";
+    } catch (...) {
+        success = false;
+        message = "Unexpected exception";
     }
 
 out:
@@ -335,6 +355,9 @@ void SessionPrivate::runRetrieveContactList()
     } catch (const sdc::SecurityException) {
         success = false;
         message = "Decryption Failed";
+    } catch (...) {
+        success = false;
+        message = "Unexpected exception";
     }
 
 out:
@@ -364,6 +387,9 @@ void SessionPrivate::runSaveContactList(const QStringList &contactlist)
     } catch (const sdc::ContactException &e) {
         success = false;
         message = e.what.c_str();
+    } catch (...) {
+        success = false;
+        message = "Unexpected exception";
     }
 
     emit q->saveContactListCompleted(success, message);

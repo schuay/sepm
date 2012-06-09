@@ -126,6 +126,9 @@ void SessionManager::runLogin(const QString &serverName, const QString &serverCe
     } catch (const Ice::Exception &e) {
         msg = e.what();
         success = false;
+    } catch (...) {
+        msg = "Unexpected exception";
+        success = false;
     }
 
 out:
@@ -163,6 +166,9 @@ void SessionManager::runRegisterUser(const QString &serverName,
     } catch (const Ice::Exception &e) {
         msg = e.what();
         success = false;
+    } catch (...) {
+        msg = "Unexpected exception";
+        success = false;
     }
 
 out:
@@ -197,6 +203,9 @@ void SessionManager::runTestConnection(const QString &serverName)
         success = false;
     } catch (const Ice::Exception &e) {
         msg = e.what();
+        success = false;
+    } catch (...) {
+        msg = "Unexpected exception";
         success = false;
     }
 
