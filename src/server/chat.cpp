@@ -84,10 +84,15 @@ void LocalChat::inviteUser(const sdc::User &user, const sdc::ByteSeq &sessionKey
 
     QMutexLocker locker(&participantsMutex);
     p->invite(participants.keys(), sessionKey);
+
+    QList<QSharedPointer<Participant> > values = participants.values();
+    for (int i = 0; i < values.size(); i++) {
+        QSharedPointer<Participant> p = values[i];
+        p->addChatParticipant(user);
+    }
+
     participants[username] = p;
     locker.unlock();
-
-    notifyJoin(user);
 }
 
 void LocalChat::leaveChat(const sdc::User &user)
@@ -107,18 +112,6 @@ void LocalChat::leaveChat(const sdc::User &user)
 
     if (participants.empty())
         Server::instance().removeChat(chatID);
-}
-
-void LocalChat::notifyJoin(const sdc::User &joined)
-{
-    QMutexLocker locker(&participantsMutex);
-    QList<QSharedPointer<Participant> > keys = participants.values();
-    locker.unlock();
-
-    for (int i = 0; i < keys.size(); i++) {
-        QSharedPointer<Participant> p = keys[i];
-        p->addChatParticipant(joined);
-    }
 }
 
 void LocalChat::notifyLeave(const sdc::User &left)

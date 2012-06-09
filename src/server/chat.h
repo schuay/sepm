@@ -52,12 +52,6 @@ public:
 private:
 
     /**
-     * Notifies all participants that user has joined.
-     * The participantsMutex must be unlocked when called.
-     */
-    void notifyJoin(const sdc::User &joined);
-
-    /**
      * Notifies all participants that user has left.
      * The participantsMutex must be unlocked when called.
      */
