@@ -46,3 +46,4 @@
 |045|s|Settings Dialog|Try selecting new public/privatekey and cancel after the selection|The new settings should be discarded|
 |046|f|Miscellaneous|Log in with an incorrect public key, use the contact list, invite, get invited, chat|Errors can appear but the client should not crash|
 |047|f|Miscellaneous|Log in with an incorrect private key, use the contact list, invite, get invited, chat|Errors can appear but the client should not crash|
+|048|s|Unicode Chat|Open a chat, send several messages containing umlauts or other non-ascii characters|The message should be displayed correctly|

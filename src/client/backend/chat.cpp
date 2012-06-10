@@ -108,7 +108,7 @@ void Chat::receiveMessage(QSharedPointer<const User> participant, const sdc::Byt
     try {
         sdc::Security s;
         sdc::ByteSeq decMsg = s.decryptAES(key, encMsg);
-        msg = QString::fromStdString(sdc::sdcHelper::getBinaryString(decMsg));
+        msg = QString::fromUtf8(sdc::sdcHelper::getBinaryString(decMsg).c_str());
 
         QLOG_TRACE() << "Received message: " << msg;
 
