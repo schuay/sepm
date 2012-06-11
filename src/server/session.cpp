@@ -31,14 +31,23 @@ void Session::logout(const Ice::Current &) throw(sdc::UserHandlingException)
     try {
         QMutexLocker locker(&chatsMutex);
         QList<QSharedPointer<Chat> > values = chats.values();
-        for (int i = 0; i < values.size(); i++)
-            values[i]->leaveChat(self);
+        for (int i = 0; i < values.size(); i++) {
+            try {
+                values[i]->leaveChat(self);
+            } catch (const Ice::Exception &) {
+                /* Don't bother the client with this. */
+                QLOG_INFO() << __PRETTY_FUNCTION__
+                            << ": Lost connection to remote server, cannot leave remote chat";
+            }
+        }
 
         Server::instance().removeSession(QString::fromStdString(self.ID));
+
     } catch (const sdc::UserHandlingException &e) {
-        throw e;
+        throw sdc::UserHandlingException("Internal Server Error: "
+                                         "Session is connected but unknown to server.");
     } catch (...) {
-        throw sdc::UserHandlingException();
+        throw sdc::UserHandlingException("Unexpected error");
     }
 }
 

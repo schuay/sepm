@@ -92,7 +92,7 @@ throw(sdc::AuthenticationException)
     const QString ourHostname = Server::instance().getHostname();
     const QString usrHostname = QString::fromStdString(sdc::sdcHelper::getServerFromID(user.ID));
     if (ourHostname != usrHostname) {
-        throw sdc::AuthenticationException(QString("Cannot register user %1 on hostname %2.")
+        throw sdc::AuthenticationException(QString("Cannot register user %1 on another server (hostname is \"%2\").")
                                            .arg(QString::fromStdString(user.ID)).arg(ourHostname)
                                            .toStdString());
     }

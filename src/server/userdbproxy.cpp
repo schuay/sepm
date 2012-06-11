@@ -32,7 +32,8 @@ void UserDbProxy::Connection::open()
     if (db.isOpen())
         return;
 
-    db = QSqlDatabase::addDatabase(sdc::Settings::getValue(sdc::Settings::SDbDriver).toString(), CONNECTION);
+    db = QSqlDatabase::addDatabase(sdc::Settings::getValue(sdc::Settings::SDbDriver).toString(),
+                                   CONNECTION);
     db.setHostName(sdc::Settings::getValue(sdc::Settings::SDbHost).toString());
     db.setDatabaseName(sdc::Settings::getValue(sdc::Settings::SDbDatabase).toString());
     db.setUserName(sdc::Settings::getValue(sdc::Settings::SDbUser).toString());
@@ -40,7 +41,8 @@ void UserDbProxy::Connection::open()
 
     bool ok = db.open();
     if (!ok) {
-        throw sdc::UserHandlingException(db.lastError().text().toStdString());
+        throw sdc::UserHandlingException("Internal Server Error: Could not open database.\n" +
+                                         db.lastError().text().toStdString());
     }
 }
 
@@ -63,7 +65,8 @@ throw(sdc::ContactException)
     bool ok = query.exec();
     if (!ok) {
         QLOG_ERROR() << query.lastError().text();
-        throw sdc::ContactException(query.lastError().text().toStdString());
+        throw sdc::ContactException("Internal Server Error: Could not delete old contact list.\n"
+                                    + query.lastError().text().toStdString());
     }
 
     query.prepare("insert into public.contactlist (user_id, encrypted_content, signature) "
@@ -75,7 +78,8 @@ throw(sdc::ContactException)
     ok = query.exec();
     if (!ok) {
         QLOG_ERROR() << query.lastError().text();
-        throw sdc::ContactException(query.lastError().text().toStdString());
+        throw sdc::ContactException("Internal Server Error: Could not save contact list.\n"
+                                    + query.lastError().text().toStdString());
     }
 }
 
@@ -97,7 +101,7 @@ throw(sdc::ContactException)
 
     if (query.size() > 1) {
         QLOG_ERROR() << "Non-unique contact list query results";
-        throw sdc::ContactException("Non-unique contact list query results.");
+        throw sdc::ContactException("Internal Server Error: Non-unique contact list query results.");
     }
 
     sdc::SecureContainer container;
@@ -123,7 +127,8 @@ throw(sdc::LogException)
     bool ok = query.exec();
     if (!ok) {
         QLOG_ERROR() << query.lastError().text();
-        throw sdc::LogException(query.lastError().text().toStdString());
+        throw sdc::LogException("Internal Server Error: Could not delete old log.\n"
+                                + query.lastError().text().toStdString());
     }
 
     query.prepare("insert into public.chatlog (user_id, chat_id, time_stamp, encrypted_content, signature) "
@@ -137,7 +142,8 @@ throw(sdc::LogException)
     ok = query.exec();
     if (!ok) {
         QLOG_ERROR() << query.lastError().text();
-        throw sdc::LogException(query.lastError().text().toStdString());
+        throw sdc::LogException("Internal Server Error: Could not save log.\n"
+                                + query.lastError().text().toStdString());
     }
 }
 
@@ -154,7 +160,8 @@ throw(sdc::LogException)
     bool ok = query.exec();
     if (!ok) {
         QLOG_ERROR() << query.lastError().text();
-        throw sdc::LogException(query.lastError().text().toStdString());
+        throw sdc::LogException("Internal Server Error: Could not retrieve loglist\n"
+                                + query.lastError().text().toStdString());
     }
 
     sdc::Loglist list;
@@ -185,12 +192,13 @@ throw(sdc::LogException)
     bool ok = query.exec();
     if (!ok) {
         QLOG_ERROR() << query.lastError().text();
-        throw sdc::LogException(query.lastError().text().toStdString());
+        throw sdc::LogException("Internal Server Error: Could not retrieve log.\n"
+                                + query.lastError().text().toStdString());
     }
 
     if (query.size() != 1) {
         QLOG_ERROR() << "Non-unique or nonexistent log query results";
-        throw sdc::LogException("Non-unique or nonexistent log query results");
+        throw sdc::LogException("Internal Server Error: Non-unique or nonexistent log query results");
     }
 
     sdc::SecureContainer container;
@@ -230,7 +238,8 @@ throw(sdc::UserHandlingException)
     bool ok = query.exec();
     if (!ok) {
         QLOG_ERROR() << query.lastError().text();
-        throw sdc::UserHandlingException(query.lastError().text().toStdString());
+        throw sdc::UserHandlingException("Internal Server Error: Could not delete chatlog\n"
+                                         + query.lastError().text().toStdString());
     }
 
     query.prepare("delete from public.contactlist where user_id = :user_id");
@@ -239,7 +248,8 @@ throw(sdc::UserHandlingException)
     ok = query.exec();
     if (!ok) {
         QLOG_ERROR() << query.lastError().text();
-        throw sdc::UserHandlingException(query.lastError().text().toStdString());
+        throw sdc::UserHandlingException("Internal Server Error: Could not delete contact list\n"
+                                         + query.lastError().text().toStdString());
     }
 
     query.prepare("delete from public.user where username = :username");
@@ -248,7 +258,8 @@ throw(sdc::UserHandlingException)
     ok = query.exec();
     if (!ok) {
         QLOG_ERROR() << query.lastError().text();
-        throw sdc::UserHandlingException(query.lastError().text().toStdString());
+        throw sdc::UserHandlingException("Internal Server Error: Could not delete user\n"
+                                         + query.lastError().text().toStdString());
     }
 }
 
@@ -269,8 +280,22 @@ throw(sdc::UserHandlingException)
 
     bool ok = query.exec();
     if (!ok) {
-        QLOG_ERROR() << query.lastError().text();
-        throw sdc::UserHandlingException(query.lastError().text().toStdString());
+
+        QLOG_ERROR() << query.lastError().text() << "(User probably exists)";
+
+        /* Try to give a more helpful error  message. However, Due to a bug in QPSQL,
+         * the PostgreSQL error number is not actually set in query.lastError().number(),
+         * so we can only switch on the type. The most important error case is that
+         * a user already exists. We would expect that to be a TransactionError,
+         * it is reported as StatementError (which indicates a syntax error actually). */
+        switch (query.lastError().type()) {
+        case QSqlError::StatementError:     /* What is reported. */
+        case QSqlError::TransactionError:   /* Just in case future QPSQL versions get it right. */
+            throw sdc::UserHandlingException("User already exists");
+
+        default: /* For example, lost connection. */
+            throw sdc::UserHandlingException(query.lastError().text().toStdString());
+        }
     }
 }
 
