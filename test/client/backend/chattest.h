@@ -22,6 +22,7 @@ private slots:
     void testInvite();
     void testEchoMessage();
     void testTransmitMessage();
+    void testLeaveChatReinvite();
     void testLeaveChat();
 
     /* This test is commented intentionally to show that this
