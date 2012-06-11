@@ -21,7 +21,8 @@ class ChatWidget : public QWidget
     Q_OBJECT
 
 public:
-    explicit ChatWidget(QSharedPointer<Session> session, QSharedPointer<Chat> chat, QWidget *parent = 0);
+    explicit ChatWidget(QSharedPointer<Session> session, QSharedPointer<Chat> chat,
+                        QWidget *parent = 0);
     /**
       * Dummy constructor, to create disabled window.
       */
@@ -67,7 +68,8 @@ public slots:
     /**
       * Invites a user. The Format
       */
-    void invite(QSharedPointer<const User> user, const QObject *id, bool success, const QString &msg);
+    void invite(QSharedPointer<const User> user, const QObject *id, bool success,
+                const QString &msg);
     void invite(QSharedPointer<const User> user);
 
     void leaveChat();

@@ -15,6 +15,7 @@ ChatWidget::ChatWidget(QSharedPointer<Session> session,
 
 
     qRegisterMetaType<QSharedPointer<const User> >("QSharedPointer<const User>");
+    qRegisterMetaType<QObject *>("QObject *");
 
     d_chat = chat;
     d_session = session;
@@ -26,16 +27,22 @@ ChatWidget::ChatWidget(QSharedPointer<Session> session,
     while (it.hasNext()) {
         userJoined(it.next());
     }
+
     connect(ui->leMessage, SIGNAL(returnPressed()), this, SLOT(returnPressed()));
     connect(d_chat.data(), SIGNAL(messageReceived(QSharedPointer<const User>, QString)), this,
             SLOT(messageReceived(QSharedPointer<const User>, QString)));
-    connect(d_chat.data(), SIGNAL(userJoined(QSharedPointer<const User>)), this, SLOT(userJoined(QSharedPointer<const User>)));
-    connect(d_chat.data(), SIGNAL(userLeft(QSharedPointer<const User>)), this, SLOT(userLeft(QSharedPointer<const User>)));
-    connect(d_chat.data(), SIGNAL(leaveChatCompleted(bool, QString)), this, SLOT(leaveChatCompleted(bool, QString)));
-    connect(d_chat.data(), SIGNAL(inviteCompleted(bool, QString)), this, SLOT(inviteCompleted(bool, QString)));
-    connect(d_chat.data(), SIGNAL(sendCompleted(bool, QString)), this, SLOT(sendCompleted(bool, QString)));
-    qRegisterMetaType<QObject *>("QObject*");
-    connect(d_session.data(), SIGNAL(retrieveUserCompleted(QSharedPointer<const User>, const QObject *, bool, QString)),
+    connect(d_chat.data(), SIGNAL(userJoined(QSharedPointer<const User>)),
+            this, SLOT(userJoined(QSharedPointer<const User>)));
+    connect(d_chat.data(), SIGNAL(userLeft(QSharedPointer<const User>)),
+            this, SLOT(userLeft(QSharedPointer<const User>)));
+    connect(d_chat.data(), SIGNAL(leaveChatCompleted(bool, QString)),
+            this, SLOT(leaveChatCompleted(bool, QString)));
+    connect(d_chat.data(), SIGNAL(inviteCompleted(bool, QString)),
+            this, SLOT(inviteCompleted(bool, QString)));
+    connect(d_chat.data(), SIGNAL(sendCompleted(bool, QString)),
+            this, SLOT(sendCompleted(bool, QString)));
+    connect(d_session.data(), SIGNAL(retrieveUserCompleted(QSharedPointer<const User>,
+                                                           const QObject *, bool, QString)),
             this, SLOT(invite(QSharedPointer<const User>, const QObject *, bool, QString)));
 }
 
@@ -113,14 +120,16 @@ void ChatWidget::inviteCompleted(bool success, const QString &msg)
     QLOG_TRACE() << __PRETTY_FUNCTION__;
     if (!success) {
         QMessageBox::warning(this, "Invite Failed",
-                             "The server couldn't invite the user you requested into the chat.\n" + msg);
+                             "The server couldn't invite the user you "
+                             "requested into the chat.\n" + msg);
     }
 }
 
 /**
   * Invites a user. The Format
   */
-void ChatWidget::invite(QSharedPointer<const User> user, const QObject *id, bool success, const QString &msg)
+void ChatWidget::invite(QSharedPointer<const User> user, const QObject *id, bool success,
+                        const QString &msg)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
     if (id != this)
