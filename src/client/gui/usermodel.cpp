@@ -58,7 +58,7 @@ QSharedPointer<const User> UserModel::getUser(const QString &username) const
 
 QSharedPointer<const User> UserModel::getUser(int id) const
 {
-    if (d_users.size() > id)
+    if (id < d_users.count() && id >= 0)
         return d_users.values().at(id);
     else
         return QSharedPointer<const sdcc::User>();
@@ -105,7 +105,7 @@ QSharedPointer<const User> UserModel::removeUser(QSharedPointer<const User> user
 
 QSharedPointer<const User> UserModel::removeUser(int index)
 {
-    if (d_users.keys().size() > index)
+    if (index < d_users.count() && index >= 0)
         return removeUser(d_users.keys().at(index));
     else
         return QSharedPointer<const sdcc::User>();

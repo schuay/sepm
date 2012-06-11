@@ -240,6 +240,7 @@ void AppWindow::contextMenuRequested(const QPoint &point)
 {
     QPoint mousePoint = ui->lvContacts->mapToGlobal(point);
     QModelIndex index = ui->lvContacts->indexAt(point);
+    if (!index.isValid()) return;
     QAction *action = contactListMenu->exec(mousePoint);
     if (action == 0) return;
     if (action->text() == "Delete") {
