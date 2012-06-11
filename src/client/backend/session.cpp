@@ -27,7 +27,7 @@ throw(sdc::ChatClientCallbackException)
         sessionKey = user->decrypt(sessionKeyEnc);
     } catch (const sdc::SecurityException &e) {
         QString msg = QString("Could not decrypt session key for '%1'")
-                .arg(key);
+                      .arg(key);
         QLOG_ERROR() << msg;
         throw sdc::ChatClientCallbackException(msg.toStdString());
     }
@@ -35,7 +35,7 @@ throw(sdc::ChatClientCallbackException)
     QMutexLocker locker(&chatsMutex);
     if (chats.contains(key)) {
         QString msg = QString("Received invitation for a chat we are already in ('%1')")
-                .arg(key);
+                      .arg(key);
         QLOG_ERROR() << msg;
         throw sdc::ChatClientCallbackException(msg.toStdString());
     }
@@ -63,12 +63,12 @@ throw(sdc::ChatClientCallbackException)
         emit q->invitationReceived(cp);
     } catch (const sdc::UserHandlingException &e) {
         QString msg = QString("Received invitation with invalid user, '%1', '%2'")
-                .arg(key).arg(QString::fromStdString(*i));
+                      .arg(key).arg(QString::fromStdString(*i));
         QLOG_ERROR() << msg;
         throw sdc::ChatClientCallbackException(msg.toStdString());
     } catch (const sdc::InterServerException &e) {
         QString msg = QString("Received invitation with invalid user, '%1', '%2'")
-                .arg(key).arg(QString::fromStdString(*i));
+                      .arg(key).arg(QString::fromStdString(*i));
         QLOG_ERROR() << msg;
         throw sdc::ChatClientCallbackException(msg.toStdString());
     } catch (...) {
@@ -89,7 +89,7 @@ throw(sdc::ParticipationException)
     QMutexLocker chatLocker(&chatsMutex);
     if (!chats.contains(key)) {
         QString msg = QString("New participant for nonexistant chat '%1'")
-                .arg(key);
+                      .arg(key);
         QLOG_ERROR() << msg;
         throw sdc::ParticipationException(msg.toStdString());
     }
@@ -113,7 +113,7 @@ throw(sdc::ParticipationException)
     QMutexLocker chatLocker(&chatsMutex);
     if (!chats.contains(key)) {
         QString msg = QString("Remove participant from nonexistant chat '%1'")
-                .arg(key);
+                      .arg(key);
         QLOG_ERROR() << msg;
         throw sdc::ParticipationException(msg.toStdString());
     }
