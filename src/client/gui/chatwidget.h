@@ -79,6 +79,8 @@ private slots:
     void returnPressed();
 
 private:
+    void statusMessage(QSharedPointer<const User> user, const QString &message);
+
     Ui::ChatWidget *ui;
     QSharedPointer<Chat> d_chat;
     QSharedPointer<Session> d_session;

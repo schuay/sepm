@@ -73,6 +73,14 @@ void ChatWidget::messageReceived(QSharedPointer<const User> user, const QString 
     emit chatUpdate(this);
 }
 
+void ChatWidget::statusMessage(QSharedPointer<const User> user, const QString &message)
+{
+    QMutexLocker locker(&chatFontMutex);
+    ui->tbChat->setFontWeight(QFont::Bold);
+    ui->tbChat->append(QString("%1 %2").arg(user->getName(), message));
+    ui->tbChat->setFontWeight(QFont::Normal);
+}
+
 /**
  * Another user joined the chat.
  */
@@ -80,12 +88,7 @@ void ChatWidget::userJoined(QSharedPointer<const User> user)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
     pList->addUser(user);
-    {
-        QMutexLocker locker(&chatFontMutex);
-        ui->tbChat->setFontWeight(QFont::Bold);
-        ui->tbChat->append(user->getName() + QString(" joined"));
-        ui->tbChat->setFontWeight(QFont::Normal);
-    }
+    statusMessage(user, "joined");
     emit chatUpdate(this);
 }
 
@@ -93,12 +96,7 @@ void ChatWidget::userLeft(QSharedPointer<const User> user)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
     pList->removeUser(user);
-    {
-        QMutexLocker locker(&chatFontMutex);
-        ui->tbChat->setFontWeight(QFont::Bold);
-        ui->tbChat->append(user->getName() + QString(" left"));
-        ui->tbChat->setFontWeight(QFont::Normal);
-    }
+    statusMessage(user, "left");
     emit chatUpdate(this);
 }
 
