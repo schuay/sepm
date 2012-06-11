@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QAbstractListModel>
 #include <QMap>
+#include <QMutex>
 #include "chat.h"
 #include "session.h"
 #include "usermodel.h"
@@ -80,6 +81,7 @@ private:
     QSharedPointer<Chat> d_chat;
     QSharedPointer<Session> d_session;
     UserModel *pList;
+    QMutex chatFontMutex;
 };
 
 #endif // CHATWIDGET_H
