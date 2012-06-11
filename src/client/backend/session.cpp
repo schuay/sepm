@@ -41,8 +41,16 @@ throw(sdc::ChatClientCallbackException)
     }
 
     cp = QSharedPointer<Chat>(new Chat(session, *q, key, sessionKey));
+    /* We need a Qt::DirectConnection here.
+     * The default Qt::AutoConnection seems to believe that sender and
+     * receiver are in a different thread and chooses Qt:QueuedConnection
+     * which somehow doesn't work.
+     *
+     * see Bug #11396
+     * see http://qt-project.org/doc/qt-4.8/qt.html#ConnectionType-enum
+     */
     connect(cp.data(), SIGNAL(leaveChatCompleted(bool, QString)),
-            this, SLOT(leaveChatCompletedSlot()));
+            this, SLOT(leaveChatCompletedSlot()), Qt::DirectConnection);
 
     sdc::StringSeq::const_iterator i;
     cp->addChatParticipant(user);
