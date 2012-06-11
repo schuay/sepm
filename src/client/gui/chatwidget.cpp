@@ -98,13 +98,9 @@ void ChatWidget::userLeft(QSharedPointer<const User> user)
 /**
  * Response signal for leaveChat.
  */
-void ChatWidget::leaveChatCompleted(bool success, const QString &msg)
+void ChatWidget::leaveChatCompleted(bool, const QString &)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
-    if (!success) {
-        QMessageBox::warning(this, "Leave Chat Failed",
-                             "The server couldn't close the chat.\n" + msg);
-    }
     emit leftChat();
     this->close();
 }
