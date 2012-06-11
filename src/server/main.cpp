@@ -110,6 +110,9 @@ int main(int argc, char **argv)
     props->setProperty("IceSSL.KeyFile", GET_STDSTRING_SETTING(sdc::Settings::SKeyPath));
     props->setProperty("IceSSL.CertAuthFile", GET_STDSTRING_SETTING(sdc::Settings::SCertAuthPath));
 
+    QLOG_TRACE() << "Binding to" << sdc::Settings::getValue(sdc::Settings::SListenAddress).toString()
+                 << "with hostname" << sdc::Settings::getValue(sdc::Settings::SHostname).toString();
+
     /* This is necessary so that the client doesn't need to send a certificate, e.g.
      * for testing server availability.
      */
