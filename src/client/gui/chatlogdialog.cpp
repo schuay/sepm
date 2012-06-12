@@ -66,6 +66,12 @@ void ChatLogDialog::onRetrieveLoglistCompleted(const QList<QPair<QDateTime, QStr
     if (success) {
         chattimestampmodel->setEntries(list);
         ui->lwChatTimestampList->setModel(chattimestampmodel);
+
+        // display the contents of the first entry
+        if (list.size() > 0) {
+            d_session->retrieveLog(list.at(0).first, list.at(0).second);
+        }
+
         // We can only connect the signal after a model has been assigned.
         connect(ui->lwChatTimestampList->selectionModel(), SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
                 this, SLOT(selectionChanged(const QItemSelection &, const QItemSelection &)));
