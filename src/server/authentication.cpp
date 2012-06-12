@@ -76,6 +76,13 @@ throw(sdc::AuthenticationException)
         Server::instance().addSession(userid, container);
 
         return container.proxy;
+    } catch (const sdc::AuthenticationException &e) {
+	throw e;
+    /* Distinguish between a nonexistent user and a DB error.
+     * In the former case do the same as for an invalid password.
+     * This is good security practice. */
+    } catch (const NoSuchUserException &e) {
+	throw sdc::AuthenticationException("Authentication failure");
     } catch (const sdc::UserHandlingException &e) {
         throw sdc::AuthenticationException(e.what);
     } catch (const Ice::Exception &e) {

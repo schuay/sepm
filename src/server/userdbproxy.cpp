@@ -311,7 +311,7 @@ throw(sdc::UserHandlingException)
     query.exec();
 
     if (query.size() == 0)
-        throw sdc::UserHandlingException("User not found.");
+        throw NoSuchUserException("User not found.");
 
     assert(query.size() == 1);
     query.first();

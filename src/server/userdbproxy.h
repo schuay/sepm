@@ -11,6 +11,16 @@ namespace sdcs
 {
 
 /**
+ * @brief This Exception is used if a specific user was not found in the
+ * 	  database.
+ */
+class NoSuchUserException : public sdc::UserHandlingException
+{
+public:
+    NoSuchUserException(const char *msg) : sdc::UserHandlingException(msg) {}
+};
+
+/**
  * @brief The UserDbProxy class is the access point to user related
  *        data stored in the backend database.
  */
