@@ -33,7 +33,7 @@
        </sizepolicy>
       </property>
       <property name="title">
-       <string>Timestamps</string>
+       <string>Chats</string>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout">
        <property name="leftMargin">
