@@ -190,7 +190,7 @@ void UserDbProxyTests::testRetrieveLoglist()
 
     sdc::Loglist list = p->retrieveLoglist();
 
-    QCOMPARE(static_cast<unsigned long>(2), list.size());
+    QCOMPARE(static_cast<sdc::Loglist::size_type>(2), list.size());
 
     QCOMPARE("chat0", list[0].chatID.c_str());
     QCOMPARE(static_cast<Ice::Long>(0), list[0].timestamp);
@@ -205,7 +205,7 @@ void UserDbProxyTests::testRetrieveLoglistEmpty()
 
     sdc::Loglist list = p->retrieveLoglist();
 
-    QCOMPARE(static_cast<unsigned long>(0), list.size());
+    QCOMPARE(static_cast<sdc::Loglist::size_type>(0), list.size());
 }
 
 void UserDbProxyTests::testRetrieveLog()
