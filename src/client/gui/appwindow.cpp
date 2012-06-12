@@ -43,8 +43,6 @@ AppWindow::AppWindow(QWidget *parent, QSharedPointer<Session> session) :
     setAttribute(Qt::WA_DeleteOnClose, true);
     ui->lUsername->setText(d_session->getUser()->getName());
 
-    setWindowTitle("SDCC");
-
     qRegisterMetaType<QSharedPointer<Chat> >("QSharedPointer<Chat>");
     qRegisterMetaType<QSharedPointer<const User> >("QSharedPointer<const User>");
 
