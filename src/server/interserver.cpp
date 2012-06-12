@@ -59,11 +59,11 @@ throw(sdc::InterServerException)
     try {
         QSharedPointer<Chat> p = Server::instance().getChat(QString::fromStdString(chatID));
         p->inviteUser(participant, key);
-    } catch (const sdc::InterServerException &e) {
-        throw e;
     } catch (const sdc::ChatException &e) {
         // thrown by the Users' ChatClientCallback
         throw sdc::InterServerException("Received error from client " + participant.ID + ":\n" + e.what);
+    } catch (const sdc::SDCException &e) {
+        throw sdc::InterServerException(e.what);
     } catch (...) {
         throw sdc::InterServerException();
     }

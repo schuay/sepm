@@ -81,7 +81,7 @@ throw(sdc::UserHandlingException, sdc::InterServerException)
             QSharedPointer<UserDbProxy> proxy = UserDbProxy::getProxy(QString::fromStdString(userID));
             return proxy->getUser();
         } catch (const sdc::UserHandlingException &e) {
-            throw e;
+            throw;
         } catch (...) {
             throw sdc::UserHandlingException();
         }
