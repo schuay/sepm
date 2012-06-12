@@ -44,11 +44,6 @@ ChatLogDialog::ChatLogDialog(QWidget *parent, QSharedPointer<Session> session) :
             this,
             SLOT(onTimeStampClicked(QModelIndex)));
 
-    connect(ui->lwChatTimestampList,
-            SIGNAL(pressed(QModelIndex)),
-            this,
-            SLOT(onTimeStampClicked(QModelIndex)));
-
     connect(d_session.data(),
             SIGNAL(retrieveLogCompleted(const QList<ChatlogEntry>, bool, const QString)),
             this,
