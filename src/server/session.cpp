@@ -85,7 +85,7 @@ throw(sdc::UserHandlingException, sdc::InterServerException)
         } catch (const sdc::UserHandlingException &e) {
             throw sdc::InterServerException(e.what);
         } catch (...) {
-            throw sdc::InterServerException();
+            throw sdc::InterServerException("Inter-Server communication failed");
         }
     }
 }
