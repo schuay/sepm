@@ -185,6 +185,7 @@ void Chat::runLeaveChat()
         message = "Unexpected exception";
     }
 
+    emit leaveChatCompleted(chatID);
     emit leaveChatCompleted(success, message);
 }
 

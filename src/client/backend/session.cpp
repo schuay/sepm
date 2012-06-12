@@ -49,8 +49,9 @@ throw(sdc::ChatClientCallbackException)
      * see Bug #11396
      * see http://qt-project.org/doc/qt-4.8/qt.html#ConnectionType-enum
      */
-    connect(cp.data(), SIGNAL(leaveChatCompleted(bool, QString)),
-            this, SLOT(leaveChatCompletedSlot()), Qt::DirectConnection);
+    connect(cp.data(), SIGNAL(leaveChatCompleted(const QString)),
+            this, SLOT(leaveChatCompletedSlot(const QString)),
+            Qt::DirectConnection);
 
     sdc::StringSeq::const_iterator i;
     cp->addChatParticipant(user);
@@ -191,8 +192,8 @@ void SessionPrivate::runInitChat()
         sdc::Security s;
         cp = QSharedPointer<Chat>(new Chat(session, *q, key,
                                            s.genAESKey(SESSION_KEY_SIZE)));
-        connect(cp.data(), SIGNAL(leaveChatCompleted(bool, QString)),
-                this, SLOT(leaveChatCompletedSlot()));
+        connect(cp.data(), SIGNAL(leaveChatCompleted(const QString)),
+                this, SLOT(leaveChatCompletedSlot(const QString)));
 
         QMutexLocker locker(&chatsMutex);
         chats[key] = cp;
@@ -451,11 +452,11 @@ QSharedPointer<const User> SessionPrivate::getUser(const QString &username)
     return users[username];
 }
 
-void SessionPrivate::leaveChatCompletedSlot()
+void SessionPrivate::leaveChatCompletedSlot(const QString &id)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
     QMutexLocker locker(&chatsMutex);
-    chats.remove(qobject_cast<Chat *>(sender())->getID());
+    chats.remove(id);
 }
 
 const QSharedPointer<const LoginUser> Session::getUser() const

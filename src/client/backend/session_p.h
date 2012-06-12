@@ -79,7 +79,7 @@ private:
     void leaveAllChats(void);
 
 private slots:
-    void leaveChatCompletedSlot();
+    void leaveChatCompletedSlot(const QString &id);
 };
 
 }

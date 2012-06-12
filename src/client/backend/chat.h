@@ -92,6 +92,11 @@ signals:
      */
     void userLeft(QSharedPointer<const User> user);
 
+    /**
+     * Internal signal to notify the session that it can delete this chat.
+     */
+    void leaveChatCompleted(const QString &id);
+
 private:
     /* Prevent unintended construction of instances by user. */
     Chat(sdc::SessionIPrx sessionPrx, Session &session,
