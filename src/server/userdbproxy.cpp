@@ -18,6 +18,7 @@
 
 #include "userdbproxy.h"
 
+#include <QMutexLocker>
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QSqlError>
@@ -76,6 +77,8 @@ throw(sdc::ContactException)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
 
+    QMutexLocker lock(&connection.dbMutex);
+
     QSqlQuery query(connection.db);
     query.prepare("delete from public.contactlist where user_id = :user_id;");
     query.bindValue(":user_id", id);
@@ -105,6 +108,8 @@ sdc::SecureContainer UserDbProxy::retrieveContactList()
 throw(sdc::ContactException)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
+
+    QMutexLocker lock(&connection.dbMutex);
 
     QSqlQuery query(connection.db);
     query.prepare("select encrypted_content, signature "
@@ -137,6 +142,8 @@ void UserDbProxy::saveLog(const QString &chatID, long timestamp, const sdc::Secu
 throw(sdc::LogException)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
+
+    QMutexLocker lock(&connection.dbMutex);
 
     QSqlQuery query(connection.db);
     query.prepare("delete from public.chatlog where user_id = :user_id and chat_id = :chat_id "
@@ -173,6 +180,8 @@ throw(sdc::LogException)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
 
+    QMutexLocker lock(&connection.dbMutex);
+
     QSqlQuery query(connection.db);
     query.prepare("select chat_id, time_stamp "
                   "from public.chatlog where user_id = :user_id;");
@@ -201,6 +210,8 @@ sdc::SecureContainer UserDbProxy::retrieveLog(const QString &chatID, long timest
 throw(sdc::LogException)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
+
+    QMutexLocker lock(&connection.dbMutex);
 
     QSqlQuery query(connection.db);
     query.prepare("select encrypted_content, signature "
@@ -251,6 +262,8 @@ throw(sdc::UserHandlingException)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
 
+    QMutexLocker lock(&connection.dbMutex);
+
     QSqlQuery query(QSqlDatabase::database(CONNECTION));
 
     query.prepare("delete from public.chatlog where user_id = :user_id");
@@ -289,6 +302,8 @@ throw(sdc::UserHandlingException)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
 
+    QMutexLocker lock(&connection.dbMutex);
+
     connection.open();
 
     QSqlQuery query(QSqlDatabase::database(CONNECTION));
@@ -323,6 +338,8 @@ throw(sdc::UserHandlingException)
 UserDbProxy::UserDbProxy(const QString &username)
 throw(sdc::UserHandlingException)
 {
+    QMutexLocker lock(&connection.dbMutex);
+
     connection.open();
 
     QSqlQuery query(QSqlDatabase::database(CONNECTION));

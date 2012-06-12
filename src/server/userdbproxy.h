@@ -19,6 +19,7 @@
 #ifndef USERDBPROXY_H
 #define USERDBPROXY_H
 
+#include <QMutex>
 #include <QString>
 #include <QSharedPointer>
 #include <QSqlDatabase>
@@ -51,6 +52,7 @@ private:
         void open();
 
         QSqlDatabase db;
+        QMutex dbMutex; /**< Most QtSQL functions are not thread-safe. */
     };
 
 public:
