@@ -95,7 +95,7 @@ throw(sdc::AuthenticationException)
 
         return container.proxy;
     } catch (const sdc::AuthenticationException &e) {
-	throw e;
+	throw;
     /* Distinguish between a nonexistent user and a DB error.
      * In the former case do the same as for an invalid password.
      * This is good security practice. */

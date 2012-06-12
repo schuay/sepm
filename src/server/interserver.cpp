@@ -40,7 +40,7 @@ throw(sdc::InterServerException)
         QSharedPointer<UserDbProxy> proxy = UserDbProxy::getProxy(QString::fromStdString(userID));
         return proxy->getUser();
     } catch (const sdc::InterServerException &e) {
-        throw e;
+        throw;
     } catch (const sdc::UserHandlingException &e) {
         throw sdc::InterServerException(e.what);
     } catch (...) {
@@ -81,7 +81,7 @@ throw(sdc::InterServerException)
         QSharedPointer<Chat> p = Server::instance().getChat(QString::fromStdString(chatID));
         p->appendMessageFrom(sender, message);
     } catch (const sdc::InterServerException &e) {
-        throw e;
+        throw;
     } catch (const sdc::MessageCallbackException &e) {
         // chat throws this with a useful message
         throw sdc::InterServerException(e.what);

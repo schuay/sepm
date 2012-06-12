@@ -99,7 +99,7 @@ throw(sdc::UserHandlingException, sdc::InterServerException)
 
             return u;
         } catch (const sdc::InterServerException &e) {
-            throw e;
+            throw;
         } catch (const sdc::UserHandlingException &e) {
             throw sdc::InterServerException(e.what);
         } catch (...) {
@@ -121,7 +121,7 @@ std::string Session::initChat(const Ice::Current &) throw(sdc::SessionException)
 
         return chatID.toStdString();
     } catch (const sdc::SessionException &e) {
-        throw e;
+        throw;
     } catch (...) {
         throw sdc::SessionException();
     }
@@ -142,9 +142,9 @@ throw(sdc::SessionException, sdc::InterServerException)
         chats[id]->leaveChat(self);
         chats.remove(id);
     } catch (const sdc::SessionException &e) {
-        throw e;
+        throw;
     } catch (const sdc::InterServerException &e) {
-        throw e;
+        throw;
     } catch (...) {
         if (isLocal(id))
             throw sdc::SessionException();
@@ -173,9 +173,9 @@ throw(sdc::UserHandlingException, sdc::InterServerException)
 
         chats[id]->inviteUser(participant, sessionKey);
     } catch (const sdc::UserHandlingException &e) {
-        throw e;
+        throw;
     } catch (const sdc::InterServerException &e) {
-        throw e;
+        throw;
     } catch (...) {
         if (isLocal(id))
             throw sdc::UserHandlingException();
@@ -198,9 +198,9 @@ throw(sdc::MessageException, sdc::InterServerException)
 
         chats[id]->appendMessageFrom(self, message);
     } catch (const sdc::MessageException &e) {
-        throw e;
+        throw;
     } catch (const sdc::InterServerException &e) {
-        throw e;
+        throw;
     } catch (...) {
         if (isLocal(id))
             throw sdc::MessageException();
@@ -224,7 +224,7 @@ throw(sdc::UserHandlingException)
 
         logout(current);
     } catch (const sdc::UserHandlingException &e) {
-        throw e;
+        throw;
     } catch (...) {
         throw sdc::UserHandlingException();
     }
@@ -241,7 +241,7 @@ throw(sdc::LogException)
                                                 QString::fromStdString(self.ID));
         proxy->saveLog(QString::fromStdString(chatID), static_cast<long>(timestamp), log);
     } catch (const sdc::LogException &e) {
-        throw e;
+        throw;
     } catch (...) {
         throw sdc::LogException();
     }
@@ -256,7 +256,7 @@ sdc::Loglist Session::retrieveLoglist(const Ice::Current &) throw(sdc::LogExcept
                                                 QString::fromStdString(self.ID));
         return proxy->retrieveLoglist();
     } catch (const sdc::LogException &e) {
-        throw e;
+        throw;
     } catch (...) {
         throw sdc::LogException();
     }
@@ -273,7 +273,7 @@ throw(sdc::LogException)
                                                 QString::fromStdString(self.ID));
         return proxy->retrieveLog(QString::fromStdString(chatID), static_cast<long>(timestamp));
     } catch (const sdc::LogException &e) {
-        throw e;
+        throw;
     } catch (...) {
         throw sdc::LogException();
     }
@@ -289,7 +289,7 @@ throw(sdc::ContactException)
                                                 QString::fromStdString(self.ID));
         proxy->saveContactList(contactList);
     } catch (const sdc::ContactException &e) {
-        throw e;
+        throw;
     } catch (...) {
         throw sdc::ContactException();
     }
@@ -305,7 +305,7 @@ throw(sdc::ContactException)
                                                 QString::fromStdString(self.ID));
         return proxy->retrieveContactList();
     } catch (const sdc::ContactException &e) {
-        throw e;
+        throw;
     } catch (...) {
         throw sdc::ContactException();
     }
