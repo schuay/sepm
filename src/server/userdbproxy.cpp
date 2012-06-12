@@ -139,8 +139,11 @@ throw(sdc::LogException)
     QLOG_TRACE() << __PRETTY_FUNCTION__;
 
     QSqlQuery query(connection.db);
-    query.prepare("delete from public.chatlog where user_id = :user_id;");
+    query.prepare("delete from public.chatlog where user_id = :user_id and chat_id = :chat_id "
+                  "and time_stamp = :time_stamp;");
     query.bindValue(":user_id", id);
+    query.bindValue(":chat_id", chatID);
+    query.bindValue(":time_stamp", qlonglong(timestamp));
 
     bool ok = query.exec();
     if (!ok) {
