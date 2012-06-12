@@ -105,7 +105,7 @@ void LoginDialog::onChooseServerCertClicked()
                    ui->leServerCert->text(), filter, 0);
     if (!temp.isNull())
         ui->leServerCert->setText(temp);
-    settings.setValue(settings.CCertPath, ui->leServerCert->text());
+
 }
 
 void LoginDialog::onChoosePrivateKeyClicked()
@@ -114,7 +114,7 @@ void LoginDialog::onChoosePrivateKeyClicked()
     QString temp = QFileDialog::getOpenFileName(this, "Select Private Key", ui->lePrivateKey->text(), filter, 0);
     if (!temp.isNull())
         ui->lePrivateKey->setText(temp);
-    settings.setValue(settings.CPrivateKeyPath, ui->lePrivateKey->text());
+
 }
 
 void LoginDialog::onChoosePublicKeyClicked()
@@ -123,7 +123,6 @@ void LoginDialog::onChoosePublicKeyClicked()
     QString temp = QFileDialog::getOpenFileName(this, "Select Public Key", ui->lePublicKey->text(), filter, 0);
     if (!temp.isNull())
         ui->lePublicKey->setText(temp);
-    settings.setValue(settings.CPublicKeyPath, ui->lePublicKey->text());
 }
 
 void LoginDialog::onTestConnectionClicked()
@@ -258,5 +257,8 @@ LoginDialog::~LoginDialog()
 {
     settings.setValue(settings.CUsername, ui->leUsername->text());
     settings.setValue(settings.CServer, ui->leServer->text());
+    settings.setValue(settings.CPublicKeyPath, ui->lePublicKey->text());
+    settings.setValue(settings.CCertPath, ui->leServerCert->text());
+    settings.setValue(settings.CPrivateKeyPath, ui->lePrivateKey->text());
     delete ui;
 }
