@@ -32,6 +32,8 @@ ChatLogDialog::ChatLogDialog(QWidget *parent, QSharedPointer<Session> session) :
     d_session->retrieveLoglist();
     ui->setupUi(this);
     this->setWindowTitle("View Chatlogs");
+    setWindowIcon(QIcon(":/appicon.png"));
+
     connect(d_session.data(),
             SIGNAL(retrieveLoglistCompleted(const QList<QPair<QDateTime, QString> >, bool, const QString)),
             this,

@@ -39,6 +39,12 @@ set(client_gui_SRCS
 	chattabwidget.cpp
 )
 
+set(client_gui_QRCS
+  sdcc.qrc
+)
+
+qt4_add_resources(client_gui_QRC_SRCS ${client_gui_QRCS})
+
 if (CMAKE_COMPILER_IS_GNUCXX)
     # Creates error in qendian.h, as it uses glibc's byteswap.
     REMOVE_DEFINITIONS( -Wold-style-cast )
@@ -47,7 +53,8 @@ endif(CMAKE_COMPILER_IS_GNUCXX)
 add_library(client_gui STATIC
         ${client_gui_SRCS}
         ${client_gui_QTHEADERS_MOC}
-        ${client_gui_FORMS_HEADERS}
+        ${client_gui_FORMS_HEADERS} 
+	${client_gui_QRC_SRCS}
 )
 
 target_link_libraries(client_gui

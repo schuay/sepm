@@ -31,6 +31,8 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
 {
     ui->setupUi(this);
     setWindowTitle("Settings");
+    setWindowIcon(QIcon(":/appicon.png"));
+
     connect(ui->pbPublicKey, SIGNAL(clicked()), this, SLOT(onChoosePublicKeyClicked()));
     connect(ui->pbPrivateKey, SIGNAL(clicked()), this, SLOT(onChoosePrivateKeyClicked()));
     connect(ui->okButton, SIGNAL(accepted()), this, SLOT(okButtonClicked()));

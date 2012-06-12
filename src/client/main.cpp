@@ -29,6 +29,7 @@ int main(int argc, char **argv)
     /* Init QSettings */
     QCoreApplication::setOrganizationName("group22");
     QCoreApplication::setApplicationName("sdc");
+    Q_INIT_RESOURCE(sdcc);
 
     sdc::Settings::init();
 

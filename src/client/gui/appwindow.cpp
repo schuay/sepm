@@ -43,6 +43,8 @@ AppWindow::AppWindow(QWidget *parent, QSharedPointer<Session> session) :
     setAttribute(Qt::WA_DeleteOnClose, true);
     ui->lUsername->setText(d_session->getUser()->getName());
 
+    setWindowIcon(QIcon(":/appicon.png"));
+
     qRegisterMetaType<QSharedPointer<Chat> >("QSharedPointer<Chat>");
     qRegisterMetaType<QSharedPointer<const User> >("QSharedPointer<const User>");
 

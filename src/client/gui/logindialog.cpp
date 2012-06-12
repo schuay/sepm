@@ -39,6 +39,9 @@ LoginDialog::LoginDialog(QWidget *parent) :
 {
     setAttribute(Qt::WA_DeleteOnClose, true);
     ui->setupUi(this);
+
+    setWindowIcon(QIcon(":/appicon.png"));
+
     qRegisterMetaType<QSharedPointer<Session> >("QSharedPointer<Session>");
 
     connect(ui->pbTestConnection, SIGNAL(clicked()), this, SLOT(onTestConnectionClicked()));
