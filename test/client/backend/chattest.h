@@ -37,6 +37,7 @@ private slots:
 
     void testInviteNotLoggedIn();
     void testInviteNonexistent();
+    void testInviteSelf();
     void testInvite();
     void testEchoMessage();
     void testTransmitMessage();

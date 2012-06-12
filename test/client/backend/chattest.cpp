@@ -198,6 +198,24 @@ void ChatTests::testInviteNonexistent()
     QVERIFY2(arguments.at(0) == false, arguments.at(1).toString().toStdString().c_str());
 }
 
+void ChatTests::testInviteSelf()
+{
+    QVERIFY(chat);
+
+    QSignalSpy spy(chat.data(), SIGNAL(inviteCompleted(bool, QString)));
+    QVERIFY(spy.isValid());
+    QVERIFY(spy.isEmpty());
+
+    QSharedPointer<const User> u(new User(TEMP_SESSION_USER3,
+                                      WORKING_DIR "public.pem"));
+    chat->invite(u);
+    waitForResult(spy);
+
+    QCOMPARE(spy.count(), 1);
+    QList<QVariant> arguments = spy.takeFirst();
+    QVERIFY2(arguments.at(0) == false, arguments.at(1).toString().toStdString().c_str());
+}
+
 void ChatTests::testInvite()
 {
     QVERIFY(chat);
