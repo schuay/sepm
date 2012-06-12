@@ -44,7 +44,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
     ui->lePrivateKey->setText(this->settings.getValue(settings.CPrivateKeyPath).toString());
     ui->leServerCert->setText(this->settings.getValue(settings.CCertPath).toString());
 
-
+    this->setModal(true);
 }
 
 void SettingsDialog::okButtonClicked()
