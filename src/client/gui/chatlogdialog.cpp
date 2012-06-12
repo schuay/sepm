@@ -54,7 +54,8 @@ ChatLogDialog::ChatLogDialog(QWidget *parent, QSharedPointer<Session> session) :
             this,
             SLOT(onRetrieveLogCompleted(const QList<ChatlogEntry>, bool, QString)));
 
-
+    connect(ui->closeButton, SIGNAL(rejected()), this, SLOT(close()));
+    this->setModal(true);
 }
 
 void ChatLogDialog::selectionChanged(const QItemSelection &sel, const QItemSelection &des)

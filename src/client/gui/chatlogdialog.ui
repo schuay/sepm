@@ -114,6 +114,13 @@
          </property>
         </widget>
        </item>
+       <item>
+        <widget class="QDialogButtonBox" name="closeButton">
+         <property name="standardButtons">
+          <set>QDialogButtonBox::Close</set>
+         </property>
+        </widget>
+       </item>
       </layout>
      </widget>
     </widget>
