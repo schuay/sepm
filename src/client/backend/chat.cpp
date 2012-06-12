@@ -52,6 +52,9 @@ void Chat::runInvite(QSharedPointer<const User> user)
     } catch (const sdc::InterServerException &e) {
         success = false;
         message = e.what.c_str();
+    } catch (...) {
+        success = false;
+        message = "Unexpected exception";
     }
 
     emit inviteCompleted(success, message);
@@ -88,6 +91,9 @@ void Chat::runSend(const QString &msg)
         // thrown by sendMessage
         success = false;
         message = e.what.c_str();
+    } catch (...) {
+        success = false;
+        message = "Unexpected exception";
     }
 
     emit sendCompleted(success, message);
@@ -174,6 +180,9 @@ void Chat::runLeaveChat()
     } catch (const sdc::SecurityException &e) {
         success = false;
         message = e.what();
+    } catch (...) {
+        success = false;
+        message = "Unexpected exception";
     }
 
     emit leaveChatCompleted(success, message);
