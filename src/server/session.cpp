@@ -161,6 +161,11 @@ throw(sdc::UserHandlingException, sdc::InterServerException)
 
     const QString id = QString::fromStdString(chatID);
 
+    /* Prevent inviting self. */
+    if (participant == self) {
+        throw sdc::UserHandlingException("Cannot invite self");
+    }
+
     try {
         QMutexLocker locker(&chatsMutex);
         if (!chats.contains(id))
