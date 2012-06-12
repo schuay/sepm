@@ -47,7 +47,6 @@ public slots:
     void logout();
     void onChatOpened(QSharedPointer<Chat> chat);
     void onChatOpened(QSharedPointer<Chat> chat, bool success, const QString &msg);
-    void onSettingsButtonClicked();
     void onAddContactEntryClicked();
     void onSettingsEntryClicked();
     void onViewChatLogsEntryClicked();

@@ -1,5 +1,11 @@
 <RCC>
-  <qresource>
-    <file>appicon.png</file>
-  </qresource>
+    <qresource prefix="/">
+        <file>appicon.png</file>
+        <file>addcontact.png</file>
+        <file>chatlogs.png</file>
+        <file>invite.png</file>
+        <file>startchat.png</file>
+        <file>options.png</file>
+        <file>logout.png</file>
+    </qresource>
 </RCC>

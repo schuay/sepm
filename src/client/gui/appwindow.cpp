@@ -49,8 +49,6 @@ AppWindow::AppWindow(QWidget *parent, QSharedPointer<Session> session) :
     qRegisterMetaType<QSharedPointer<const User> >("QSharedPointer<const User>");
 
     connect(ui->twChats, SIGNAL(tabCloseRequested(int)), this, SLOT(onTabCloseRequested(int)));
-    connect(ui->pbOptions, SIGNAL(clicked()),
-            this, SLOT(onSettingsButtonClicked()));
     connect(d_session.data(),
             SIGNAL(deleteUserCompleted(bool, QString)),
             this,
@@ -88,6 +86,21 @@ AppWindow::AppWindow(QWidget *parent, QSharedPointer<Session> session) :
             this,
             SLOT(onLogoutCompleted()));
 
+    /* Setup tool buttons. */
+    ui->tbAddContact->setIcon(QIcon(":/addcontact.png"));
+    ui->tbStartChat->setIcon(QIcon(":/startchat.png"));
+    ui->tbChatlogs->setIcon(QIcon(":/chatlogs.png"));
+    ui->tbInvite->setIcon(QIcon(":/invite.png"));
+    ui->tbOptions->setIcon(QIcon(":/options.png"));
+    ui->tbLogout->setIcon(QIcon(":/logout.png"));
+
+    connect(ui->tbAddContact, SIGNAL(clicked()), this, SLOT(onAddContactEntryClicked()));
+    connect(ui->tbStartChat, SIGNAL(clicked()), this, SLOT(onStartChatEntryClicked()));
+    connect(ui->tbChatlogs, SIGNAL(clicked()), this, SLOT(onViewChatLogsEntryClicked()));
+    connect(ui->tbInvite, SIGNAL(clicked()), this, SLOT(onInviteClicked()));
+    connect(ui->tbOptions, SIGNAL(clicked()), this, SLOT(onSettingsEntryClicked()));
+    connect(ui->tbLogout, SIGNAL(clicked()), this, SLOT(logout()));
+
     ui->lvContacts->setModel(contactList);
     d_session->retrieveContactList();
     settingspopupmenu = new QMenu(this);
@@ -97,7 +110,6 @@ AppWindow::AppWindow(QWidget *parent, QSharedPointer<Session> session) :
     settingspopupmenu->addAction("Invite", this, SLOT(onInviteClicked()));
     settingspopupmenu->addAction("Options", this, SLOT(onSettingsEntryClicked()));
     settingspopupmenu->addAction("Logout", this, SLOT(logout()));
-    ui->pbOptions->setMenu(settingspopupmenu);
 
     contactListMenu = new QMenu(this);
     contactListMenu->addAction("Delete");
@@ -190,12 +202,6 @@ void AppWindow::onSettingsEntryClicked()
     QLOG_TRACE() << __PRETTY_FUNCTION__;
     SettingsDialog *dialog = new SettingsDialog(this);
     dialog->show();
-}
-
-void AppWindow::onSettingsButtonClicked()
-{
-    QLOG_TRACE() << __PRETTY_FUNCTION__;
-    ui->pbOptions->menu()->exec(QCursor::pos());
 }
 
 void AppWindow::onTabCloseRequested(int tab)
