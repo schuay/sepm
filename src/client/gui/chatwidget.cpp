@@ -60,7 +60,7 @@ ChatWidget::ChatWidget(QSharedPointer<Session> session,
     connect(d_chat.data(), SIGNAL(sendCompleted(bool, QString)),
             this, SLOT(sendCompleted(bool, QString)));
     connect(d_session.data(), SIGNAL(retrieveUserCompleted(QSharedPointer<const User>,
-                                                           const QObject *, bool, QString)),
+                                     const QObject *, bool, QString)),
             this, SLOT(invite(QSharedPointer<const User>, const QObject *, bool, QString)));
 }
 
@@ -81,25 +81,38 @@ void ChatWidget::returnPressed()
     ui->leMessage->setText("");
 }
 
+void ChatWidget::appendMessageWithWeight(const QString &message, int weight)
+{
+    QMutexLocker locker(&chatFontMutex);
+
+    QTextCursor oldCursor = ui->tbChat->textCursor();
+    int oldWeight = ui->tbChat->fontWeight();
+
+    ui->tbChat->setTextCursor(QTextCursor(ui->tbChat->document()));
+    ui->tbChat->setFontWeight(weight);
+    ui->tbChat->append(message);
+    ui->tbChat->setFontWeight(oldWeight);
+
+    ui->tbChat->setTextCursor(oldCursor);
+}
+
 /**
  * Another user sent a message to the chat.
  */
 void ChatWidget::messageReceived(QSharedPointer<const User> user, const QString &msg)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
-    ui->tbChat->append(user->getName() + QString(": ") + msg);
+
+    /* We have to use this here too, otherwise a selection of a bold text makes
+     * the new message bold too. */
+    appendMessageWithWeight(user->getName() + QString(": ") + msg, QFont::Normal);
+
     emit chatUpdate(this);
 }
 
 void ChatWidget::statusMessage(QSharedPointer<const User> user, const QString &message)
 {
-    QMutexLocker locker(&chatFontMutex);
-    QTextCursor f = ui->tbChat->textCursor();
-    f.clearSelection();
-    ui->tbChat->setTextCursor(f);
-    ui->tbChat->setFontWeight(QFont::Bold);
-    ui->tbChat->append(QString("%1 %2").arg(user->getName(), message));
-    ui->tbChat->setFontWeight(QFont::Normal);
+    appendMessageWithWeight(QString("%1 %2").arg(user->getName(), message), QFont::Bold);
 }
 
 /**

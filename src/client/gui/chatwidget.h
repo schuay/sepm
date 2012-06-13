@@ -99,6 +99,12 @@ private slots:
 private:
     void statusMessage(QSharedPointer<const User> user, const QString &message);
 
+    /**
+     * Appends message to the chat window with the given font weight.
+     * This doesn't affect selections.
+     */
+    void appendMessageWithWeight(const QString &message, int weight);
+
     Ui::ChatWidget *ui;
     QSharedPointer<Chat> d_chat;
     QSharedPointer<Session> d_session;
