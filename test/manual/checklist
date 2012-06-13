@@ -52,4 +52,7 @@
 |051|s|Chat Logs|Open Chat Logs|Chat log window appears and is modal.|
 |052|s|Settings Dialog|Open Settings|Settings window appears and is modal.|
 |053|f|Contact List|Try to right click on the contact list where no user is and get a context menu|Nothing happens|
-|054|s|UI Notifications|Select a bold status message, make another user join or leave|The selection vanishes and the selected text remains unchanged, the new status message is displayed normally|
+|054|s|UI Notifications|Select a bold status message, make another user join or leave|The selected text remains unchanged, the new status message is displayed normally|
+|055|s|UI Notifications|Select a bold status message, add a normal message|The selected text remains unchanged, the new message is displayed normally|
+|056|s|UI Notifications|Select a normal message, make another user join or leave|The selected text remains unchanged, the new status message is displayed normally|
+|057|s|UI Notifications|Select a normal message, add a normal message|The selected text remains unchanged, the new message is displayed normally|
