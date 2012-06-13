@@ -218,7 +218,7 @@ void AppWindow::deleteAccount()
     d_session->deleteUser(d_session->getUser());
 }
 
-void AppWindow::onLogoutCompleted(bool success, const QString &msg)
+void AppWindow::onLogoutCompleted(bool success, const QString &)
 {
     QLOG_TRACE() << __PRETTY_FUNCTION__;
     if (success) {
@@ -227,8 +227,6 @@ void AppWindow::onLogoutCompleted(bool success, const QString &msg)
         LoginDialog *ld = new LoginDialog();
         ld->show();
         close();
-    } else {
-        QMessageBox::warning(this, "Logout Failed", msg);
     }
 }
 
