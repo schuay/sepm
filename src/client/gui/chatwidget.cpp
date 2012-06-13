@@ -94,6 +94,9 @@ void ChatWidget::messageReceived(QSharedPointer<const User> user, const QString 
 void ChatWidget::statusMessage(QSharedPointer<const User> user, const QString &message)
 {
     QMutexLocker locker(&chatFontMutex);
+    QTextCursor f = ui->tbChat->textCursor();
+    f.clearSelection();
+    ui->tbChat->setTextCursor(f);
     ui->tbChat->setFontWeight(QFont::Bold);
     ui->tbChat->append(QString("%1 %2").arg(user->getName(), message));
     ui->tbChat->setFontWeight(QFont::Normal);
