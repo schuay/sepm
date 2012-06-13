@@ -52,3 +52,4 @@
 |051|s|Chat Logs|Open Chat Logs|Chat log window appears and is modal.|
 |052|s|Settings Dialog|Open Settings|Settings window appears and is modal.|
 |053|f|Contact List|Try to right click on the contact list where no user is and get a context menu|Nothing happens|
+|054|s|UI Notifications|Select a bold status message, make another user join or leave|The selection vanishes and the selected text remains unchanged, the new status message is displayed normally|
