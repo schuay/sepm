@@ -60,7 +60,7 @@ void ChatLogDialog::selectionChanged(const QItemSelection &sel, const QItemSelec
 
 }
 
-void ChatLogDialog::onRetrieveLoglistCompleted(const QList<QPair<QDateTime, QString> > &list,
+void ChatLogDialog::onRetrieveLoglistCompleted(QList<QPair<QDateTime, QString> > list,
         bool success, const QString &msg)
 {
     if (success) {
@@ -89,7 +89,7 @@ void ChatLogDialog::onTimeStampClicked(QModelIndex index)
     d_session->retrieveLog(date, chatname);
 }
 
-void ChatLogDialog::onRetrieveLogCompleted(const QList<ChatlogEntry> &list, bool success, const QString &msg)
+void ChatLogDialog::onRetrieveLogCompleted(QList<ChatlogEntry> list, bool success, const QString &msg)
 {
     if (success) {
         QStringList temp;

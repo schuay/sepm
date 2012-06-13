@@ -147,13 +147,13 @@ signals:
     /**
      * The chatlog list has been retrieved from the server.
      */
-    void retrieveLoglistCompleted(const QList<QPair<QDateTime, QString> > &list,
+    void retrieveLoglistCompleted(QList<QPair<QDateTime, QString> > list,
                                   bool success, const QString &msg);
 
     /**
      * The requested chatlog has been retrieved from the server.
      */
-    void retrieveLogCompleted(const QList<ChatlogEntry> &list,
+    void retrieveLogCompleted(QList<ChatlogEntry> list,
                               bool success, const QString &msg);
 
     /**

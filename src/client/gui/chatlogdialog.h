@@ -41,10 +41,10 @@ public:
     ~ChatLogDialog();
 
 public slots:
-    void onRetrieveLoglistCompleted(const QList<QPair<QDateTime, QString> > &list,
+    void onRetrieveLoglistCompleted(QList<QPair<QDateTime, QString> > list,
                                     bool success, const QString &msg);
     void onTimeStampClicked(QModelIndex index);
-    void onRetrieveLogCompleted(const QList<ChatlogEntry> &list,
+    void onRetrieveLogCompleted(QList<ChatlogEntry> list,
                                 bool success, const QString &msg);
     void selectionChanged(const QItemSelection &sel, const QItemSelection &des);
 private:
