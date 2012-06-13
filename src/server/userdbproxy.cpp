@@ -60,8 +60,7 @@ void UserDbProxy::Connection::open()
 
     bool ok = db.open();
     if (!ok) {
-        throw sdc::UserHandlingException("Internal Server Error: Could not open database.\n" +
-                                         db.lastError().text().toStdString());
+        throw sdc::UserHandlingException("Internal Server Error: Could not open database.");
     }
 }
 
@@ -86,8 +85,7 @@ throw(sdc::ContactException)
     bool ok = query.exec();
     if (!ok) {
         QLOG_ERROR() << query.lastError().text();
-        throw sdc::ContactException("Internal Server Error: Could not delete old contact list.\n"
-                                    + query.lastError().text().toStdString());
+        throw sdc::ContactException("Internal Server Error: Could not delete old contact list.");
     }
 
     query.prepare("insert into public.contactlist (user_id, encrypted_content, signature) "
@@ -99,8 +97,7 @@ throw(sdc::ContactException)
     ok = query.exec();
     if (!ok) {
         QLOG_ERROR() << query.lastError().text();
-        throw sdc::ContactException("Internal Server Error: Could not save contact list.\n"
-                                    + query.lastError().text().toStdString());
+        throw sdc::ContactException("Internal Server Error: Could not save contact list.");
     }
 }
 
@@ -119,7 +116,7 @@ throw(sdc::ContactException)
     bool ok = query.exec();
     if (!ok) {
         QLOG_ERROR() << query.lastError().text();
-        throw sdc::ContactException(query.lastError().text().toStdString());
+        throw sdc::ContactException("Internal Server Error: Database Error");
     }
 
     if (query.size() > 1) {
@@ -155,8 +152,7 @@ throw(sdc::LogException)
     bool ok = query.exec();
     if (!ok) {
         QLOG_ERROR() << query.lastError().text();
-        throw sdc::LogException("Internal Server Error: Could not delete old log.\n"
-                                + query.lastError().text().toStdString());
+        throw sdc::LogException("Internal Server Error: Could not delete old log.");
     }
 
     query.prepare("insert into public.chatlog (user_id, chat_id, time_stamp, encrypted_content, signature) "
@@ -170,8 +166,7 @@ throw(sdc::LogException)
     ok = query.exec();
     if (!ok) {
         QLOG_ERROR() << query.lastError().text();
-        throw sdc::LogException("Internal Server Error: Could not save log.\n"
-                                + query.lastError().text().toStdString());
+        throw sdc::LogException("Internal Server Error: Could not save log.");
     }
 }
 
@@ -191,8 +186,7 @@ throw(sdc::LogException)
     bool ok = query.exec();
     if (!ok) {
         QLOG_ERROR() << query.lastError().text();
-        throw sdc::LogException("Internal Server Error: Could not retrieve loglist\n"
-                                + query.lastError().text().toStdString());
+        throw sdc::LogException("Internal Server Error: Could not retrieve loglist");
     }
 
     sdc::Loglist list;
@@ -225,8 +219,7 @@ throw(sdc::LogException)
     bool ok = query.exec();
     if (!ok) {
         QLOG_ERROR() << query.lastError().text();
-        throw sdc::LogException("Internal Server Error: Could not retrieve log.\n"
-                                + query.lastError().text().toStdString());
+        throw sdc::LogException("Internal Server Error: Could not retrieve log.");
     }
 
     if (query.size() != 1) {
@@ -273,8 +266,7 @@ throw(sdc::UserHandlingException)
     bool ok = query.exec();
     if (!ok) {
         QLOG_ERROR() << query.lastError().text();
-        throw sdc::UserHandlingException("Internal Server Error: Could not delete chatlog\n"
-                                         + query.lastError().text().toStdString());
+        throw sdc::UserHandlingException("Internal Server Error: Could not delete chatlog");
     }
 
     query.prepare("delete from public.contactlist where user_id = :user_id");
@@ -283,8 +275,7 @@ throw(sdc::UserHandlingException)
     ok = query.exec();
     if (!ok) {
         QLOG_ERROR() << query.lastError().text();
-        throw sdc::UserHandlingException("Internal Server Error: Could not delete contact list\n"
-                                         + query.lastError().text().toStdString());
+        throw sdc::UserHandlingException("Internal Server Error: Could not delete contact list");
     }
 
     query.prepare("delete from public.user where username = :username");
@@ -293,8 +284,7 @@ throw(sdc::UserHandlingException)
     ok = query.exec();
     if (!ok) {
         QLOG_ERROR() << query.lastError().text();
-        throw sdc::UserHandlingException("Internal Server Error: Could not delete user\n"
-                                         + query.lastError().text().toStdString());
+        throw sdc::UserHandlingException("Internal Server Error: Could not delete user");
     }
 }
 
@@ -331,7 +321,7 @@ throw(sdc::UserHandlingException)
             throw sdc::UserHandlingException("User already exists");
 
         default: /* For example, lost connection. */
-            throw sdc::UserHandlingException(query.lastError().text().toStdString());
+            throw sdc::UserHandlingException("Internal Server Error: Database Error");
         }
     }
 }
