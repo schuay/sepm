@@ -60,10 +60,17 @@ void ChatLogDialog::selectionChanged(const QItemSelection &sel, const QItemSelec
 
 }
 
+static bool compareByDateDesc(QPair<QDateTime, QString> item1, QPair<QDateTime, QString> item2)
+{
+    return item1.first > item2.first;
+}
+
 void ChatLogDialog::onRetrieveLoglistCompleted(QList<QPair<QDateTime, QString> > list,
         bool success, const QString &msg)
 {
     if (success) {
+        qSort(list.begin(), list.end(), &compareByDateDesc);
+
         chattimestampmodel->setEntries(list);
         ui->lwChatTimestampList->setModel(chattimestampmodel);
 

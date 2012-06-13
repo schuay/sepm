@@ -184,8 +184,7 @@ throw(sdc::LogException)
 
     QSqlQuery query(connection.db);
     query.prepare("select chat_id, time_stamp "
-                  "from public.chatlog where user_id = :user_id "
-                  "order by time_stamp desc, chat_id;");
+                  "from public.chatlog where user_id = :user_id");
 
     query.bindValue(":user_id", id);
 
